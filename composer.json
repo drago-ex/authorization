@@ -1,0 +1,24 @@
+{
+	"name": "drago-ex/authorization",
+	"type": "library",
+	"description": "Simple management of users' permissions.",
+	"license": ["MIT"],
+	"authors": [
+		{
+			"name": "Zdeněk Papučík",
+			"homepage": "https://github.com/accgit"
+		}
+	],
+	"require": {
+		"php": ">=7.3",
+		"nette/security": "^3.0",
+		"nette/application": "^3.0",
+		"nette/caching": "^3.0",
+		"nette/di": "^3.0",
+		"latte/latte": "^2.7",
+		"drago-ex/database": "^1.0"
+	},
+	"autoload": {
+		"classmap": ["src/"]
+	}
+}
