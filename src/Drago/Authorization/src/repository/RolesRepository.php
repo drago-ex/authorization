@@ -46,7 +46,7 @@ class RolesRepository extends Database\Connect
 	{
 		$row = $this->discover(RolesEntity::PARENT, $id)->fetch();
 		if ($row) {
-			throw new \Exception('The record can not be deleted, you must first delete the 
+			throw new \Exception('The record can not be deleted, you must first delete the
 			records that are associated with it.', 0002);
 		}
 		return $row;
