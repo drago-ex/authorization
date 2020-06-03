@@ -153,11 +153,10 @@ class RolesControl extends Base
 		try {
 			if ($this->repository->isAllowed($row)) {
 				if ($this->getSignal()) {
+					$row->parent = $row->parent === 0 ? null : $row->parent;
 					$form = $this['factory'];
 					$form['send']->caption = 'Edit';
-					$item = $this->repository->find($dataId);
-					$item->parent = $item->parent === 0 ? null : $item->parent;
-					$form->setDefaults($item);
+					$form->setDefaults($row);
 				}
 				$this->redrawFactory();
 			}
@@ -179,7 +178,8 @@ class RolesControl extends Base
 		$row = $this->getRecord($id);
 		try {
 			if ($this->repository->isAllowed($row)) {
-				if (!$this->repository->findParent($id)) {
+				$parent = $this->repository->findParent($id);
+				if (!$parent) {
 					$this->repository->eraseId($id);
 					$this->presenter->flashMessage('Role deleted.');
 					$this->redrawComponent();
