@@ -12,6 +12,7 @@ namespace Drago\Authorization\Control;
 use Drago\Authorization\Entity;
 use Drago\Authorization\Repository;
 use Nette\Application\UI;
+use Tracy\Debugger;
 
 
 class RolesControl extends Base
@@ -33,10 +34,31 @@ class RolesControl extends Base
 	public function render(): void
 	{
 		$template = $this->template;
-		$template->items = $this->repository->all();
+		$template->items = $this->getRoles();
 		$template->form = $this['factory'];
 		$template->setFile(__DIR__ . '/../templates/roles/acl.roles.latte');
 		$template->render();
+	}
+
+
+	/**
+	 * @throws \Dibi\Exception
+	 */
+	private function getRoles(): array
+	{
+		$roles = [];
+
+		/** @var Entity\RolesEntity $role */
+		foreach ($this->repository->all() as $role) {
+			$roleParent = $role->parent;
+			if ($roleParent > 0) {
+				$roleParent = $this->repository->find($roleParent);
+				$role->parent = $roleParent->name;
+			}
+			$role->parent = $role->parent === 0 ? null : $role->parent;
+			$roles[] = $role;
+		}
+		return $roles;
 	}
 
 
