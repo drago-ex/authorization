@@ -35,7 +35,7 @@ class RolesControl extends Base
 		$template = $this->template;
 		$template->items = $this->getRoles();
 		$template->form = $this['factory'];
-		$template->setFile(__DIR__ . '/../templates/roles/acl.roles.latte');
+		$template->setFile(__DIR__ . '/../templates/roles.latte');
 		$template->render();
 	}
 
