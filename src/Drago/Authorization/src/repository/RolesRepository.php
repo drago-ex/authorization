@@ -26,6 +26,18 @@ class RolesRepository extends Database\Connect
 
 
 	/**
+	 * @return array[]|RolesEntity[]
+	 * @throws \Dibi\Exception
+	 */
+	public function getAll()
+	{
+		return $this->all()->execute()
+			->setRowClass(RolesEntity::class)
+			->fetchAll();
+	}
+
+
+	/**
 	 * @return array|RolesEntity|null
 	 * @throws \Dibi\Exception
 	 */
