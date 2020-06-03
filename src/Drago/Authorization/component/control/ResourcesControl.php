@@ -12,7 +12,6 @@ namespace Drago\Authorization\Control;
 use Drago\Authorization\Entity;
 use Drago\Authorization\Repository;
 use Nette\Application\UI;
-use Tracy\Debugger;
 
 
 /**
