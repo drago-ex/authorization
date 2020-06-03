@@ -18,21 +18,33 @@ use Drago\Authorization\Control;
 trait Authorization
 {
 	/** @var Control\RolesControl */
-	protected $roles;
+	private $roles;
+
+	/** @var Control\ResourcesControl */
+	private $resources;
 
 
-	public function injectAuthorizationComponent(Control\RolesControl $roles)
+	public function injectAuthorizationComponents(Control\RolesControl $rolesControl, Control\ResourcesControl $resourcesControl)
 	{
-		$this->roles = $roles;
+		$this->roles = $rolesControl;
+		$this->resources = $resourcesControl;
 	}
 
 
 	/**
 	 * @return Control\RolesControl
 	 */
-	protected function createComponentAclRoles()
+	protected function createComponentRolesControl()
 	{
-		$roles = $this->roles;
-		return $roles;
+		return $this->roles;
+	}
+
+
+	/**
+	 * @return Control\ResourcesControl
+	 */
+	protected function createComponentResourcesControl()
+	{
+		return $this->resources;
 	}
 }
