@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * This file is auto-generated.
+ */
+
+declare(strict_types=1);
+
 namespace Drago\Authorization\Entity;
 
 /**
@@ -10,9 +16,9 @@ namespace Drago\Authorization\Entity;
 class RolesEntity extends \Drago\Database\Entity
 {
 	const TABLE = 'roles';
-	const ROLE_ID = 'roleId';
-	const NAME = 'name';
-	const PARENT = 'parent';
+	public const ROLE_ID = 'roleId';
+	public const NAME = 'name';
+	public const PARENT = 'parent';
 
 	/** @var int */
 	public $roleId;
