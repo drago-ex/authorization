@@ -147,9 +147,9 @@ class RolesControl extends Base
 	 * @throws \Dibi\Exception
 	 * @throws \Nette\Application\BadRequestException
 	 */
-	public function handleEdit(int $dataId): void
+	public function handleEdit(int $id): void
 	{
-		$row = $this->getRecord($dataId);
+		$row = $this->getRecord($id);
 		try {
 			if ($this->repository->isAllowed($row)) {
 				if ($this->getSignal()) {
