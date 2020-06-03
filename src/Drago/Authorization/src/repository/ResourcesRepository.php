@@ -9,9 +9,9 @@ declare(strict_types = 1);
 
 namespace Drago\Authorization\Repository;
 
+use Dibi\Fluent;
 use Drago\Authorization\Entity\ResourcesEntity;
 use Drago\Database;
-use Dibi\Fluent;
 
 
 class ResourcesRepository extends Database\Connect
