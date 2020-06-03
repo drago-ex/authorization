@@ -47,9 +47,7 @@ class RolesControl extends Base
 	private function getRoles(): array
 	{
 		$roles = [];
-
-		/** @var Entity\RolesEntity $role */
-		foreach ($this->repository->all() as $role) {
+		foreach ($this->repository->getAll() as $role) {
 			$roleParent = $role->parent;
 			if ($roleParent > 0) {
 				$roleParent = $this->repository->find($roleParent);
@@ -65,9 +63,7 @@ class RolesControl extends Base
 	private function factoryItems(): array
 	{
 		$arr = [];
-
-		/** @var Entity\RolesEntity $item */
-		foreach ($this->repository->all() as $item) {
+		foreach ($this->repository->getAll() as $item) {
 			$arr[$item->roleId] = $item->name;
 		}
 		return $arr;
