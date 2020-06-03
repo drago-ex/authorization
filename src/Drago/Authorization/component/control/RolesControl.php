@@ -90,10 +90,10 @@ class RolesControl extends Base
 			->setHtmlAttribute('autocomplete', 'nope')
 			->setRequired();
 
-		$dataId = (int) $this->getParameter('dataId');
+		$id = (int) $this->getParameter('id');
 		if ($this->getSignal()) {
 			foreach ($this->factoryItems() as $key => $item) {
-				if ($dataId !== $key) {
+				if ($id !== $key) {
 					$items[$key] = $item;
 				}
 			}
