@@ -113,8 +113,8 @@ class RolesControl extends Base
 	{
 		try {
 			$values = $form->values;
-			$entity = $this->entity;
 			$roleId = (int) $values->roleId;
+			$entity = $this->entity;
 
 			if ($values->roleId) {
 				$entity->setRoleId($roleId);
