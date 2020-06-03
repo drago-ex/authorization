@@ -116,7 +116,7 @@ class RolesControl extends Base
 			$roleId = (int) $values->roleId;
 			$entity = $this->entity;
 
-			if ($values->roleId) {
+			if ($roleId) {
 				$entity->setRoleId($roleId);
 				$message = 'Role updated.';
 				$type = 'info';
