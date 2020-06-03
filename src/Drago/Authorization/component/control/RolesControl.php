@@ -30,9 +30,6 @@ class RolesControl extends Base
 	}
 
 
-	/**
-	 * @throws \Exception
-	 */
 	public function render(): void
 	{
 		$template = $this->template;
@@ -68,10 +65,6 @@ class RolesControl extends Base
 	}
 
 
-	/**
-	 * @throws \Dibi\Exception
-	 * @throws \Exception
-	 */
 	protected function createComponentFactory(): UI\Form
 	{
 		$form = new UI\Form;
@@ -136,7 +129,6 @@ class RolesControl extends Base
 	/**
 	 * @throws \Dibi\Exception
 	 * @throws \Nette\Application\BadRequestException
-	 * @throws \Exception
 	 */
 	public function handleEdit(int $dataId): void
 	{
@@ -164,7 +156,6 @@ class RolesControl extends Base
 	/**
 	 * @throws \Dibi\Exception
 	 * @throws \Nette\Application\BadRequestException
-	 * @throws \Exception
 	 */
 	public function handleDelete(int $id): void
 	{
