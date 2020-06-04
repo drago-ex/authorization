@@ -81,10 +81,10 @@ class ResourcesControl extends Base
 
 			if ($resourceId) {
 				$entity->setResourceId($resourceId);
-				$message = 'Source updated';
+				$message = 'Resource updated';
 				$type = Alert::INFO;
 			} else {
-				$message = 'Source inserted.';
+				$message = 'Resource inserted.';
 				$type = Alert::SUCCESS;
 			}
 
@@ -130,13 +130,13 @@ class ResourcesControl extends Base
 		$row = $this->getRecord($id);
 		try {
 			$this->repository->eraseId($row->resourceId);
-			$this->presenter->flashMessage('The source has been deleted.', Alert::DANGER);
+			$this->presenter->flashMessage('The resource has been deleted.', Alert::DANGER);
 			$this->redrawComponent();
 			$this->redrawFlashMessage();
 
 		} catch (\Exception $e) {
 			if ($e->getCode() === 1451) {
-				$this->presenter->flashMessage('The resource cannot be deleted, first delete the assigned permissions that bind to this resource.', Alert::WARNING);
+				$this->presenter->flashMessage('The resource can not be deleted, you must first delete the records that are associated with it.', Alert::WARNING);
 				$this->redrawFlashMessage();
 			}
 		}
