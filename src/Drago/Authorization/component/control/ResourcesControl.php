@@ -15,9 +15,6 @@ use Drago\Authorization\Repository;
 use Nette\Application\UI;
 
 
-/**
- * Resources control.
- */
 class ResourcesControl extends Base
 {
 	/** @var Entity\ResourcesEntity */
