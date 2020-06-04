@@ -180,9 +180,9 @@ class RolesControl extends Base
 		$row = $this->getRecord($id);
 		try {
 			if ($this->repository->isAllowed($row)) {
-				$parent = $this->repository->findParent($row->roleId);
+				$parent = $this->repository->findParent($id);
 				if (!$parent) {
-					$this->repository->eraseId($row->roleId);
+					$this->repository->eraseId($id);
 					$this->presenter->flashMessage('Role deleted.');
 					$this->redrawComponent();
 					$this->redrawFlashMessage();
