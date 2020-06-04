@@ -50,9 +50,9 @@ class ResourcesControl extends Base
 	 */
 	private function getRecord(int $id)
 	{
-		$row = $this->repository->find($id);
-		$row ?: $this->error();
-		return $row;
+		$item = $this->repository->find($id);
+		$item ?: $this->error();
+		return $item;
 	}
 
 
@@ -69,14 +69,6 @@ class ResourcesControl extends Base
 
 		$form->addHidden('resourceId');
 		$form->addSubmit('send', 'Send');
-
-		if ($this->getSignal()) {
-			$id = (int) $this->getParameter('id');
-			$item = $this->repository->find($id);
-
-			$form['send']->caption = 'Edit';
-			$form->setDefaults($item);
-		}
 		$form->onSuccess[] = [$this, 'process'];
 		return $form;
 	}
@@ -121,9 +113,12 @@ class ResourcesControl extends Base
 	 */
 	public function handleEdit(int $id): void
 	{
-		$this->getRecord($id);
-		$this->getComponent('factory');
-		$this->redrawComponent();
+		$row = $this->getRecord($id);
+		if ($this->getSignal()) {
+			$form = $this['factory'];
+			$form['send']->caption = 'Edit';
+			$form->setDefaults($row);
+		}
 	}
 
 
