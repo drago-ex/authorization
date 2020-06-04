@@ -165,7 +165,7 @@ class RolesControl extends Base
 				}
 			}
 		} catch (\Exception $e) {
-			if ($e->getCode() === 3) {
+			if ($e->getCode() === 0003) {
 				$this->presenter->flashMessage('The role is not allowed to be updated.', Alert::WARNING);
 				$this->redrawFlashMessage();
 			}
@@ -193,7 +193,7 @@ class RolesControl extends Base
 		} catch (\Exception $e) {
 			switch ($e->getCode()) {
 				case 0002: $message = 'Cannot delete role.'; break;
-				case 0003: $message = 'You cannot delete a role, first delete the roles that bind to this role.'; break;
+				case 0003: $message = 'The role is not allowed to be deleted.'; break;
 				case 1451: $message = 'You cannot delete a role, first remove the assigned permissions that are associated with this role.'; break;
 			}
 			$this->presenter->flashMessage($message, Alert::WARNING);
