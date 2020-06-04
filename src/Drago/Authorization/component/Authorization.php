@@ -23,28 +23,35 @@ trait Authorization
 	/** @var Control\ResourcesControl */
 	private $resources;
 
+	/** @var Control\PrivilegesControl */
+	private $privileges;
 
-	public function injectAuthorizationComponents(Control\RolesControl $rolesControl, Control\ResourcesControl $resourcesControl)
+
+	public function injectAuthorizationComponents(
+		Control\RolesControl $rolesControl,
+		Control\ResourcesControl $resourcesControl,
+		Control\PrivilegesControl $privilegesControl)
 	{
 		$this->roles = $rolesControl;
 		$this->resources = $resourcesControl;
+		$this->privileges = $privilegesControl;
 	}
 
 
-	/**
-	 * @return Control\RolesControl
-	 */
-	protected function createComponentRolesControl()
+	protected function createComponentRolesControl(): Control\RolesControl
 	{
 		return $this->roles;
 	}
 
 
-	/**
-	 * @return Control\ResourcesControl
-	 */
-	protected function createComponentResourcesControl()
+	protected function createComponentResourcesControl(): Control\ResourcesControl
 	{
 		return $this->resources;
+	}
+
+
+	protected function createComponentPrivilegesControl(): Control\PrivilegesControl
+	{
+		return $this->privileges;
 	}
 }
