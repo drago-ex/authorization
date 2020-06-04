@@ -36,7 +36,7 @@ class ResourcesControl extends Base
 	public function render(): void
 	{
 		$template = $this->template;
-		$template->items = $this->repository->getAll();
+		$template->rows = $this->repository->getAll();
 		$template->form = $this['factory'];
 		$template->setFile(__DIR__ . '/../templates/resources.latte');
 		$template->render();
@@ -50,9 +50,9 @@ class ResourcesControl extends Base
 	 */
 	private function getRecord(int $id)
 	{
-		$item = $this->repository->find($id);
-		$item ?: $this->error();
-		return $item;
+		$row = $this->repository->find($id);
+		$row ?: $this->error();
+		return $row;
 	}
 
 
@@ -128,9 +128,9 @@ class ResourcesControl extends Base
 	 */
 	public function handleDelete(int $id): void
 	{
-		$this->getRecord($id);
+		$row = $this->getRecord($id);
 		try {
-			$this->repository->eraseId($id);
+			$this->repository->eraseId($row->resourceId);
 			$this->presenter->flashMessage('The source has been deleted.', 'danger');
 			$this->redrawComponent();
 			$this->redrawFlashMessage();
