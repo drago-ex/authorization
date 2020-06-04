@@ -90,8 +90,8 @@ class RolesControl extends Base
 			->setHtmlAttribute('autocomplete', 'nope')
 			->setRequired();
 
-		$id = (int) $this->getParameter('id');
 		if ($this->getSignal()) {
+			$id = (int) $this->getParameter('id');
 			foreach ($this->factoryItems() as $key => $item) {
 				if ($id !== $key) {
 					$items[$key] = $item;
@@ -120,6 +120,7 @@ class RolesControl extends Base
 				$entity->setRoleId($roleId);
 				$message = 'Role updated.';
 				$type = 'info';
+
 			} else {
 				$message = 'The role was inserted.';
 				$type = 'success';
@@ -130,6 +131,8 @@ class RolesControl extends Base
 			$this->repository->save($entity);
 
 			$form->reset();
+			$form['parent']->setItems($this->factoryItems());
+
 			$this->presenter->flashMessage($message, $type);
 			$this->redrawFlashMessage();
 			$this->redrawComponent();
@@ -158,7 +161,6 @@ class RolesControl extends Base
 					$form['send']->caption = 'Edit';
 					$form->setDefaults($row);
 				}
-				$this->redrawFactory();
 			}
 		} catch (\Exception $e) {
 			if ($e->getCode() === 3) {
