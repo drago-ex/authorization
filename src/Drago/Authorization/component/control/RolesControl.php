@@ -13,6 +13,7 @@ use Drago\Application\UI\Alert;
 use Drago\Authorization\Entity;
 use Drago\Authorization\Repository;
 use Nette\Application\UI;
+use Tracy\Debugger;
 
 
 class RolesControl extends Base
@@ -165,7 +166,7 @@ class RolesControl extends Base
 				}
 			}
 		} catch (\Exception $e) {
-			if ($e->getCode() === 0003) {
+			if ($e->getCode() === 1001) {
 				$this->presenter->flashMessage('The role is not allowed to be updated.', Alert::WARNING);
 				$this->redrawFlashMessage();
 			}
@@ -191,10 +192,11 @@ class RolesControl extends Base
 				}
 			}
 		} catch (\Exception $e) {
+			Debugger::barDump($e->getCode());
 			switch ($e->getCode()) {
-				case 0002: $message = 'Cannot delete role.'; break;
-				case 0003: $message = 'The role is not allowed to be deleted.'; break;
-				case 1451: $message = 'You cannot delete a role, first remove the assigned permissions that are associated with this role.'; break;
+				case 1001: $message = 'The role is not allowed to be deleted.'; break;
+				case 1002: $message = 'The role cannot be deleted because it is bound to another role.'; break;
+				case 1451: $message = 'The role can not be deleted, you must first delete the records that are associated with it.'; break;
 			}
 			$this->presenter->flashMessage($message, Alert::WARNING);
 			$this->redrawFlashMessage();
