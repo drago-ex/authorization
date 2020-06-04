@@ -9,6 +9,7 @@ declare(strict_types = 1);
 
 namespace Drago\Authorization\Control;
 
+use Drago\Application\UI\Alert;
 use Drago\Authorization\Entity;
 use Drago\Authorization\Repository;
 use Nette\Application\UI;
@@ -84,10 +85,10 @@ class ResourcesControl extends Base
 			if ($resourceId) {
 				$entity->setResourceId($resourceId);
 				$message = 'Source updated';
-				$type = 'info';
+				$type = Alert::INFO;
 			} else {
 				$message = 'Source inserted.';
-				$type = 'success';
+				$type = Alert::SUCCESS;
 			}
 
 			$entity->setName($values->name);
@@ -118,6 +119,7 @@ class ResourcesControl extends Base
 			$form = $this['factory'];
 			$form['send']->caption = 'Edit';
 			$form->setDefaults($row);
+			$this->redrawFactory();
 		}
 	}
 
@@ -130,14 +132,14 @@ class ResourcesControl extends Base
 	{
 		$row = $this->getRecord($id);
 		try {
-			$this->repository->eraseId($id);
-			$this->presenter->flashMessage('The source has been deleted.', 'danger');
+			$this->repository->eraseId($row->resourceId);
+			$this->presenter->flashMessage('The source has been deleted.', Alert::DANGER);
 			$this->redrawComponent();
 			$this->redrawFlashMessage();
 
 		} catch (\Exception $e) {
 			if ($e->getCode() === 1451) {
-				$this->presenter->flashMessage('The resource cannot be deleted, first delete the assigned permissions that bind to this resource.', 'danger');
+				$this->presenter->flashMessage('The resource cannot be deleted, first delete the assigned permissions that bind to this resource.', Alert::WARNING);
 				$this->redrawFlashMessage();
 			}
 		}
