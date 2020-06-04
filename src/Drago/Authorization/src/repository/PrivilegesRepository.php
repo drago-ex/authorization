@@ -52,7 +52,7 @@ class PrivilegesRepository extends Database\Connect
 	{
 		$role = $row->getName();
 		if ($role === Authorizator::PRIVILEGE_ALL) {
-			throw new \Exception('The privilege is not allowed to be edited or deleted.', 0003);
+			throw new \Exception('The record is not allowed to be edited or deleted.', 1001);
 		}
 		return true;
 	}
