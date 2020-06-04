@@ -13,7 +13,6 @@ use Drago\Application\UI\Alert;
 use Drago\Authorization\Entity;
 use Drago\Authorization\Repository;
 use Nette\Application\UI;
-use Tracy\Debugger;
 
 
 class PrivilegesControl extends Base
