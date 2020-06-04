@@ -17,23 +17,24 @@ use Drago\Application\UI;
  */
 abstract class Base extends UI\Control
 {
-	public function redrawItems(): void
-	{
-		$this->redrawControl('items');
-	}
+	private const
+		ITEMS = 'items',
+		FACTORY = 'factory';
 
 
-	public function redrawFactory(): void
+	public function redrawFactory()
 	{
-		$this->redrawControl('factory');
+		if ($this->isAjax()) {
+			$this->redrawControl(self::FACTORY);
+		}
 	}
 
 
 	public function redrawComponent(): void
 	{
 		if ($this->isAjax()) {
-			$this->redrawItems();
-			$this->redrawFactory();
+			$this->redrawControl(self::ITEMS);
+			$this->redrawControl(self::FACTORY);
 		}
 	}
 
@@ -41,7 +42,7 @@ abstract class Base extends UI\Control
 	public function redrawComponentError(): void
 	{
 		if ($this->isAjax()) {
-			$this->redrawFactory();
+			$this->redrawControl(self::FACTORY);
 			$this->redrawControl('error');
 		}
 	}
