@@ -10,6 +10,7 @@ declare(strict_types = 1);
 namespace Drago\Authorization\Repository;
 
 use Dibi\Fluent;
+use Drago\Authorization\Authorizator;
 use Drago\Authorization\Entity;
 use Drago\Database;
 
@@ -41,6 +42,19 @@ class PrivilegesRepository extends Database\Connect
 		return $this->discoverId($id)
 			->setRowClass(Entity\PrivilegesEntity::class)
 			->fetch();
+	}
+
+
+	/**
+	 * @throws \Exception
+	 */
+	public function isAllowed(Entity\PrivilegesEntity $row): bool
+	{
+		$role = $row->getName();
+		if ($role === Authorizator::PRIVILEGE_ALL) {
+			throw new \Exception('The privilege is not allowed to be edited or deleted.', 0003);
+		}
+		return true;
 	}
 
 
