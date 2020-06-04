@@ -130,7 +130,7 @@ class ResourcesControl extends Base
 	{
 		$row = $this->getRecord($id);
 		try {
-			$this->repository->eraseId($row->resourceId);
+			$this->repository->eraseId($id);
 			$this->presenter->flashMessage('The source has been deleted.', 'danger');
 			$this->redrawComponent();
 			$this->redrawFlashMessage();
