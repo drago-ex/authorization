@@ -13,7 +13,6 @@ use Drago\Application\UI\Alert;
 use Drago\Authorization\Entity;
 use Drago\Authorization\Repository;
 use Nette\Application\UI;
-use Tracy\Debugger;
 
 
 class RolesControl extends Base
@@ -192,7 +191,6 @@ class RolesControl extends Base
 				}
 			}
 		} catch (\Exception $e) {
-			Debugger::barDump($e->getCode());
 			switch ($e->getCode()) {
 				case 1001: $message = 'The role is not allowed to be deleted.'; break;
 				case 1002: $message = 'The role cannot be deleted because it is bound to another role.'; break;
