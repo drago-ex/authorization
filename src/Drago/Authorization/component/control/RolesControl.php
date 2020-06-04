@@ -9,6 +9,7 @@ declare(strict_types = 1);
 
 namespace Drago\Authorization\Control;
 
+use Drago\Application\UI\Alert;
 use Drago\Authorization\Entity;
 use Drago\Authorization\Repository;
 use Nette\Application\UI;
@@ -119,11 +120,11 @@ class RolesControl extends Base
 			if ($roleId) {
 				$entity->setRoleId($roleId);
 				$message = 'Role updated.';
-				$type = 'info';
+				$type = Alert::INFO;
 
 			} else {
 				$message = 'The role was inserted.';
-				$type = 'success';
+				$type = Alert::SUCCESS;
 			}
 
 			$entity->setName($values->name);
@@ -160,11 +161,12 @@ class RolesControl extends Base
 					$form = $this['factory'];
 					$form['send']->caption = 'Edit';
 					$form->setDefaults($row);
+					$this->redrawFactory();
 				}
 			}
 		} catch (\Exception $e) {
 			if ($e->getCode() === 3) {
-				$this->presenter->flashMessage('The role is not allowed to be updated.', 'danger');
+				$this->presenter->flashMessage('The role is not allowed to be updated.', Alert::WARNING);
 				$this->redrawFlashMessage();
 			}
 		}
@@ -183,7 +185,7 @@ class RolesControl extends Base
 				$parent = $this->repository->findParent($id);
 				if (!$parent) {
 					$this->repository->eraseId($id);
-					$this->presenter->flashMessage('Role deleted.');
+					$this->presenter->flashMessage('Role deleted.', Alert::DANGER);
 					$this->redrawComponent();
 					$this->redrawFlashMessage();
 				}
@@ -194,7 +196,7 @@ class RolesControl extends Base
 				case 0003: $message = 'You cannot delete a role, first delete the roles that bind to this role.'; break;
 				case 1451: $message = 'You cannot delete a role, first remove the assigned permissions that are associated with this role.'; break;
 			}
-			$this->presenter->flashMessage($message, 'danger');
+			$this->presenter->flashMessage($message, Alert::WARNING);
 			$this->redrawFlashMessage();
 		}
 	}
