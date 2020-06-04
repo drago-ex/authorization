@@ -50,6 +50,19 @@ class RolesRepository extends Database\Connect
 
 
 	/**
+	 * @throws \Exception
+	 */
+	public function isAllowed(RolesEntity $row): bool
+	{
+		$role = $row->getName();
+		if ($role === Authorizator::ROLE_GUEST || $role === Authorizator::ROLE_MEMBER || $role === Authorizator::ROLE_ADMIN) {
+			throw new \Exception('The record is not allowed to be edited or deleted.', 1001);
+		}
+		return true;
+	}
+
+
+	/**
 	 * @return array|\Dibi\Row|null
 	 * @throws \Dibi\Exception
 	 * @throws \Exception
@@ -58,23 +71,9 @@ class RolesRepository extends Database\Connect
 	{
 		$row = $this->discover(RolesEntity::PARENT, $id)->fetch();
 		if ($row) {
-			throw new \Exception('The record can not be deleted, you must first delete the
-			records that are associated with it.', 0002);
+			throw new \Exception('The record can not be deleted, you must first delete the records that are associated with it.', 1002);
 		}
 		return $row;
-	}
-
-
-	/**
-	 * @throws \Exception
-	 */
-	public function isAllowed(RolesEntity $row): bool
-	{
-		$role = $row->getName();
-		if ($role === Authorizator::ROLE_GUEST || $role === Authorizator::ROLE_MEMBER || $role === Authorizator::ROLE_ADMIN) {
-			throw new \Exception('The role is not allowed to be edited or deleted.', 0003);
-		}
-		return true;
 	}
 
 
