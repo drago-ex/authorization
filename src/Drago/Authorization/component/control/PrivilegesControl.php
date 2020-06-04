@@ -13,6 +13,7 @@ use Drago\Application\UI\Alert;
 use Drago\Authorization\Entity;
 use Drago\Authorization\Repository;
 use Nette\Application\UI;
+use Tracy\Debugger;
 
 
 class PrivilegesControl extends Base
@@ -110,11 +111,20 @@ class PrivilegesControl extends Base
 	public function handleEdit(int $id): void
 	{
 		$row = $this->getRecord($id);
-		if ($this->getSignal()) {
-			$form = $this['factory'];
-			$form['send']->caption = 'Edit';
-			$form->setDefaults($row);
-			$this->redrawFactory();
+		try {
+			if ($this->repository->isAllowed($row)) {
+				if ($this->getSignal()) {
+					$form = $this['factory'];
+					$form['send']->caption = 'Edit';
+					$form->setDefaults($row);
+					$this->redrawFactory();
+				}
+			}
+		} catch (\Exception $e) {
+			if ($e->getCode() === 0003) {
+				$this->presenter->flashMessage('The privilege is not allowed to be updated.', Alert::WARNING);
+				$this->redrawFlashMessage();
+			}
 		}
 	}
 
@@ -127,16 +137,20 @@ class PrivilegesControl extends Base
 	{
 		$row = $this->getRecord($id);
 		try {
-			$this->repository->eraseId($row->privilegeId);
-			$this->presenter->flashMessage('The action has been deleted.', Alert::DANGER);
-			$this->redrawComponent();
-			$this->redrawFlashMessage();
-
-		} catch (\Exception $e) {
-			if ($e->getCode() === 1451) {
-				$this->flashMessage('The action cannot be deleted, first delete the assigned permissions that are associated with the action.', Alert::WARNING);
+			if ($this->repository->isAllowed($row)) {
+				$this->repository->eraseId($row->privilegeId);
+				$this->presenter->flashMessage('The privilege has been deleted.', Alert::DANGER);
+				$this->redrawComponent();
 				$this->redrawFlashMessage();
 			}
+
+		} catch (\Exception $e) {
+			switch ($e->getCode()) {
+				case 0003: $message = 'The privilege is not allowed to be deleted.'; break;
+				case 1451: $message = 'The action cannot be deleted, first delete the assigned permissions that are associated with the action.'; break;
+			}
+			$this->presenter->flashMessage($message, Alert::WARNING);
+			$this->redrawFlashMessage();
 		}
 	}
 }
