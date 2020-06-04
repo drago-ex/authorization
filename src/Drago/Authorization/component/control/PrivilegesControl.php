@@ -120,7 +120,7 @@ class PrivilegesControl extends Base
 				}
 			}
 		} catch (\Exception $e) {
-			if ($e->getCode() === 0003) {
+			if ($e->getCode() === 1001) {
 				$this->presenter->flashMessage('The privilege is not allowed to be updated.', Alert::WARNING);
 				$this->redrawFlashMessage();
 			}
@@ -145,8 +145,8 @@ class PrivilegesControl extends Base
 
 		} catch (\Exception $e) {
 			switch ($e->getCode()) {
-				case 0003: $message = 'The privilege is not allowed to be deleted.'; break;
-				case 1451: $message = 'The action cannot be deleted, first delete the assigned permissions that are associated with the action.'; break;
+				case 1001: $message = 'The privilege is not allowed to be deleted.'; break;
+				case 1451: $message = 'The privilege can not be deleted, you must first delete the records that are associated with it.'; break;
 			}
 			$this->presenter->flashMessage($message, Alert::WARNING);
 			$this->redrawFlashMessage();
