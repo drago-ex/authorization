@@ -33,7 +33,7 @@ class RolesControl extends Base
 	public function render(): void
 	{
 		$template = $this->template;
-		$template->items = $this->getRoles();
+		$template->rows = $this->getRoles();
 		$template->form = $this['factory'];
 		$template->setFile(__DIR__ . '/../templates/roles.latte');
 		$template->render();
@@ -180,9 +180,9 @@ class RolesControl extends Base
 		$row = $this->getRecord($id);
 		try {
 			if ($this->repository->isAllowed($row)) {
-				$parent = $this->repository->findParent($id);
+				$parent = $this->repository->findParent($row->roleId);
 				if (!$parent) {
-					$this->repository->eraseId($id);
+					$this->repository->eraseId($row->roleId);
 					$this->presenter->flashMessage('Role deleted.');
 					$this->redrawComponent();
 					$this->redrawFlashMessage();
