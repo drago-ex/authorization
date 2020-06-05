@@ -35,6 +35,7 @@ abstract class Base extends UI\Control
 		if ($this->isAjax()) {
 			$this->redrawControl(self::ITEMS);
 			$this->redrawControl(self::FACTORY);
+			$this->presenter->redrawControl('permissions');
 		}
 	}
 
