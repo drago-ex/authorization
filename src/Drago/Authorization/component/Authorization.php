@@ -27,38 +27,38 @@ trait Authorization
 	private $permissions;
 
 
-	public function injectAuthorizationComponents(
-		Control\RolesControl $rolesControl,
-		Control\ResourcesControl $resourcesControl,
-		Control\PrivilegesControl $privilegesControl,
+	public function injectAuthorization(
+		Control\RolesControl $roles,
+		Control\ResourcesControl $resources,
+		Control\PrivilegesControl $privileges,
 		Control\PermissionsControl $permissions)
 	{
-		$this->roles = $rolesControl;
-		$this->resources = $resourcesControl;
-		$this->privileges = $privilegesControl;
+		$this->roles = $roles;
+		$this->resources = $resources;
+		$this->privileges = $privileges;
 		$this->permissions = $permissions;
 	}
 
 
-	protected function createComponentRolesControl(): Control\RolesControl
+	protected function createComponentRoles(): Control\RolesControl
 	{
 		return $this->roles;
 	}
 
 
-	protected function createComponentResourcesControl(): Control\ResourcesControl
+	protected function createComponentResources(): Control\ResourcesControl
 	{
 		return $this->resources;
 	}
 
 
-	protected function createComponentPrivilegesControl(): Control\PrivilegesControl
+	protected function createComponentPrivileges(): Control\PrivilegesControl
 	{
 		return $this->privileges;
 	}
 
 
-	protected function createComponentPermissionsControl(): Control\PermissionsControl
+	protected function createComponentPermissions(): Control\PermissionsControl
 	{
 		return $this->permissions;
 	}
