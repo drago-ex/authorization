@@ -73,11 +73,11 @@ class PrivilegesControl extends Base
 	{
 		try {
 			$values = $form->values;
-			$privilegeId = (int) $values->privilegeId;
+			$id = (int) $values->privilegeId;
 			$entity = $this->entity;
 
-			if ($privilegeId) {
-				$entity->setPrivilegeId($privilegeId);
+			if ($id) {
+				$entity->setPrivilegeId($id);
 				$message = 'Event updated.';
 				$type = Alert::INFO;
 
