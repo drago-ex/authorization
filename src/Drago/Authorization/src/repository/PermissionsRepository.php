@@ -10,7 +10,7 @@ declare(strict_types = 1);
 namespace Drago\Authorization\Repository;
 
 use Dibi\Connection;
-use Dibi\Fluent;
+use Dibi\Result;
 use Drago\Authorization\Authorizator;
 use Drago\Authorization\Entity;
 use Drago\Database;
@@ -45,6 +45,21 @@ class PermissionsRepository extends Database\Connect
 
 
 	/**
+	 * @throws \Dibi\Exception
+	 */
+	public function getAll(): Result
+	{
+		return $this->db
+			->query('
+				SELECT p.permissionId, p.allowed, r.name resource, p2.name privilege, r2.name role
+				FROM permissions p
+				    LEFT JOIN resources r ON p.resourceId = r.resourceId
+				    LEFT JOIN privileges p2 ON p.privilegeId = p2.privilegeId
+				    LEFT JOIN roles r2 ON p.roleId = r2.roleId');
+	}
+
+
+	/**
 	 * @return array|Entity\PermissionsEntity|null
 	 * @throws \Dibi\Exception
 	 */
@@ -56,10 +71,24 @@ class PermissionsRepository extends Database\Connect
 	}
 
 
-	public function rules(): Fluent
+	/**
+	 * @throws \Dibi\Exception
+	 */
+	public function findRoles(): Result
 	{
-		return $this->all()
-			->orderBy('allowed', 'roleId');
+		return $this->db->query('
+			SELECT * FROM roles WHERE roleId IN (SELECT DISTINCT roleId FROM permissions)'
+		);
+	}
+
+
+	/**
+	 * @throws \Dibi\Exception
+	 */
+	public function rules(): Result
+	{
+		return $this->db
+			->query('SELECT * FROM permissions GROUP BY allowed, roleId');
 	}
 
 
