@@ -76,11 +76,11 @@ class ResourcesControl extends Base
 	{
 		try {
 			$values = $form->values;
-			$resourceId = (int) $values->resourceId;
+			$id = (int) $values->resourceId;
 			$entity = $this->entity;
 
-			if ($resourceId) {
-				$entity->setResourceId($resourceId);
+			if ($id) {
+				$entity->setResourceId($id);
 				$message = 'Resource updated';
 				$type = Alert::INFO;
 			} else {
