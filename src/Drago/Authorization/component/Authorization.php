@@ -15,51 +15,51 @@ use Drago\Authorization\Control;
 trait Authorization
 {
 	/** @var Control\RolesControl */
-	private $roles;
+	private $rolesControl;
 
 	/** @var Control\ResourcesControl */
-	private $resources;
+	private $resourcesControl;
 
 	/** @var Control\PrivilegesControl */
-	private $privileges;
+	private $privilegesControl;
 
 	/** @var Control\PermissionsControl */
-	private $permissions;
+	private $permissionsControl;
 
 
 	public function injectAuthorization(
-		Control\RolesControl $roles,
-		Control\ResourcesControl $resources,
-		Control\PrivilegesControl $privileges,
-		Control\PermissionsControl $permissions)
+		Control\RolesControl $rolesControl,
+		Control\ResourcesControl $resourcesControl,
+		Control\PrivilegesControl $privilegesControl,
+		Control\PermissionsControl $permissionsControl)
 	{
-		$this->roles = $roles;
-		$this->resources = $resources;
-		$this->privileges = $privileges;
-		$this->permissions = $permissions;
+		$this->rolesControl = $rolesControl;
+		$this->resourcesControl = $resourcesControl;
+		$this->privilegesControl = $privilegesControl;
+		$this->permissionsControl = $permissionsControl;
 	}
 
 
-	protected function createComponentRoles(): Control\RolesControl
+	protected function createComponentRolesControl(): Control\RolesControl
 	{
-		return $this->roles;
+		return $this->rolesControl;
 	}
 
 
-	protected function createComponentResources(): Control\ResourcesControl
+	protected function createComponentResourcesControl(): Control\ResourcesControl
 	{
-		return $this->resources;
+		return $this->resourcesControl;
 	}
 
 
-	protected function createComponentPrivileges(): Control\PrivilegesControl
+	protected function createComponentPrivilegesControl(): Control\PrivilegesControl
 	{
-		return $this->privileges;
+		return $this->privilegesControl;
 	}
 
 
-	protected function createComponentPermissions(): Control\PermissionsControl
+	protected function createComponentPermissionsControl(): Control\PermissionsControl
 	{
-		return $this->permissions;
+		return $this->permissionsControl;
 	}
 }
