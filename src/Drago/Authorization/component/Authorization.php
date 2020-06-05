@@ -12,9 +12,6 @@ namespace Drago\Authorization;
 use Drago\Authorization\Control;
 
 
-/**
- * Dynamic processing of user roles.
- */
 trait Authorization
 {
 	/** @var Control\RolesControl */
@@ -26,15 +23,20 @@ trait Authorization
 	/** @var Control\PrivilegesControl */
 	private $privileges;
 
+	/** @var Control\PermissionsControl */
+	private $permissions;
+
 
 	public function injectAuthorizationComponents(
 		Control\RolesControl $rolesControl,
 		Control\ResourcesControl $resourcesControl,
-		Control\PrivilegesControl $privilegesControl)
+		Control\PrivilegesControl $privilegesControl,
+		Control\PermissionsControl $permissions)
 	{
 		$this->roles = $rolesControl;
 		$this->resources = $resourcesControl;
 		$this->privileges = $privilegesControl;
+		$this->permissions = $permissions;
 	}
 
 
@@ -53,5 +55,11 @@ trait Authorization
 	protected function createComponentPrivilegesControl(): Control\PrivilegesControl
 	{
 		return $this->privileges;
+	}
+
+
+	protected function createComponentPermissionsControl(): Control\PermissionsControl
+	{
+		return $this->permissions;
 	}
 }
