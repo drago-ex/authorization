@@ -31,6 +31,9 @@ class RolesControl extends Base
 	}
 
 
+	/**
+	 * @throws \Dibi\Exception
+	 */
 	public function render(): void
 	{
 		$template = $this->template;
@@ -60,6 +63,9 @@ class RolesControl extends Base
 	}
 
 
+	/**
+	 * @throws \Dibi\Exception
+	 */
 	private function factoryItems(): array
 	{
 		$arr = [];
@@ -83,6 +89,9 @@ class RolesControl extends Base
 	}
 
 
+	/**
+	 * @throws \Dibi\Exception
+	 */
 	protected function createComponentFactory(): UI\Form
 	{
 		$form = new UI\Form;
@@ -114,11 +123,11 @@ class RolesControl extends Base
 	{
 		try {
 			$values = $form->values;
-			$roleId = (int) $values->roleId;
+			$id = (int) $values->roleId;
 			$entity = $this->entity;
 
-			if ($roleId) {
-				$entity->setRoleId($roleId);
+			if ($id) {
+				$entity->setRoleId($id);
 				$message = 'Role updated.';
 				$type = Alert::INFO;
 
