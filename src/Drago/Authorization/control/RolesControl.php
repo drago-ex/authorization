@@ -143,7 +143,7 @@ class RolesControl extends Base implements Acl
 						$this->redrawPresenter($this->snippetFactory);
 						$this->redrawPresenter($this->snippetRecords);
 						$this->redrawPresenter($this->snippetMessage);
-						//$this->presenter->redrawControl('permissions');
+						$this->redrawPresenter($this->snippetPermissions);
 					}
 				}
 			} catch (\Exception $e) {
@@ -220,7 +220,7 @@ class RolesControl extends Base implements Acl
 				$this->redrawPresenter($this->snippetFactory);
 				$this->redrawPresenter($this->snippetRecords);
 				$this->redrawPresenter($this->snippetMessage);
-				//$this->presenter->redrawControl('permissions');
+				$this->redrawPresenter($this->snippetPermissions);
 			}
 
 		} catch (\Exception $e) {
