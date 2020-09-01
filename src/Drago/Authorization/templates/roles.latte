@@ -1,0 +1,18 @@
+<form n:name="factory" class="ajax bg-lighten rounded p-3 mb-3">
+	{snippet errors}
+		<ul n:if="$form->hasErrors()" class="errors">
+			<li n:foreach="$form->errors as $error">{$error}</li>
+		</ul>
+	{/snippet}
+	<div class="form-row">
+		<div class="form-group col-md-5">
+			<input n:name="name" class="form-control">
+		</div>
+		<div class="form-group col-md-5">
+			<select n:name="parent" class="form-control"></select>
+		</div>
+		<div class="form-group col-md-2">
+			<input type="submit" n:name="send" class="btn btn-custom">
+		</div>
+	</div>
+</form>

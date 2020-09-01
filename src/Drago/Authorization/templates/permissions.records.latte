@@ -1,0 +1,39 @@
+{varType Drago\Authorization\Entity\RolesEntity $role}
+{foreach $roles as $role}
+<div class="content-box mb-3 bg-white shadow-sm">
+	<h3 class="mb-3 text-custom">Role: {$role->name}</h3>
+	<div class="table-responsive-sm scrollbar-table">
+		<table class="table table-hover table-light table-sm">
+			<thead>
+			<tr>
+				<th scope="col">Resource</th>
+				<th scope="col">Action / signal</th>
+				<th scope="col">Permission</th>
+				<th scope="col">Action</th>
+			</tr>
+			</thead>
+			<tbody>
+			{varType Drago\Authorization\Entity\PermissionsEntity $permission}
+			<tr n:foreach="$permissions as $permission" n:if="$role->name == $permission->role">
+				<td style="width: 25%">{$permission->resource}</td>
+				<td style="width: 25%">{$permission->privilege}</td>
+				<td style="width: 25%">{$permission->allowed}</td>
+				<td style="width: 25%; font-size: 1.113em">
+					<a n:href="edit!, $permission->permissionId" class="ajax m-1 text-custom text-decoration-none">
+						<i class="far fa-edit"></i>
+					</a>
+					{if $deleteId === $permission->permissionId}
+						<a n:href="deleteConfirm!, 0, $permission->permissionId" class="ajax m-1 text-secondary text-decoration-none"><i class="fas fa-times"></i></a>
+						<a n:href="deleteConfirm!, 1, $permission->permissionId" class="ajax m-1 text-danger text-decoration-none"><i class="fas fa-check"></i></a>
+					{else}
+						<a n:href="delete!, $permission->permissionId" class="ajax m-1 text-custom text-decoration-none">
+							<i class="far fa-trash-alt"></i>
+						</a>
+					{/if}
+				</td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+{/foreach}

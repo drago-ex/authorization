@@ -3,59 +3,32 @@
 declare(strict_types = 1);
 
 /**
- * Drago Extension
+ * Drago AclExtension
  * Package built on Nette Framework
  */
 
 namespace Drago\Authorization\Repository;
 
-use Drago\Authorization\Authorizator;
 use Drago\Authorization\Entity\RolesEntity;
-use Drago\Database;
+use Drago\Authorization\Auth;
+use Drago\Database\Connect;
+use Drago\Database\Repository;
 
 
-class RolesRepository extends Database\Connect
+class RolesRepository extends Connect
 {
-	use Database\Repository;
+	use Repository;
 
-	/** @var string */
-	private $table = RolesEntity::TABLE;
-
-	/** @var string */
-	private $primaryId = RolesEntity::ROLE_ID;
-
-
-	/**
-	 * @return array[]|RolesEntity[]
-	 * @throws \Dibi\Exception
-	 */
-	public function getAll()
-	{
-		return $this->all()->execute()
-			->setRowClass(RolesEntity::class)
-			->fetchAll();
-	}
-
-
-	/**
-	 * @return array|RolesEntity|null
-	 * @throws \Dibi\Exception
-	 */
-	public function find(int $id)
-	{
-		return $this->discoverId($id)
-			->setRowClass(RolesEntity::class)
-			->fetch();
-	}
+	public string $table = RolesEntity::TABLE;
+	public string $columnId = RolesEntity::ROLE_ID;
 
 
 	/**
 	 * @throws \Exception
 	 */
-	public function isAllowed(RolesEntity $row): bool
+	public function isAllowed(string $role): bool
 	{
-		$role = $row->getName();
-		if ($role === Authorizator::ROLE_GUEST || $role === Authorizator::ROLE_MEMBER || $role === Authorizator::ROLE_ADMIN) {
+		if ($role === Auth::ROLE_GUEST || $role === Auth::ROLE_MEMBER || $role === Auth::ROLE_ADMIN) {
 			throw new \Exception('The record is not allowed to be edited or deleted.', 1001);
 		}
 		return true;
@@ -63,7 +36,7 @@ class RolesRepository extends Database\Connect
 
 
 	/**
-	 * @return array|\Dibi\Row|null
+	 * @return array|RolesEntity|null
 	 * @throws \Dibi\Exception
 	 * @throws \Exception
 	 */
@@ -71,18 +44,9 @@ class RolesRepository extends Database\Connect
 	{
 		$row = $this->discover(RolesEntity::PARENT, $id)->fetch();
 		if ($row) {
-			throw new \Exception('The record can not be deleted, you must first delete the records that are associated with it.', 1002);
+			throw new \Exception('The record can not be deleted, 
+			you must first delete the records that are associated with it.', 1002);
 		}
 		return $row;
-	}
-
-
-	/**
-	 * @throws \Dibi\Exception
-	 */
-	public function save(RolesEntity $entity): void
-	{
-		$id = $entity->getRoleId();
-		$this->put($entity, $id);
 	}
 }

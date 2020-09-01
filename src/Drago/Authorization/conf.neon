@@ -1,0 +1,24 @@
+# acl extension
+services:
+	- Drago\Authorization\Entity\RolesEntity
+	- Drago\Authorization\Entity\ResourcesEntity
+	- Drago\Authorization\Entity\PrivilegesEntity
+	- Drago\Authorization\Entity\PermissionsEntity
+
+	- Drago\Authorization\Repository\RolesRepository
+	- Drago\Authorization\Repository\ResourcesRepository
+	- Drago\Authorization\Repository\PrivilegesRepository
+	- Drago\Authorization\Repository\PermissionsRepository(@dibi.connection, @cache.acl.extension)
+
+	- Drago\Authorization\Control\RolesControl
+	- Drago\Authorization\Control\ResourcesControl
+	- Drago\Authorization\Control\PrivilegesControl
+	- Drago\Authorization\Control\PermissionsControl
+
+	# cache extension
+	cache.acl: Nette\Caching\Cache
+	cache.acl.extension: {class: Nette\Caching\Cache, arguments: [@Nette\Caching\IStorage, 'drago.aclCache'], autowired: no}
+
+	# registration authorizator
+	authorizator: Drago\Authorization\Authorizator(@cache.acl.extension)
+	drago.authorizator: @authorizator::create

@@ -3,67 +3,34 @@
 declare(strict_types = 1);
 
 /**
- * Drago Extension
+ * Drago AclExtension
  * Package built on Nette Framework
  */
 
 namespace Drago\Authorization\Repository;
 
-use Dibi\Fluent;
-use Drago\Authorization\Authorizator;
-use Drago\Authorization\Entity;
-use Drago\Database;
+use Drago\Authorization\Auth;
+use Drago\Authorization\Entity\PrivilegesEntity;
+use Drago\Database\Connect;
+use Drago\Database\Repository;
 
 
-class PrivilegesRepository extends Database\Connect
+class PrivilegesRepository extends Connect
 {
-	use Database\Repository;
+	use Repository;
 
-	/** @var string */
-	private $table = Entity\PrivilegesEntity::TABLE;
-
-	/** @var string */
-	private $primaryId = Entity\PrivilegesEntity::PRIVILEGE_ID;
-
-
-	public function getAll(): Fluent
-	{
-		return $this->all()
-			->orderBy('name', 'asc');
-	}
-
-
-	/**
-	 * @return array|Entity\PrivilegesEntity|null
-	 * @throws \Dibi\Exception
-	 */
-	public function find(int $id)
-	{
-		return $this->discoverId($id)
-			->setRowClass(Entity\PrivilegesEntity::class)
-			->fetch();
-	}
+	public string $table = PrivilegesEntity::TABLE;
+	public string $columnId = PrivilegesEntity::PRIVILEGE_ID;
 
 
 	/**
 	 * @throws \Exception
 	 */
-	public function isAllowed(Entity\PrivilegesEntity $row): bool
+	public function isAllowed(string $privilege): bool
 	{
-		$role = $row->getName();
-		if ($role === Authorizator::PRIVILEGE_ALL) {
+		if ($privilege === Auth::PRIVILEGE_ALL) {
 			throw new \Exception('The record is not allowed to be edited or deleted.', 1001);
 		}
 		return true;
-	}
-
-
-	/**
-	 * @throws \Dibi\Exception
-	 */
-	public function save(Entity\PrivilegesEntity $entity): void
-	{
-		$id = $entity->getPrivilegeId();
-		$this->put($entity, $id);
 	}
 }

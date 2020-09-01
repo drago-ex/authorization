@@ -3,7 +3,7 @@
 declare(strict_types = 1);
 
 /**
- * Drago Extension
+ * Drago AclExtension
  * Package built on Nette Framework
  */
 
@@ -11,27 +11,23 @@ namespace Drago\Authorization\Repository;
 
 use Dibi\Connection;
 use Dibi\Result;
-use Drago\Authorization\Authorizator;
-use Drago\Authorization\Entity;
-use Drago\Database;
-use Nette\Caching;
+use Drago\Authorization\Auth;
+use Drago\Authorization\Entity\PermissionsEntity;
+use Drago\Database\Connect;
+use Drago\Database\Repository;
+use Nette\Caching\Cache;
 
 
-class PermissionsRepository extends Database\Connect
+class PermissionsRepository extends Connect
 {
-	use Database\Repository;
+	use Repository;
 
-	/** @var Caching\Cache */
-	public $cache;
-
-	/** @var string */
-	private $table = Entity\PermissionsEntity::TABLE;
-
-	/** @var string */
-	private $primaryId = Entity\PermissionsEntity::PERMISSION_ID;
+	public Cache $cache;
+	public string  $table = PermissionsEntity::TABLE;
+	public string $columnId = PermissionsEntity::PERMISSION_ID;
 
 
-	public function __construct(Connection $db, Caching\Cache $cache)
+	public function __construct(Connection $db, Cache $cache)
 	{
 		parent::__construct($db);
 		$this->cache = $cache;
@@ -40,7 +36,7 @@ class PermissionsRepository extends Database\Connect
 
 	private function removeCache(): void
 	{
-		$this->cache->remove(Authorizator::ACL_CACHE);
+		$this->cache->remove(Auth::ACL_CACHE);
 	}
 
 
@@ -60,55 +56,12 @@ class PermissionsRepository extends Database\Connect
 
 
 	/**
-	 * @return array|Entity\PermissionsEntity|null
 	 * @throws \Dibi\Exception
 	 */
-	public function find(int $id)
-	{
-		return $this->discoverId($id)
-			->setRowClass(Entity\PermissionsEntity::class)
-			->fetch();
-	}
-
-
-	/**
-	 * @throws \Dibi\Exception
-	 */
-	public function findRoles(): Result
+	public function getRoles(): Result
 	{
 		return $this->db->query('
 			SELECT * FROM roles WHERE roleId IN (SELECT DISTINCT roleId FROM permissions)'
 		);
-	}
-
-
-	/**
-	 * @throws \Dibi\Exception
-	 */
-	public function rules(): Result
-	{
-		return $this->db
-			->query('SELECT * FROM permissions GROUP BY allowed, roleId');
-	}
-
-
-	/**
-	 * @throws \Dibi\Exception
-	 */
-	public function delete(int $id): void
-	{
-		$this->eraseId($id);
-		$this->removeCache();
-	}
-
-
-	/**
-	 * @throws \Dibi\Exception
-	 */
-	public function save(Entity\PermissionsEntity $entity): void
-	{
-		$id = $entity->getPermissionId();
-		$this->put($entity, $id);
-		$this->removeCache();
 	}
 }

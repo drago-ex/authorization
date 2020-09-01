@@ -4,43 +4,14 @@ declare(strict_types=1);
 
 namespace Drago\Authorization\Entity;
 
-/**
- * @property int $resourceId
- * @property string $name
- */
-class ResourcesEntity extends \Drago\Database\Entity
+final class ResourcesEntity extends \Drago\Database\Entity
 {
-	public const TABLE = 'resources';
-	public const RESOURCE_ID = 'resourceId';
-	public const NAME = 'name';
+	use \Nette\SmartObject;
 
-	/** @var int */
-	public $resourceId;
+	const TABLE = 'resources';
+	const RESOURCE_ID = 'resourceId';
+	const NAME = 'name';
 
-	/** @var string */
-	public $name;
-
-
-	public function getResourceId(): ?int
-	{
-		return $this->resourceId;
-	}
-
-
-	public function setResourceId(int $var)
-	{
-		$this['resourceId'] = $var;
-	}
-
-
-	public function getName(): string
-	{
-		return $this->name;
-	}
-
-
-	public function setName(string $var)
-	{
-		$this['name'] = $var;
-	}
+	public int $resourceId;
+	public string $name;
 }
