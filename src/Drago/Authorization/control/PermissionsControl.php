@@ -120,6 +120,7 @@ class PermissionsControl extends Base implements Acl
 		$permission ?: $this->error();
 		if ($confirm === 1) {
 			$this->permissionsRepository->eraseId($id);
+			$this->permissionsRepository->removeCache();
 			$this->flashMessagePresenter('Permission removed.', Alert::DANGER);
 			if ($this->isAjax()) {
 				$this->redrawPresenter($this->snippetFactory);
@@ -195,6 +196,7 @@ class PermissionsControl extends Base implements Acl
 		$form->reset();
 		$this->permissionsRepository->put($values->toArray());
 		$message = $values->roleId ? 'Permission was updated.' : 'Permission added.';
+		$this->permissionsRepository->removeCache();
 		$this->flashMessagePresenter($message);
 		if ($this->isAjax()) {
 			$this->redrawPresenter($this->snippetFactory);
