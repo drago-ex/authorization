@@ -34,7 +34,10 @@ class PermissionsRepository extends Connect
 	}
 
 
-	private function removeCache(): void
+	/**
+	 * Remove ACL cache.
+	 */
+	public function removeCache(): void
 	{
 		$this->cache->remove(Auth::ACL_CACHE);
 	}
