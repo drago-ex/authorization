@@ -43,10 +43,16 @@ trait Acl
 	 */
 	public function injectPermissions(Presenter $presenter, User $user): void
 	{
-		$presenter->onStartup[] = function () use ($presenter) {
+		$presenter->onStartup[] = function () use ($presenter, $user) {
 			$signal = $presenter->getSignal();
-			if (!$this->getUser()->isAllowed($presenter->name, $signal[1] ?? $presenter->action)) {
-				$this->error('Forbidden', 403);
+			if ((!empty($signal[0])) && isset($signal[1])) {
+				if (!$user->isAllowed($presenter->getName(), $signal[0])) {
+					$this->error('Forbidden', 403);
+				}
+			} else {
+				if (!$user->isAllowed($presenter->getName(), $signal[1] ?? $presenter->getAction())) {
+					$this->error('Forbidden', 403);
+				}
 			}
 		};
 	}
