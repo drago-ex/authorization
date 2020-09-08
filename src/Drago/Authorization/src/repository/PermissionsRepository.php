@@ -54,7 +54,7 @@ class PermissionsRepository extends Connect
 				FROM permissions p
 				    LEFT JOIN resources r ON p.resourceId = r.resourceId
 				    LEFT JOIN privileges p2 ON p.privilegeId = p2.privilegeId
-				    LEFT JOIN roles r2 ON p.roleId = r2.roleId');
+				    LEFT JOIN roles r2 ON p.roleId = r2.roleId ORDER BY privilege');
 	}
 
 
