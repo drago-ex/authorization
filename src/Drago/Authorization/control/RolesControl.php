@@ -11,6 +11,7 @@ namespace Drago\Authorization\Control;
 
 use Drago\Application\UI\Alert;
 use Drago\Authorization\Entity\RolesEntity;
+use Drago\Authorization\Repository\PermissionsRepository;
 use Drago\Authorization\Repository\RolesRepository;
 use Drago\Utils\ExtraArrayHash;
 use Nette\Application\UI\Form;
@@ -22,12 +23,14 @@ class RolesControl extends Base implements Acl
 	private string $snippetFactory = 'roles';
 	private string $snippetRecords = 'rolesRecords';
 	private RolesRepository $repository;
+	private PermissionsRepository $permissionsRepository;
 	public int $deleteId = 0;
 
 
-	public function __construct(RolesRepository $repository)
+	public function __construct(RolesRepository $repository, PermissionsRepository $permissionsRepository)
 	{
 		$this->repository = $repository;
+		$this->permissionsRepository = $permissionsRepository;
 	}
 
 
@@ -138,6 +141,7 @@ class RolesControl extends Base implements Acl
 				$parent = $this->repository->findParent($id);
 				if (!$parent && $this->repository->isAllowed($role->name)) {
 					$this->repository->eraseId($id);
+					$this->permissionsRepository->removeCache();
 					$this->flashMessagePresenter('Role deleted.', Alert::DANGER);
 					if ($this->isAjax()) {
 						$this->redrawPresenter($this->snippetFactory);
@@ -209,6 +213,7 @@ class RolesControl extends Base implements Acl
 		try {
 			$form->reset();
 			$this->repository->put($arrayHash->toArray());
+			$this->permissionsRepository->removeCache();
 
 			/** @var SelectBox $parent */
 			$parent = $form['parent'];
