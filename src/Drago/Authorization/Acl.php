@@ -15,6 +15,7 @@ use Drago\Authorization\Control\ResourcesControl;
 use Drago\Authorization\Control\RolesControl;
 use Nette\Application\UI\Presenter;
 use Nette\Security\User;
+use Tracy\Debugger;
 
 
 trait Acl
