@@ -11,6 +11,7 @@ namespace Drago\Authorization\Control;
 
 use Drago\Application\UI\Alert;
 use Drago\Authorization\Entity\PrivilegesEntity;
+use Drago\Authorization\Repository\PermissionsRepository;
 use Drago\Authorization\Repository\PrivilegesRepository;
 use Drago\Utils\ExtraArrayHash;
 use Nette\Application\UI\Form;
@@ -21,12 +22,14 @@ class PrivilegesControl extends Base implements Acl
 	private string $snippetFactory = 'privileges';
 	private string $snippetRecords = 'privilegesRecords';
 	private PrivilegesRepository $repository;
+	private PermissionsRepository $permissionsRepository;
 	public int $deleteId = 0;
 
 
-	public function __construct(PrivilegesRepository $repository)
+	public function __construct(PrivilegesRepository $repository, PermissionsRepository $permissionsRepository)
 	{
 		$this->repository = $repository;
+		$this->permissionsRepository = $permissionsRepository;
 	}
 
 
@@ -112,6 +115,7 @@ class PrivilegesControl extends Base implements Acl
 			try {
 				if ($this->repository->isAllowed($privilege->name)) {
 					$this->repository->eraseId($id);
+					$this->permissionsRepository->removeCache();
 					$this->flashMessagePresenter('Privilege deleted.', Alert::DANGER);
 					if ($this->isAjax()) {
 						$this->redrawPresenter($this->snippetFactory);
@@ -163,6 +167,7 @@ class PrivilegesControl extends Base implements Acl
 		try {
 			$form->reset();
 			$this->repository->put($arrayHash->toArray());
+			$this->permissionsRepository->removeCache();
 
 			$message = $values->privilegeId ? 'Privilege updated.' : 'Privilege inserted.';
 			$this->flashMessagePresenter($message);
