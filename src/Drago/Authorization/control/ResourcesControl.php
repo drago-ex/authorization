@@ -11,6 +11,7 @@ namespace Drago\Authorization\Control;
 
 use Drago\Application\UI\Alert;
 use Drago\Authorization\Entity\ResourcesEntity;
+use Drago\Authorization\Repository\PermissionsRepository;
 use Drago\Authorization\Repository\ResourcesRepository;
 use Drago\Utils\ExtraArrayHash;
 use Nette\Application\UI\Form;
@@ -21,12 +22,14 @@ class ResourcesControl extends Base implements Acl
 	private string $snippetFactory = 'resources';
 	private string $snippetRecords = 'resourcesRecords';
 	private ResourcesRepository $repository;
+	private PermissionsRepository $permissionsRepository;
 	public int $deleteId = 0;
 
 
-	public function __construct(ResourcesRepository $repository)
+	public function __construct(ResourcesRepository $repository, PermissionsRepository $permissionsRepository)
 	{
 		$this->repository = $repository;
+		$this->permissionsRepository = $permissionsRepository;
 	}
 
 
@@ -105,6 +108,7 @@ class ResourcesControl extends Base implements Acl
 		if ($confirm === 1) {
 			try {
 				$this->repository->eraseId($id);
+				$this->permissionsRepository->removeCache();
 				$this->flashMessagePresenter('Resource deleted.', Alert::DANGER);
 				if ($this->isAjax()) {
 					$this->redrawPresenter($this->snippetFactory);
@@ -157,6 +161,7 @@ class ResourcesControl extends Base implements Acl
 		try {
 			$form->reset();
 			$this->repository->put($arrayHash->toArray());
+			$this->permissionsRepository->removeCache();
 
 			$message = $values->resourceId ? 'Resource updated.' : 'Resource inserted.';
 			$this->flashMessagePresenter($message);
