@@ -1,0 +1,42 @@
+{varType Drago\Authorization\Entity\RolesEntity $role}
+{varType Drago\Authorization\Entity\PermissionsViewEntity $permission}
+
+{foreach $roles as $role}
+	<div class="content-box mb-3 bg-white shadow-sm">
+
+		<h3 class="mb-3 text-custom">Role: {$role->name}</h3>
+		<div class="table-responsive-sm">
+
+			<table class="table table-hover table-light table-sm">
+
+				<thead>
+				<tr>
+					<th scope="col">Resource</th>
+					<th scope="col">Action / signal</th>
+					<th scope="col">Permission</th>
+					<th scope="col">Action</th>
+				</tr>
+				</thead>
+
+				<tbody>
+				<tr n:foreach="$permissions as $permission" n:if="$role->name == $permission->role">
+					<td>{$permission->resource}</td>
+					<td>{$permission->privilege}</td>
+					<td>{$permission->allowed}</td>
+					<td>
+						<a n:href="edit!, $permission->id" class="ajax">Edit</a>
+						{if $deleteId === $permission->id}
+							<a n:href="deleteConfirm!, 0, $permission->id" class="ajax">No</a>
+							<a n:href="deleteConfirm!, 1, $permission->id" class="ajax">Yes</a>
+						{else}
+							<a n:href="delete!, $permission->id" class="ajax">Delete</a>
+						{/if}
+					</td>
+				</tr>
+				</tbody>
+
+			</table>
+
+		</div>
+	</div>
+{/foreach}

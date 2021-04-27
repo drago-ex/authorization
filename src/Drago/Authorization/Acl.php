@@ -1,84 +1,67 @@
 <?php
 
-declare(strict_types = 1);
-
 /**
- * Drago AclExtension
+ * Drago Extension
  * Package built on Nette Framework
  */
 
+declare(strict_types=1);
+
 namespace Drago\Authorization;
 
-use Drago\Authorization\Control\PermissionsControl;
-use Drago\Authorization\Control\PrivilegesControl;
-use Drago\Authorization\Control\ResourcesControl;
-use Drago\Authorization\Control\RolesControl;
-use Nette\Application\UI\Presenter;
-use Nette\Security\User;
-use Tracy\Debugger;
+use Dibi\Exception;
+use Drago\Authorization\Repository\PermissionsViewRepository;
+use Drago\Authorization\Repository\ResourcesRepository;
+use Drago\Authorization\Repository\RolesRepository;
+use Nette\Caching\Cache;
+use Nette\Security\Permission;
+use Throwable;
 
 
-trait Acl
+/**
+ * Managing user permissions.
+ */
+class Acl
 {
-	private RolesControl $rolesControl;
-	private ResourcesControl $resourcesControl;
-	private PrivilegesControl $privilegesControl;
-	private PermissionsControl $permissionsControl;
-
-
-	public function injectAcl(
-		RolesControl $rolesControl,
-		ResourcesControl $resourcesControl,
-		PrivilegesControl $privilegesControl,
-		PermissionsControl $permissionsControl
+	public function __construct(
+		private Cache $cache,
+		private RolesRepository $roles,
+		private ResourcesRepository $resources,
+		private PermissionsViewRepository $permissions,
 	) {
-		$this->rolesControl = $rolesControl;
-		$this->resourcesControl = $resourcesControl;
-		$this->privilegesControl = $privilegesControl;
-		$this->permissionsControl = $permissionsControl;
 	}
 
 
 	/**
-	 * Checks for requirements such as authorization.
+	 * @throws Exception
+	 * @throws Throwable
 	 */
-	public function injectPermissions(Presenter $presenter, User $user): void
+	public function create(): Permission
 	{
-		$presenter->onStartup[] = function () use ($presenter, $user) {
-			$signal = $presenter->getSignal();
-			if ((!empty($signal[0])) && isset($signal[1])) {
-				if (!$user->isAllowed($presenter->getName(), $signal[0])) {
-					$this->error('Forbidden', 403);
-				}
-			} else {
-				if (!$user->isAllowed($presenter->getName(), $signal[1] ?? $presenter->getAction())) {
-					$this->error('Forbidden', 403);
-				}
+		$acl = new Permission;
+		if (!$this->cache->load(Conf::CACHE)) {
+			foreach ($this->roles->getAll() as $role) {
+				$parent = $this->roles->findByParent($role->parent);
+				$acl->addRole($role->name, $parent->name ?? null);
 			}
-		};
-	}
 
+			foreach ($this->resources->getAll() as $resource) {
+				$acl->addResource($resource->name);
+			}
 
-	protected function createComponentRolesControl():RolesControl
-	{
-		return $this->rolesControl;
-	}
+			foreach ($this->permissions->getAll() as $row) {
+				$row->privilege === Conf::PRIVILEGE_ALL ? $row->privilege = Permission::ALL : $row->privilege;
+				$acl->{$row->allowed === 'yes' ? 'allow' : 'deny'} ($row->role, $row->resource, $row->privilege);
+			}
 
+			$acl->addRole(Conf::ROLE_ADMIN, Conf::ROLE_MEMBER);
+			$acl->allow(Conf::ROLE_ADMIN, Permission::ALL, Permission::ALL);
+			$this->cache->save(Conf::CACHE, $acl);
+		}
 
-	protected function createComponentResourcesControl(): ResourcesControl
-	{
-		return $this->resourcesControl;
-	}
-
-
-	protected function createComponentPrivilegesControl(): PrivilegesControl
-	{
-		return $this->privilegesControl;
-	}
-
-
-	protected function createComponentPermissionsControl(): PermissionsControl
-	{
-		return $this->permissionsControl;
+		if ($this->cache->load(Conf::CACHE)) {
+			$acl = $this->cache->load(Conf::CACHE);
+		}
+		return $acl;
 	}
 }
