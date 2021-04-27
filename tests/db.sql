@@ -82,6 +82,11 @@ CREATE TABLE `roles` (
     UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- ---- insert values to roles table:
+INSERT INTO `roles` (`id`, `name`, `parent`) VALUES
+(1,	'guest',	0),
+(2,	'member',	1);
+
 -- ---- create trigger for roles table:
 DELIMITER ;;
 
