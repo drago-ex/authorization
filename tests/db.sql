@@ -63,6 +63,10 @@ CREATE TABLE `privileges` (
     UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- ---- insert values to privileges table:
+INSERT INTO `privileges` (`id`, `name`) VALUES
+(1,	'*all');
+
 -- ---- create resources table:
 DROP TABLE IF EXISTS `resources`;
 CREATE TABLE `resources` (
