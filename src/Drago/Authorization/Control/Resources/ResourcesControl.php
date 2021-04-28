@@ -13,7 +13,6 @@ use Dibi\Exception;
 use Drago\Application\UI\Alert;
 use Drago\Authorization\Conf;
 use Drago\Authorization\Data\ResourcesData;
-use Drago\Authorization\Entity\ResourcesEntity;
 use Drago\Authorization\Repository\ResourcesRepository;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
@@ -21,7 +20,7 @@ use Nette\Caching\Cache;
 use Nette\Forms\Controls\BaseControl;
 
 
-class ResourcesBase extends Component implements Base
+class ResourcesControl extends Component implements Base
 {
 	private string $snippetFactory = 'resources';
 	private string $snippetRecords = 'resourcesRecords';

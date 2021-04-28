@@ -10,10 +10,10 @@ declare(strict_types=1);
 namespace Drago\Authorization\DI;
 
 use Drago\Authorization\Acl;
-use Drago\Authorization\Control\PermissionsBase;
-use Drago\Authorization\Control\PrivilegesBase;
-use Drago\Authorization\Control\ResourcesBase;
-use Drago\Authorization\Control\RolesBase;
+use Drago\Authorization\Control\PermissionsControl;
+use Drago\Authorization\Control\PrivilegesControl;
+use Drago\Authorization\Control\ResourcesControl;
+use Drago\Authorization\Control\RolesControl;
 use Drago\Authorization\Repository\PermissionsRepository;
 use Drago\Authorization\Repository\PermissionsRolesViewRepository;
 use Drago\Authorization\Repository\PermissionsViewRepository;
@@ -38,19 +38,19 @@ class AuthorizationExtension extends CompilerExtension
 
 		/** Authorization control. */
 		$builder->addDefinition($this->prefix('rolesControl'))
-			->setFactory(RolesBase::class)
+			->setFactory(RolesControl::class)
 			->setArguments(['@authorization.cache']);
 
 		$builder->addDefinition($this->prefix('resourceControl'))
-			->setFactory(ResourcesBase::class)
+			->setFactory(ResourcesControl::class)
 			->setArguments(['@authorization.cache']);
 
 		$builder->addDefinition($this->prefix('privilegeControl'))
-			->setFactory(PrivilegesBase::class)
+			->setFactory(PrivilegesControl::class)
 			->setArguments(['@authorization.cache']);
 
 		$builder->addDefinition($this->prefix('permissionControl'))
-			->setFactory(PermissionsBase::class)
+			->setFactory(PermissionsControl::class)
 			->setArguments(['@authorization.cache']);
 
 		/** Authorization repository. */

@@ -27,7 +27,7 @@ use Nette\Caching\Cache;
 use Nette\Forms\Controls\BaseControl;
 
 
-class PermissionsBase extends Component implements Base
+class PermissionsControl extends Component implements Base
 {
 	public string $snippetFactory = 'permissions';
 	public string $snippetRecords = 'permissionsRecords';

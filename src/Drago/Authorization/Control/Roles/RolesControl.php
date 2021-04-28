@@ -23,7 +23,7 @@ use Nette\Forms\Controls\BaseControl;
 use Nette\Forms\Controls\SelectBox;
 
 
-class RolesBase extends Component implements Base
+class RolesControl extends Component implements Base
 {
 	public string $snippetFactory = 'roles';
 	public string $snippetRecords = 'rolesRecords';

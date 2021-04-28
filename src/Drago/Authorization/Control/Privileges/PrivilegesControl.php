@@ -20,7 +20,7 @@ use Nette\Caching\Cache;
 use Nette\Forms\Controls\BaseControl;
 
 
-class PrivilegesBase extends Component implements Base
+class PrivilegesControl extends Component implements Base
 {
 	private string $snippetFactory = 'privileges';
 	private string $snippetRecords = 'privilegesRecords';
