@@ -50,7 +50,7 @@ class Acl
 			}
 
 			foreach ($this->permissions->getAll() as $row) {
-				$row->privilege === Conf::PRIVILEGE_ALL ? $row->privilege = Permission::ALL : $row->privilege;
+				$row->privilege = $row->privilege === Conf::PRIVILEGE_ALL ? Permission::ALL : $row->privilege;
 				$acl->{$row->allowed === 'yes' ? 'allow' : 'deny'} ($row->role, $row->resource, $row->privilege);
 			}
 
