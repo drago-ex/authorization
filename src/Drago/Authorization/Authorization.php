@@ -89,7 +89,7 @@ trait Authorization
 			'rolesControl',
 			'resourcesControl',
 			'privilegesControl',
-			'permissionsControl'
+			'permissionsControl',
 		];
 
 		foreach ($components as $component) {
