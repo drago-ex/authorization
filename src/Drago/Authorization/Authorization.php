@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace Drago\Authorization;
 
-use Drago\Application\UI\ExtraControl;
 use Drago\Authorization\Control\PermissionsControl;
 use Drago\Authorization\Control\PrivilegesControl;
 use Drago\Authorization\Control\ResourcesControl;
@@ -109,7 +108,7 @@ trait Authorization
 			if ($formId === $factoryId) {
 				$factory->reset();
 
-				/** @var ExtraControl $this */
+				/** @var Presenter $this */
 				if ($this->isAjax()) {
 					$this->redrawControl($this->{$component}->snippetFactory);
 				}
