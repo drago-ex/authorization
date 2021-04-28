@@ -1,0 +1,17 @@
+<script>
+	$(function() {
+		$.nette.ext('nette.ajax.reset.factory', {
+			load: function() {
+				$('.reset-form-factory').on('click', function () {
+					const factoryId = $(this).closest('form').attr('id');
+					$.nette.ajax({
+						url: {link reset!},
+						data: {
+							"resetControl-factoryId": factoryId
+				        }
+					});
+				});
+			}
+		});
+	});
+</script>

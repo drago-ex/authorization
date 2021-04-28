@@ -11,9 +11,9 @@ namespace Drago\Authorization;
 
 use Drago\Authorization\Control\PermissionsControl;
 use Drago\Authorization\Control\PrivilegesControl;
+use Drago\Authorization\Control\ResetControl;
 use Drago\Authorization\Control\ResourcesControl;
 use Drago\Authorization\Control\RolesControl;
-use Nette\Application\UI\Form;
 use Nette\Application\UI\Presenter;
 use Nette\Security\User;
 
@@ -24,18 +24,21 @@ trait Authorization
 	private ResourcesControl $resourcesControl;
 	private PrivilegesControl $privilegesControl;
 	private PermissionsControl $permissionsControl;
+	private ResetControl $resetControl;
 
 
 	public function injectAcl(
 		RolesControl $rolesControl,
 		ResourcesControl $resourcesControl,
 		PrivilegesControl $privilegesControl,
-		PermissionsControl $permissionsControl
+		PermissionsControl $permissionsControl,
+		ResetControl $resetControl,
 	) {
 		$this->rolesControl = $rolesControl;
 		$this->resourcesControl = $resourcesControl;
 		$this->privilegesControl = $privilegesControl;
 		$this->permissionsControl = $permissionsControl;
+		$this->resetControl = $resetControl;
 	}
 
 
@@ -83,36 +86,8 @@ trait Authorization
 	}
 
 
-	public function handleReset($factoryId): void
+	protected function createComponentResetControl(): ResetControl
 	{
-		$components = [
-			'rolesControl',
-			'resourcesControl',
-			'privilegesControl',
-			'permissionsControl',
-		];
-
-
-		foreach ($components as $component) {
-
-			/**
-			 * @var Form $form
-			 * @var Form $this
-			 */
-			$form = $this->getComponent($component);
-
-			/** @var Form $factory */
-			$factory = $form->getComponent('factory');
-
-			$formId = $factory->getElementPrototype()->getAttribute('id');
-			if ($formId === $factoryId) {
-				$factory->reset();
-
-				/** @var Presenter $this */
-				if ($this->isAjax()) {
-					$this->redrawControl($this->{$component}->snippetFactory);
-				}
-			}
-		}
+		return $this->resetControl;
 	}
 }
