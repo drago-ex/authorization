@@ -1,29 +1,33 @@
 {varType Drago\Authorization\Entity\ResourcesEntity $resource}
 
-<div class="table-responsive-sm">
-	<table class="table table-hover table-light table-sm">
+<div class="shadow-lg p-4 mb-4">
+	<div class="table-responsive-sm">
 
-		<thead>
-		<tr>
-			<th scope="col">Name</th>
-			<th scope="col">Action</th>
-		</tr>
-		</thead>
+		<h4 class="mb-3 display-4 text-primary font-weight-normal" style="font-size: 1.438em;">Resources</h4>
+		<table class="table table-sm table-striped">
 
-		<tbody>
-		<tr n:foreach="$resources as $resource">
-			<td>{$resource->name}</td>
-			<td>
-				<a n:href="edit!, $resource->id" class="ajax">Edit</a>
-				{if $deleteId === $resource->id}
-					<a n:href="deleteConfirm!, 0, $resource->id" class="ajax">No</a>
-					<a n:href="deleteConfirm!, 1, $resource->id" class="ajax">Yes</a>
-				{else}
-					<a n:href="delete!, $resource->id" class="ajax">Delete</a>
-				{/if}
-			</td>
-		</tr>
-		</tbody>
+			<thead>
+			<tr>
+				<th scope="col">Name</th>
+				<th scope="col">Action</th>
+			</tr>
+			</thead>
 
-	</table>
+			<tbody>
+			<tr n:foreach="$resources as $resource">
+				<td>{$resource->name}</td>
+				<td>
+					<a n:href="edit!, $resource->id" class="ajax">Edit</a>
+					{if $deleteId === $resource->id}
+						<a n:href="deleteConfirm!, 0, $resource->id" class="ajax">No</a>
+						<a n:href="deleteConfirm!, 1, $resource->id" class="ajax">Yes</a>
+					{else}
+						<a n:href="delete!, $resource->id" class="ajax">Delete</a>
+					{/if}
+				</td>
+			</tr>
+			</tbody>
+
+		</table>
+	</div>
 </div>

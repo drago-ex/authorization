@@ -2,12 +2,12 @@
 {varType Drago\Authorization\Entity\PermissionsViewEntity $permission}
 
 {foreach $roles as $role}
-	<div class="content-box mb-3 bg-white shadow-sm">
+	<div class="shadow-lg p-4 mb-4">
 
-		<h3 class="mb-3 text-custom">Role: {$role->name}</h3>
+		<h4 class="mb-3 display-4 text-primary font-weight-normal" style="font-size: 1.438em;">Role: {$role->name}</h4>
 		<div class="table-responsive-sm">
 
-			<table class="table table-hover table-light table-sm">
+			<table class="table table-sm table-striped">
 
 				<thead>
 				<tr>

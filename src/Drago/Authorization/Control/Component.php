@@ -5,31 +5,45 @@
  * Package built on Nette Framework
  */
 
+
 declare(strict_types=1);
 
 namespace Drago\Authorization\Control;
 
-use Nette\Application\UI\Form;
-use Nette\ComponentModel\IComponent;
+use Drago\Application\UI;
+use Nette\SmartObject;
+use stdClass;
 
 
-interface Component
+/**
+ * Base control.
+ * @property string $snippetFactory
+ * @property string $snippetRecords
+ */
+abstract class Component extends UI\ExtraControl
 {
-	/** Render template for factory. */
-	public function render(): void;
+	use SmartObject;
 
-	/** Render template for data table. */
-	public function renderRecords(): void;
+	public int $deleteId = 0;
+	protected string $snippetError = 'error';
+	protected string $snippetMessage = 'message';
+	protected string $snippetPermissions = 'permissions';
 
-	/** Returning factory. */
-	public function getFactory(): Form|IComponent;
 
-	/** Signal edit. */
-	public function handleEdit(int $id): void;
+	/**
+	 * Forces control or its snippet to repaint.
+	 */
+	public function redrawPresenter(string $snippet = null, bool $redraw = true): void
+	{
+		$this->presenter->redrawControl($snippet, $redraw);
+	}
 
-	/** Signal delete. */
-	public function handleDelete(int $id): void;
 
-	/** Signal confirm delete. */
-	public function handleDeleteConfirm(int $confirm, int $id): void;
+	/**
+	 * Saves the message to template, that can be displayed after redirect.
+	 */
+	public function flashMessagePresenter($message, string $type = 'info'): stdClass
+	{
+		return $this->presenter->flashMessage($message, $type);
+	}
 }

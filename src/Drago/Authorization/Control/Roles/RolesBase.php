@@ -19,11 +19,11 @@ use Drago\Authorization\Repository\RolesRepository;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
-use Nette\ComponentModel\IComponent;
+use Nette\Forms\Controls\BaseControl;
 use Nette\Forms\Controls\SelectBox;
 
 
-class RolesControl extends BaseControl implements Component
+class RolesBase extends Component implements Base
 {
 	public string $snippetFactory = 'roles';
 	public string $snippetRecords = 'rolesRecords';
@@ -39,7 +39,7 @@ class RolesControl extends BaseControl implements Component
 	public function render(): void
 	{
 		$template = $this->template;
-		$template->form = $this->getFactory();
+		$template->form = $this['factory'];
 		$template->setFile(__DIR__ . '/Templates/Roles.add.latte');
 		$template->render();
 	}
@@ -55,19 +55,6 @@ class RolesControl extends BaseControl implements Component
 		$template->deleteId = $this->deleteId;
 		$template->setFile(__DIR__ . '/Templates/Roles.records.latte');
 		$template->render();
-	}
-
-
-	public function getFactory(): Form|IComponent
-	{
-		return $this['factory'];
-	}
-
-
-	public function getFactoryParent(): IComponent|null|SelectBox
-	{
-		return $this->getFactory()
-			->getComponent('parent');
 	}
 
 
@@ -105,13 +92,17 @@ class RolesControl extends BaseControl implements Component
 	{
 		try {
 			$form->reset();
-			$form[RolesData::ID]->setDefaultValue(0)
+
+			/** @var Form|BaseControl $formId */
+			$formId = $form[RolesData::ID];
+			$formId->setDefaultValue(0)
 				->addRule(Form::INTEGER);
 
 			$this->repository->put($data->toArray());
 			$this->cache->remove(Conf::CACHE);
 
-			$parent = $this->getFactoryParent();
+			/** @var Form|SelectBox $parent */
+			$parent = $this['factory']['parent'];
 			$parent->setItems($this->repository->getRoles());
 
 			$message = $data->id ? 'Role updated.' : 'The role was inserted.';
@@ -166,7 +157,9 @@ class RolesControl extends BaseControl implements Component
 
 		try {
 			if ($this->repository->isAllowed($role->name) && $this->getSignal()) {
-				$form = $this->getFactory();
+
+				/** @var Form|BaseControl $form */
+				$form = $this['factory'];
 				$form['send']->caption = 'Edit';
 				$form->setDefaults($role);
 

@@ -14,15 +14,14 @@ use Drago\Application\UI\Alert;
 use Drago\Authorization\Conf;
 use Drago\Authorization\Data\ResourcesData;
 use Drago\Authorization\Entity\ResourcesEntity;
-use Drago\Authorization\Repository\PermissionsViewRepository;
 use Drago\Authorization\Repository\ResourcesRepository;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
-use Nette\ComponentModel\IComponent;
+use Nette\Forms\Controls\BaseControl;
 
 
-class ResourcesControl extends BaseControl implements Component
+class ResourcesBase extends Component implements Base
 {
 	private string $snippetFactory = 'resources';
 	private string $snippetRecords = 'resourcesRecords';
@@ -31,7 +30,6 @@ class ResourcesControl extends BaseControl implements Component
 	public function __construct(
 		private Cache $cache,
 		private ResourcesRepository $repository,
-		private PermissionsViewRepository $permissionsRepository,
 	) {
 	}
 
@@ -39,7 +37,7 @@ class ResourcesControl extends BaseControl implements Component
 	public function render(): void
 	{
 		$template = $this->template;
-		$template->form = $this->getFactory();
+		$template->form = $this['factory'];
 		$template->setFile(__DIR__ . '/Templates/Resources.add.latte');
 		$template->render();
 	}
@@ -58,12 +56,6 @@ class ResourcesControl extends BaseControl implements Component
 	}
 
 
-	public function getFactory(): Form|IComponent
-	{
-		return $this['factory'];
-	}
-
-
 	/**
 	 * @throws BadRequestException
 	 */
@@ -73,7 +65,9 @@ class ResourcesControl extends BaseControl implements Component
 		$resource ?: $this->error();
 
 		if ($this->getSignal()) {
-			$form = $this->getFactory();
+
+			/** @var Form|BaseControl $form */
+			$form = $this['factory'];
 			$form['send']->caption = 'Edit';
 			$form->setDefaults($resource);
 
@@ -105,7 +99,6 @@ class ResourcesControl extends BaseControl implements Component
 	 */
 	public function handleDeleteConfirm(int $confirm, int $id): void
 	{
-		/** @var ResourcesEntity $role */
 		$resource = $this->repository->get($id)->fetch();
 		$resource ?: $this->error();
 
@@ -160,7 +153,10 @@ class ResourcesControl extends BaseControl implements Component
 	{
 		try {
 			$form->reset();
-			$form[ResourcesData::ID]->setDefaultValue(0)
+
+			/** @var Form|BaseControl $formId */
+			$formId = $form[ResourcesData::ID];
+			$formId->setDefaultValue(0)
 				->addRule(Form::INTEGER);
 
 			$this->repository->put($data->toArray());

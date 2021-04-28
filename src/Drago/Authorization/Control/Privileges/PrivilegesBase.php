@@ -13,15 +13,14 @@ use Drago\Application\UI\Alert;
 use Drago\Authorization\Conf;
 use Drago\Authorization\Data\PrivilegesData;
 use Drago\Authorization\Entity\PrivilegesEntity;
-use Drago\Authorization\Repository\PermissionsViewRepository;
 use Drago\Authorization\Repository\PrivilegesRepository;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
-use Nette\ComponentModel\IComponent;
+use Nette\Forms\Controls\BaseControl;
 
 
-class PrivilegesControl extends BaseControl implements Component
+class PrivilegesBase extends Component implements Base
 {
 	private string $snippetFactory = 'privileges';
 	private string $snippetRecords = 'privilegesRecords';
@@ -30,7 +29,6 @@ class PrivilegesControl extends BaseControl implements Component
 	public function __construct(
 		private Cache $cache,
 		private PrivilegesRepository $repository,
-		private PermissionsViewRepository $permissionsRepository,
 	) {
 	}
 
@@ -56,12 +54,6 @@ class PrivilegesControl extends BaseControl implements Component
 	}
 
 
-	public function getFactory(): Form|IComponent
-	{
-		return $this['factory'];
-	}
-
-
 	/**
 	 * @throws BadRequestException
 	 */
@@ -72,7 +64,9 @@ class PrivilegesControl extends BaseControl implements Component
 
 		try {
 			if ($this->repository->isAllowed($privilege->name) && $this->getSignal()) {
-				$form = $this->getFactory();
+
+				/** @var Form|BaseControl $form */
+				$form = $this['factory'];
 				$form['send']->caption = 'Edit';
 				$form->setDefaults($privilege);
 
@@ -172,7 +166,10 @@ class PrivilegesControl extends BaseControl implements Component
 	{
 		try {
 			$form->reset();
-			$form[PrivilegesData::ID]->setDefaultValue(0)
+
+			/** @var Form|BaseControl $formId */
+			$formId = $form[PrivilegesData::ID];
+			$formId->setDefaultValue(0)
 				->addRule(Form::INTEGER);
 
 			$this->repository->put($data->toArray());

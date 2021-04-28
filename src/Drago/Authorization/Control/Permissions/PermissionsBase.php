@@ -24,10 +24,10 @@ use Drago\Authorization\Repository\RolesRepository;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
-use Nette\ComponentModel\IComponent;
+use Nette\Forms\Controls\BaseControl;
 
 
-class PermissionsControl extends BaseControl implements Component
+class PermissionsBase extends Component implements Base
 {
 	public string $snippetFactory = 'permissions';
 	public string $snippetRecords = 'permissionsRecords';
@@ -48,7 +48,7 @@ class PermissionsControl extends BaseControl implements Component
 	public function render(): void
 	{
 		$template = $this->template;
-		$template->form = $this->getFactory();
+		$template->form = $this['factory'];
 		$template->setFile(__DIR__ . '/Templates/Permissions.add.latte');
 		$template->render();
 	}
@@ -62,12 +62,6 @@ class PermissionsControl extends BaseControl implements Component
 		$template->deleteId = $this->deleteId;
 		$template->setFile(__DIR__ . '/Templates/Permissions.records.latte');
 		$template->render();
-	}
-
-
-	public function getFactory(): Form|IComponent
-	{
-		return $this['factory'];
 	}
 
 
@@ -116,7 +110,10 @@ class PermissionsControl extends BaseControl implements Component
 	public function success(Form $form, PermissionsData $data): void
 	{
 		$form->reset();
-		$form[PermissionsData::ID]->setDefaultValue(0)
+
+		/** @var Form|BaseControl $formId */
+		$formId = $form[PermissionsData::ID];
+		$formId->setDefaultValue(0)
 			->addRule(Form::INTEGER);
 
 		$this->permissionsRepository->put($data->toArray());
@@ -142,7 +139,9 @@ class PermissionsControl extends BaseControl implements Component
 		$permission ?: $this->error();
 
 		if ($this->getSignal()) {
-			$form = $this->getFactory();
+
+			/** @var Form|BaseControl $form */
+			$form = $this['factory'];
 			$form['send']->caption = 'Edit';
 			$form->setDefaults($permission);
 

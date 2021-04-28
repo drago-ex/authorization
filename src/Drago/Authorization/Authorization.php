@@ -9,27 +9,27 @@ declare(strict_types=1);
 
 namespace Drago\Authorization;
 
-use Drago\Authorization\Control\PermissionsControl;
-use Drago\Authorization\Control\PrivilegesControl;
-use Drago\Authorization\Control\ResourcesControl;
-use Drago\Authorization\Control\RolesControl;
+use Drago\Authorization\Control\PermissionsBase;
+use Drago\Authorization\Control\PrivilegesBase;
+use Drago\Authorization\Control\ResourcesBase;
+use Drago\Authorization\Control\RolesBase;
 use Nette\Application\UI\Presenter;
 use Nette\Security\User;
 
 
 trait Authorization
 {
-	private RolesControl $rolesControl;
-	private ResourcesControl $resourcesControl;
-	private PrivilegesControl $privilegesControl;
-	private PermissionsControl $permissionsControl;
+	private RolesBase $rolesControl;
+	private ResourcesBase $resourcesControl;
+	private PrivilegesBase $privilegesControl;
+	private PermissionsBase $permissionsControl;
 
 
 	public function injectAcl(
-		RolesControl $rolesControl,
-		ResourcesControl $resourcesControl,
-		PrivilegesControl $privilegesControl,
-		PermissionsControl $permissionsControl
+		RolesBase $rolesControl,
+		ResourcesBase $resourcesControl,
+		PrivilegesBase $privilegesControl,
+		PermissionsBase $permissionsControl
 	) {
 		$this->rolesControl = $rolesControl;
 		$this->resourcesControl = $resourcesControl;
@@ -58,25 +58,25 @@ trait Authorization
 	}
 
 
-	protected function createComponentRolesControl(): RolesControl
+	protected function createComponentRolesControl(): RolesBase
 	{
 		return $this->rolesControl;
 	}
 
 
-	protected function createComponentResourcesControl(): ResourcesControl
+	protected function createComponentResourcesControl(): ResourcesBase
 	{
 		return $this->resourcesControl;
 	}
 
 
-	protected function createComponentPrivilegesControl(): PrivilegesControl
+	protected function createComponentPrivilegesControl(): PrivilegesBase
 	{
 		return $this->privilegesControl;
 	}
 
 
-	protected function createComponentPermissionsControl(): PermissionsControl
+	protected function createComponentPermissionsControl(): PermissionsBase
 	{
 		return $this->permissionsControl;
 	}
