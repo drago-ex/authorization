@@ -13,6 +13,7 @@ use Drago\Authorization\Control\PermissionsControl;
 use Drago\Authorization\Control\PrivilegesControl;
 use Drago\Authorization\Control\ResourcesControl;
 use Drago\Authorization\Control\RolesControl;
+use Nette\Application\UI\Form;
 use Nette\Application\UI\Presenter;
 use Nette\Security\User;
 
@@ -79,5 +80,36 @@ trait Authorization
 	protected function createComponentPermissionsControl(): PermissionsControl
 	{
 		return $this->permissionsControl;
+	}
+
+
+	public function handleReset($factoryId): void
+	{
+		$components = [
+			'rolesControl',
+			'resourcesControl',
+			'privilegesControl',
+			'permissionsControl'
+		];
+
+		foreach ($components as $component) {
+
+			/** @var Form $form */
+			$form = $this->getComponent($component);
+
+			/** @var Form $factory */
+			$factory = $form->getComponent('factory');
+
+			$controlId = $factory->getElementPrototype()
+				->getAttribute('id');
+
+			if ($controlId === $factoryId) {
+				$factory->reset();
+
+				if ($this->isAjax()) {
+					$this->redrawControl($this->{$component}->snippetFactory);
+				}
+			}
+		}
 	}
 }

@@ -22,8 +22,8 @@ use Nette\Forms\Controls\BaseControl;
 
 class ResourcesControl extends Component implements Base
 {
-	private string $snippetFactory = 'resources';
-	private string $snippetRecords = 'resourcesRecords';
+	public string $snippetFactory = 'resources';
+	public string $snippetRecords = 'resourcesRecords';
 
 
 	public function __construct(

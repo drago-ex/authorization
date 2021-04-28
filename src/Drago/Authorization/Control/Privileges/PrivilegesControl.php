@@ -22,8 +22,8 @@ use Nette\Forms\Controls\BaseControl;
 
 class PrivilegesControl extends Component implements Base
 {
-	private string $snippetFactory = 'privileges';
-	private string $snippetRecords = 'privilegesRecords';
+	public string $snippetFactory = 'privileges';
+	public string $snippetRecords = 'privilegesRecords';
 
 
 	public function __construct(

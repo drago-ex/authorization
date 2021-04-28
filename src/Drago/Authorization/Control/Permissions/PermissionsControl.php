@@ -69,21 +69,21 @@ class PermissionsControl extends Component implements Base
 	{
 		$form = new Form;
 		$form->addSelect(PermissionsData::ROLE_ID, 'Role', $this->rolesRepository->getRoles())
-			->setPrompt('Role selection')
+			->setPrompt('Select role')
 			->setRequired();
 
 		$resources = $this->resourcesRepository->all()
 			->fetchPairs(ResourcesEntity::PRIMARY, ResourcesEntity::NAME);
 
 		$form->addSelect(PermissionsData::RESOURCE_ID, 'Resource', $resources)
-			->setPrompt('Resource selection')
+			->setPrompt('Select resource')
 			->setRequired();
 
 		$privileges = $this->privilegesRepository->all()
 			->fetchPairs(PrivilegesEntity::PRIMARY, PrivilegesEntity::NAME);
 
 		$form->addSelect(PermissionsData::PRIVILEGE_ID, 'Privilege', $privileges)
-			->setPrompt('Privilege selection')
+			->setPrompt('Select privilege')
 			->setRequired();
 
 		$authorization = [
@@ -91,8 +91,8 @@ class PermissionsControl extends Component implements Base
 			'no' => 'Not allowed',
 		];
 
-		$form->addSelect(PermissionsData::ALLOWED, 'Component', $authorization)
-			->setPrompt('Component selection')
+		$form->addSelect(PermissionsData::ALLOWED, 'Permission', $authorization)
+			->setPrompt('Select permission')
 			->setRequired();
 
 		$form->addHidden(PermissionsData::ID, 0)
