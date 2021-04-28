@@ -47,11 +47,11 @@ trait Authorization
 			$signal = $presenter->getSignal();
 			if ((!empty($signal[0])) && isset($signal[1])) {
 				if (!$user->isAllowed($presenter->getName(), $signal[0])) {
-					$this->error('Forbidden', 403);
+					$presenter->error('Forbidden', 403);
 				}
 			} else {
 				if (!$user->isAllowed($presenter->getName(), $signal[1] ?? $presenter->getAction())) {
-					$this->error('Forbidden', 403);
+					$presenter->error('Forbidden', 403);
 				}
 			}
 		};
