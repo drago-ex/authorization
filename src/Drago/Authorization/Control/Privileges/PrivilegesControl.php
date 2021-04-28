@@ -15,7 +15,6 @@ use Drago\Authorization\Data\PrivilegesData;
 use Drago\Authorization\Entity\PrivilegesEntity;
 use Drago\Authorization\Repository\PermissionsViewRepository;
 use Drago\Authorization\Repository\PrivilegesRepository;
-use Drago\Utils\ExtraArrayHash;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
