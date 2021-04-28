@@ -50,8 +50,12 @@ class Acl
 			}
 
 			foreach ($this->permissions->getAll() as $row) {
-				$row->privilege = $row->privilege === Conf::PRIVILEGE_ALL ? Permission::ALL : $row->privilege;
-				$acl->{$row->allowed === 'yes' ? 'allow' : 'deny'} ($row->role, $row->resource, $row->privilege);
+				$row->privilege = $row->privilege === Conf::PRIVILEGE_ALL
+					? Permission::ALL
+					: $row->privilege;
+				$acl->{$row->allowed === 'yes'
+					? 'allow'
+					: 'deny'} ($row->role, $row->resource, $row->privilege);
 			}
 
 			$acl->addRole(Conf::ROLE_ADMIN, Conf::ROLE_MEMBER);

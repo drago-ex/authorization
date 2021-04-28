@@ -25,12 +25,10 @@ class Conf
 	public const ROLE_MEMBER = 'member';
 	public const ROLE_ADMIN = 'admin';
 
-
 	/**
 	 * Option to specify privileges for all actions and signals.
 	 */
 	public const PRIVILEGE_ALL = '*all';
-
 
 	/**
 	 * Acl cache.

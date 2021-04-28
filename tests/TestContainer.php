@@ -1,8 +1,6 @@
 <?php
 
-declare(strict_types = 1);
-
-namespace Test;
+declare(strict_types=1);
 
 use Nette\DI\Container;
 use Tester\TestCase;
@@ -10,8 +8,7 @@ use Tester\TestCase;
 
 abstract class TestContainer extends TestCase
 {
-	/** @var Container */
-	protected $container;
+	protected Container $container;
 
 
 	public function __construct(Container $container)

@@ -32,7 +32,8 @@ class PrivilegesControl extends BaseControl implements Component
 		private Cache $cache,
 		private PrivilegesRepository $repository,
 		private PermissionsViewRepository $permissionsRepository,
-	) {}
+	) {
+	}
 
 
 	public function render(): void
@@ -72,7 +73,6 @@ class PrivilegesControl extends BaseControl implements Component
 
 		try {
 			if ($this->repository->isAllowed($privilege->name) && $this->getSignal()) {
-
 				$form = $this->getFactory();
 				$form['send']->caption = 'Edit';
 				$form->setDefaults($privilege);
@@ -119,7 +119,6 @@ class PrivilegesControl extends BaseControl implements Component
 
 		if ($confirm === 1) {
 			try {
-
 				if ($this->repository->isAllowed($privilege->name)) {
 					$this->repository->erase($id);
 					$this->cache->remove(Conf::CACHE);
