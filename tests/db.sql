@@ -1,6 +1,6 @@
 --
---  Simple management of users' permissions.
--- -----------------------------------------
+--  Simple dynamic access control list management.
+-- -----------------------------------------------
 
 -- ---- database settings:
 SET NAMES utf8;
@@ -8,7 +8,7 @@ SET time_zone = '+00:00';
 SET foreign_key_checks = 0;
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 
--- ---- create acl table:
+-- ---- create table:
 DROP TABLE IF EXISTS `acl`;
 CREATE TABLE `acl` (
     `role_id` int(11) unsigned NOT NULL,
@@ -19,7 +19,7 @@ CREATE TABLE `acl` (
      CONSTRAINT `acl_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- ---- create permissions table:
+-- ---- create table:
 DROP TABLE IF EXISTS `permissions`;
 CREATE TABLE `permissions` (
     `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -36,7 +36,7 @@ CREATE TABLE `permissions` (
     CONSTRAINT `permissions_ibfk_3` FOREIGN KEY (`privilege_id`) REFERENCES `privileges` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- ---- create permissions_roles_view view:
+-- ---- create view:
 DROP VIEW IF EXISTS `permissions_roles_view`;
 CREATE TABLE `permissions_roles_view` (
     `id` int(11) unsigned,
@@ -44,7 +44,7 @@ CREATE TABLE `permissions_roles_view` (
     `parent` int(11)
 );
 
--- ---- create permissions_view view:
+-- ---- create view:
 DROP VIEW IF EXISTS `permissions_view`;
 CREATE TABLE `permissions_view` (
     `id` int(11) unsigned,
@@ -54,7 +54,7 @@ CREATE TABLE `permissions_view` (
     `allowed` enum('no','yes')
 );
 
--- ---- create privileges table:
+-- ---- create table:
 DROP TABLE IF EXISTS `privileges`;
 CREATE TABLE `privileges` (
     `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -63,11 +63,11 @@ CREATE TABLE `privileges` (
     UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- ---- insert values to privileges table:
+-- ---- insert values to table:
 INSERT INTO `privileges` (`id`, `name`) VALUES
 (1,	'*all');
 
--- ---- create resources table:
+-- ---- create table:
 DROP TABLE IF EXISTS `resources`;
 CREATE TABLE `resources` (
     `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -76,7 +76,7 @@ CREATE TABLE `resources` (
     UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- ---- create roles table:
+-- ---- create table:
 DROP TABLE IF EXISTS `roles`;
 CREATE TABLE `roles` (
     `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -86,12 +86,12 @@ CREATE TABLE `roles` (
     UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- ---- insert values to roles table:
+-- ---- insert values to table:
 INSERT INTO `roles` (`id`, `name`, `parent`) VALUES
 (1,	'guest',	0),
 (2,	'member',	1);
 
--- ---- create trigger for roles table:
+-- ---- create trigger:
 DELIMITER ;;
 
 CREATE TRIGGER `insert` BEFORE INSERT ON `roles` FOR EACH ROW
@@ -110,7 +110,7 @@ END;;
 
 DELIMITER ;
 
--- ---- create users table:
+-- ---- create table:
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
     `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -120,12 +120,12 @@ CREATE TABLE `users` (
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- ---- create permissions_roles_view query:
+-- ---- create query:
 DROP TABLE IF EXISTS `permissions_roles_view`;
 CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `permissions_roles_view` AS select `roles`.`id` AS `id`,`roles`.`name` AS `name`,`roles`.`parent` AS `parent`
 from `roles` where `roles`.`id` in (select distinct `permissions`.`role_id` from `permissions` where `roles`.`name` <> 'admin');
 
--- ---- create permissions_view query:
+-- ---- create query:
 DROP TABLE IF EXISTS `permissions_view`;
 CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `permissions_view` AS select `p`.`id` AS `id`,`r`.`name` AS `resource`,`p2`.`name` AS `privilege`,`r2`.`name` AS `role`,`p`.`allowed` AS `allowed`
 from (((`permissions` `p`
