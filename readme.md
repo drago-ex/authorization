@@ -6,7 +6,7 @@
 <p align="center">Simple packages built on Nette Framework</p>
 
 ## Drago Authorization
-Access Control List.
+Simple dynamic access control list management.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://raw.githubusercontent.com/drago-ex/authorization/master/license.md)
 [![PHP version](https://badge.fury.io/ph/drago-ex%2Fauthorization.svg)](https://badge.fury.io/ph/drago-ex%2Fauthorization)
