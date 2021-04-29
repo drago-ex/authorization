@@ -67,13 +67,13 @@ class RolesRepository extends Connect
 
 
 	/**
-	 * @throws Exception
+	 * @throws NotAllowedChange
 	 */
 	public function findParent(int $id): array|RolesEntity|null
 	{
 		$row = $this->discover(RolesEntity::PARENT, $id)->fetch();
 		if ($row) {
-			throw new Exception('The record can not be deleted, you must first delete the records that are associated with it.', 1002);
+			throw new NotAllowedChange('The record can not be deleted, you must first delete the records that are associated with it.', 1002);
 		}
 		return $row;
 	}

@@ -11,9 +11,10 @@ namespace Drago\Authorization\Repository;
 
 use Drago\Authorization\Conf;
 use Drago\Authorization\Entity\PrivilegesEntity;
+use Drago\Authorization\Exception;
+use Drago\Authorization\NotAllowedChange;
 use Drago\Database\Connect;
 use Drago\Database\Repository;
-use Exception;
 
 
 class PrivilegesRepository extends Connect
@@ -24,6 +25,9 @@ class PrivilegesRepository extends Connect
 	public string $primary = PrivilegesEntity::PRIMARY;
 
 
+	/**
+	 * @throws \Dibi\Exception
+	 */
 	public function getRecord(int $id): array|PrivilegesEntity|null
 	{
 		return $this->get($id)->execute()
@@ -33,12 +37,12 @@ class PrivilegesRepository extends Connect
 
 
 	/**
-	 * @throws Exception
+	 * @throws NotAllowedChange
 	 */
 	public function isAllowed(string $privilege): bool
 	{
 		if ($privilege === Conf::PRIVILEGE_ALL) {
-			throw new Exception('The record is not allowed to be edited or deleted.', 1001);
+			throw new NotAllowedChange('The record is not allowed to be edited or deleted.', 1001);
 		}
 		return true;
 	}
