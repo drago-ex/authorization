@@ -33,7 +33,7 @@ use Drago\Authorization\Authorization
 ```
 
 ## Use components in latte
-```html
+```php
 {snippet permissions}
   {control permissionsControl}
 {/snippet}
