@@ -4,3 +4,70 @@
 
 <h3 align="center">Drago Extension</h3>
 <p align="center">Simple packages built on Nette Framework</p>
+
+## Drago Authorization
+Simple dynamic access control list management.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://raw.githubusercontent.com/drago-ex/authorization/master/license.md)
+[![PHP version](https://badge.fury.io/ph/drago-ex%2Fauthorization.svg)](https://badge.fury.io/ph/drago-ex%2Fauthorization)
+[![Build Status](https://travis-ci.com/drago-ex/authorization.svg?branch=master)](https://travis-ci.com/drago-ex/authorization)
+
+## Technology
+- PHP 8.0 or higher
+- composer
+
+## Installation
+```
+composer require drago-ex/authorization
+```
+
+## Extension registration
+```php
+extensions:
+	authorization: Drago\Authorization\DI\AuthorizationExtension
+```
+
+## Use trait in presenter
+```php
+use Drago\Authorization\Authorization
+```
+
+## Use components in latte
+```
+{snippet permissions}
+  {control permissionsControl}
+{/snippet}
+
+{snippet permissionsRecords}
+  {control permissionsControl:records}
+{/snippet}
+
+{snippet roles}
+  {control rolesControl}
+{/snippet}
+
+{snippet rolesRecords}
+  {control rolesControl:records}
+{/snippet}
+
+{snippet resources}
+  {control resourcesControl}
+{/snippet}
+
+{snippet resourcesRecords}
+  {control resourcesControl:records}
+{/snippet}
+
+{snippet privileges}
+  {control privilegesControl}
+{/snippet}
+
+{snippet privilegesRecords}
+  {control privilegesControl:records}
+{/snippet}
+```
+
+## Use Nette ajax for reset form
+```
+{control resetControl}
+```
