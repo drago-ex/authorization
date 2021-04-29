@@ -21,8 +21,8 @@ trait Permission
 	 */
 	public function injectPermission(Presenter $presenter, User $user): void
 	{
-		try {
-			$presenter->onStartup[] = function () use ($presenter, $user) {
+		$presenter->onStartup[] = function () use ($presenter, $user) {
+			try {
 				$signal = $presenter->getSignal();
 				if ((!empty($signal[0])) && isset($signal[1])) {
 					if (!$user->isAllowed($presenter->getName(), $signal[0])) {
@@ -33,9 +33,9 @@ trait Permission
 						$presenter->error('Forbidden', 403);
 					}
 				}
-			};
-		} catch (InvalidStateException $e) {
-			// Not implemented.
-		}
+			} catch (InvalidStateException $e) {
+				// Not implemented.
+			}
+		};
 	}
 }
