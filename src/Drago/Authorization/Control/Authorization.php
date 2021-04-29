@@ -7,15 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Drago\Authorization;
-
-use Drago\Authorization\Control\PermissionsControl;
-use Drago\Authorization\Control\PrivilegesControl;
-use Drago\Authorization\Control\ResetControl;
-use Drago\Authorization\Control\ResourcesControl;
-use Drago\Authorization\Control\RolesControl;
-use Nette\Application\UI\Presenter;
-use Nette\Security\User;
+namespace Drago\Authorization\Control;
 
 
 trait Authorization
@@ -39,26 +31,6 @@ trait Authorization
 		$this->privilegesControl = $privilegesControl;
 		$this->permissionsControl = $permissionsControl;
 		$this->resetControl = $resetControl;
-	}
-
-
-	/**
-	 * Checks for requirements such as authorization.
-	 */
-	public function injectPermissions(Presenter $presenter, User $user): void
-	{
-		$presenter->onStartup[] = function () use ($presenter, $user) {
-			$signal = $presenter->getSignal();
-			if ((!empty($signal[0])) && isset($signal[1])) {
-				if (!$user->isAllowed($presenter->getName(), $signal[0])) {
-					$presenter->error('Forbidden', 403);
-				}
-			} else {
-				if (!$user->isAllowed($presenter->getName(), $signal[1] ?? $presenter->getAction())) {
-					$presenter->error('Forbidden', 403);
-				}
-			}
-		};
 	}
 
 

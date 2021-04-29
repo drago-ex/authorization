@@ -27,12 +27,19 @@ extensions:
 	authorization: Drago\Authorization\DI\AuthorizationExtension
 ```
 
-## Use trait in presenter
+## Use trait in base presenter for access control
+
 ```php
-use Drago\Authorization\Authorization
+use Drago\Authorization\Permission
 ```
 
-## Use components in latte
+## Use trait in admin presenter for settings access control
+
+```php
+use Drago\Authorization\Control\Authorization
+```
+
+## Use components in admin latte
 ```
 {snippet permissions}
   {control permissionsControl}
