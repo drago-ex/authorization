@@ -2,7 +2,7 @@
 
 <div class="shadow-lg p-4 mb-4">
 
-	<h4 class="mb-3 display-4 text-primary font-weight-normal" style="font-size: 1.438em;">Privileges</h4>
+	<h4 class="mb-3 display-4 text-primary font-weight-normal" style="font-size: 1.438em">Privileges</h4>
 	<div class="table-responsive-sm">
 		<table class="table table-sm table-striped table-hover">
 
@@ -15,8 +15,8 @@
 
 			<tbody>
 			<tr n:foreach="$privileges as $privilege">
-				<td>{$privilege->name}</td>
-				<td>
+				<td style="width: 75%">{$privilege->name}</td>
+				<td style="width: 25%">
 					<a n:href="edit!, $privilege->id" class="ajax">Edit</a>
 					{if $deleteId === $privilege->id}
 						<a n:href="deleteConfirm!, 0, $privilege->id" class="ajax">No</a>

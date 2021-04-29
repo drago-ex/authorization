@@ -4,7 +4,7 @@
 {foreach $roles as $role}
 	<div class="shadow-lg p-4 mb-4">
 
-		<h4 class="mb-3 display-4 text-primary font-weight-normal" style="font-size: 1.438em;">Role: {$role->name}</h4>
+		<h4 class="mb-3 display-4 text-primary font-weight-normal" style="font-size: 1.438em">Role: {$role->name}</h4>
 		<div class="table-responsive-sm">
 			<table class="table table-sm table-striped table-hover">
 
@@ -19,10 +19,10 @@
 
 				<tbody>
 				<tr n:foreach="$permissions as $permission" n:if="$role->name == $permission->role">
-					<td>{$permission->resource}</td>
-					<td>{$permission->privilege}</td>
-					<td>{$permission->allowed}</td>
-					<td>
+					<td style="width: 25%">{$permission->resource}</td>
+					<td style="width: 25%">{$permission->privilege}</td>
+					<td style="width: 25%">{$permission->allowed}</td>
+					<td style="width: 25%">
 						<a n:href="edit!, $permission->id" class="ajax">Edit</a>
 						{if $deleteId === $permission->id}
 							<a n:href="deleteConfirm!, 0, $permission->id" class="ajax">No</a>

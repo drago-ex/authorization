@@ -2,7 +2,7 @@
 
 <div class="shadow-lg p-4 mb-4">
 
-	<h4 class="mb-3 display-4 text-primary font-weight-normal" style="font-size: 1.438em;">Roles</h4>
+	<h4 class="mb-3 display-4 text-primary font-weight-normal" style="font-size: 1.438em">Roles</h4>
 	<div class="table-responsive-sm">
 		<table class="table table-sm table-striped table-hover">
 
@@ -16,9 +16,9 @@
 
 			<tbody>
 			<tr n:foreach="$roles as $role">
-				<td>{$role->name}</td>
-				<td>{$role->parent}</td>
-				<td>
+				<td style="width: 40%">{$role->name}</td>
+				<td style="width: 35%">{$role->parent}</td>
+				<td style="width: 25%">
 					<a n:href="edit!, $role->id" class="ajax">Edit</a>
 					{if $deleteId === $role->id}
 						<a n:href="deleteConfirm!, 0, $role->id" class="ajax">No</a>
