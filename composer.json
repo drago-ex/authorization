@@ -1,7 +1,7 @@
 {
 	"name": "drago-ex/authorization",
 	"type": "library",
-	"description": "Simple management of users' permissions.",
+	"description": "Simple dynamic access control list management.",
 	"license": ["MIT"],
 	"authors": [
 		{
