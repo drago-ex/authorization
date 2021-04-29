@@ -9,7 +9,6 @@ SET foreign_key_checks = 0;
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 
 -- ---- create table:
-DROP TABLE IF EXISTS `acl`;
 CREATE TABLE `acl` (
     `role_id` int(11) unsigned NOT NULL,
     `user_id` int(11) unsigned NOT NULL,
@@ -20,7 +19,6 @@ CREATE TABLE `acl` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ---- create table:
-DROP TABLE IF EXISTS `permissions`;
 CREATE TABLE `permissions` (
     `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
     `role_id` int(11) unsigned NOT NULL,
@@ -37,7 +35,6 @@ CREATE TABLE `permissions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ---- create view:
-DROP VIEW IF EXISTS `permissions_roles_view`;
 CREATE TABLE `permissions_roles_view` (
     `id` int(11) unsigned,
     `name` varchar(40),
@@ -45,7 +42,6 @@ CREATE TABLE `permissions_roles_view` (
 );
 
 -- ---- create view:
-DROP VIEW IF EXISTS `permissions_view`;
 CREATE TABLE `permissions_view` (
     `id` int(11) unsigned,
     `resource` varchar(40),
@@ -55,7 +51,6 @@ CREATE TABLE `permissions_view` (
 );
 
 -- ---- create table:
-DROP TABLE IF EXISTS `privileges`;
 CREATE TABLE `privileges` (
     `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
     `name` varchar(40) NOT NULL,
@@ -68,7 +63,6 @@ INSERT INTO `privileges` (`id`, `name`) VALUES
 (1,	'*all');
 
 -- ---- create table:
-DROP TABLE IF EXISTS `resources`;
 CREATE TABLE `resources` (
     `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
     `name` varchar(40) NOT NULL,
@@ -77,7 +71,6 @@ CREATE TABLE `resources` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ---- create table:
-DROP TABLE IF EXISTS `roles`;
 CREATE TABLE `roles` (
     `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
     `name` varchar(40) NOT NULL,
@@ -111,7 +104,6 @@ END;;
 DELIMITER ;
 
 -- ---- create table:
-DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
     `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
     `username` varchar(50) NOT NULL,
