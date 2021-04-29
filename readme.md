@@ -67,7 +67,7 @@ use Drago\Authorization\Authorization
 {/snippet}
 ```
 
-## Use ajax for reset form
+## Use Nette ajax for reset form
 ```php
 {control resetControl}
 ```
