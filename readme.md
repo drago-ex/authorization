@@ -33,7 +33,7 @@ use Drago\Authorization\Authorization
 ```
 
 ## Use components in latte
-```latte
+```html
 {snippet permissions}
   {control permissionsControl}
 {/snippet}
