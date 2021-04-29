@@ -33,7 +33,7 @@ use Drago\Authorization\Authorization
 ```
 
 ## Use components in latte
-```php
+```
 {snippet permissions}
   {control permissionsControl}
 {/snippet}
@@ -68,6 +68,6 @@ use Drago\Authorization\Authorization
 ```
 
 ## Use Nette ajax for reset form
-```php
+```
 {control resetControl}
 ```
