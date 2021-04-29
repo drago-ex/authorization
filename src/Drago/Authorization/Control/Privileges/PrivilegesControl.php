@@ -9,10 +9,12 @@ declare(strict_types=1);
 
 namespace Drago\Authorization\Control;
 
+use Dibi\Exception;
 use Drago\Application\UI\Alert;
 use Drago\Authorization\Conf;
 use Drago\Authorization\Data\PrivilegesData;
 use Drago\Authorization\Entity\PrivilegesEntity;
+use Drago\Authorization\NotAllowedChange;
 use Drago\Authorization\Repository\PrivilegesRepository;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
@@ -56,6 +58,7 @@ class PrivilegesControl extends Component implements Base
 
 	/**
 	 * @throws BadRequestException
+	 * @throws Exception
 	 */
 	public function handleEdit(int $id): void
 	{
@@ -75,7 +78,7 @@ class PrivilegesControl extends Component implements Base
 				}
 			}
 
-		} catch (\Exception $e) {
+		} catch (NotAllowedChange $e) {
 			if ($e->getCode() === 1001) {
 				$this->flashMessagePresenter('The privilege is not allowed to be updated.', Alert::WARNING);
 
@@ -89,6 +92,7 @@ class PrivilegesControl extends Component implements Base
 
 	/**
 	 * @throws BadRequestException
+	 * @throws Exception
 	 */
 	public function handleDelete(int $id): void
 	{
@@ -104,6 +108,7 @@ class PrivilegesControl extends Component implements Base
 
 	/**
 	 * @throws BadRequestException
+	 * @throws Exception
 	 */
 	public function handleDeleteConfirm(int $confirm, int $id): void
 	{
@@ -124,7 +129,7 @@ class PrivilegesControl extends Component implements Base
 						$this->redrawPresenter($this->snippetPermissions);
 					}
 				}
-			} catch (\Exception $e) {
+			} catch (NotAllowedChange $e) {
 				$message = match ($e->getCode()) {
 					1001 => 'The privilege is not allowed to be deleted.',
 					1451 => 'The privilege can not be deleted, you must first delete the records that are associated with it.',

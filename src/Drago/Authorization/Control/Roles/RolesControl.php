@@ -220,7 +220,7 @@ class RolesControl extends Component implements Base
 						$this->redrawPresenter($this->snippetPermissions);
 					}
 				}
-			} catch (\Exception $e) {
+			} catch (NotAllowedChange $e) {
 				$message = match ($e->getCode()) {
 					1001 => 'The role is not allowed to be deleted.',
 					1002 => 'The role cannot be deleted because it is bound to another role.',

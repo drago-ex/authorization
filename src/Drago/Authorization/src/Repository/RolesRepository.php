@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Drago\Authorization\Repository;
 
+use Dibi\Exception;
 use Drago\Authorization\Conf;
 use Drago\Authorization\Entity\RolesEntity;
 use Drago\Authorization\NotAllowedChange;
@@ -26,7 +27,7 @@ class RolesRepository extends Connect
 
 	/**
 	 * @return array[]|RolesEntity[]
-	 * @throws \Dibi\Exception
+	 * @throws Exception
 	 */
 	public function getAll()
 	{
@@ -37,7 +38,7 @@ class RolesRepository extends Connect
 
 
 	/**
-	 * @throws \Dibi\Exception
+	 * @throws Exception
 	 */
 	public function findByParent(int $parent): array|RolesEntity|null
 	{
@@ -48,7 +49,7 @@ class RolesRepository extends Connect
 
 
 	/**
-	 * @throws \Dibi\Exception
+	 * @throws Exception
 	 */
 	public function getRole(int $id): array|RolesEntity|null
 	{

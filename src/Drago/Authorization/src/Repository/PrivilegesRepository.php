@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Drago\Authorization\Repository;
 
+use Dibi\Exception;
 use Drago\Authorization\Conf;
 use Drago\Authorization\Entity\PrivilegesEntity;
 use Drago\Authorization\NotAllowedChange;
@@ -25,7 +26,7 @@ class PrivilegesRepository extends Connect
 
 
 	/**
-	 * @throws \Dibi\Exception
+	 * @throws Exception
 	 */
 	public function getRecord(int $id): array|PrivilegesEntity|null
 	{
