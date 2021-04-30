@@ -11,10 +11,11 @@ namespace App\Entity;
 use Drago;
 use Nette;
 
-class AuthorizationData extends Drago\Utils\ExtraArrayHash
+class UsersRolesEntity extends Drago\Database\EntityOracle
 {
 	use Nette\SmartObject;
 
+	public const TABLE = 'users_roles';
 	public const ROLE_ID = 'role_id';
 	public const USER_ID = 'user_id';
 

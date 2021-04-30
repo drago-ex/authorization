@@ -11,11 +11,11 @@ namespace App\Entity;
 use Drago;
 use Nette;
 
-class AuthorizationViewEntity extends Drago\Database\EntityOracle
+class UsersRolesViewEntity extends Drago\Database\EntityOracle
 {
 	use Nette\SmartObject;
 
-	public const TABLE = 'authorization_view';
+	public const TABLE = 'users_roles_view';
 	public const ROLE = 'role';
 
 	public ?string $role = null;
