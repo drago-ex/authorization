@@ -22,7 +22,7 @@ use Throwable;
 /**
  * Managing user permissions.
  */
-class Acl
+class ExtraPermission
 {
 	public function __construct(
 		private Cache $cache,

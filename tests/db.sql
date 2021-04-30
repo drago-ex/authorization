@@ -9,7 +9,7 @@ SET foreign_key_checks = 0;
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 
 -- ---- create table:
-CREATE TABLE `acl` (
+CREATE TABLE `authorization` (
     `role_id` int(11) unsigned NOT NULL,
     `user_id` int(11) unsigned NOT NULL,
      KEY `user` (`user_id`),
@@ -17,6 +17,9 @@ CREATE TABLE `acl` (
      CONSTRAINT `acl_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
      CONSTRAINT `acl_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ---- create view:
+CREATE TABLE `authorization_view` (`role` varchar(40));
 
 -- ---- create table:
 CREATE TABLE `permissions` (
@@ -111,6 +114,10 @@ CREATE TABLE `users` (
     `password` varchar(60) NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ---- create query:
+DROP TABLE IF EXISTS `authorization_view`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `authorization_view` AS select `r`.`name` AS `role` from (`authorization` `a` left join `roles` `r` on(`a`.`role_id` = `r`.`id`));
 
 -- ---- create query:
 DROP TABLE IF EXISTS `permissions_roles_view`;

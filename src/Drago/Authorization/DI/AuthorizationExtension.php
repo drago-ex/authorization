@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Drago\Authorization\DI;
 
-use Drago\Authorization\Acl;
+use Drago\Authorization\ExtraPermission;
 use Drago\Authorization\Control\PermissionsControl;
 use Drago\Authorization\Control\PrivilegesControl;
 use Drago\Authorization\Control\ResetControl;
@@ -78,7 +78,7 @@ class AuthorizationExtension extends CompilerExtension
 
 		/** Authorization setup. */
 		$builder->addDefinition($this->prefix('authorization'))
-			->setFactory(Acl::class)
+			->setFactory(ExtraPermission::class)
 			->setArguments(['@authorization.cache']);
 
 		$builder->addDefinition($this->prefix('authorization.up'))

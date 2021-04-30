@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control;
 
 
-trait Authorization
+trait AuthorizationControl
 {
 	private RolesControl $rolesControl;
 	private ResourcesControl $resourcesControl;
@@ -19,7 +19,7 @@ trait Authorization
 	private ResetControl $resetControl;
 
 
-	public function injectAcl(
+	public function injectAuthorizationControl(
 		RolesControl $rolesControl,
 		ResourcesControl $resourcesControl,
 		PrivilegesControl $privilegesControl,

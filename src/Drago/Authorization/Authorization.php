@@ -14,12 +14,12 @@ use Nette\InvalidStateException;
 use Nette\Security\User;
 
 
-trait Permission
+trait Authorization
 {
 	/**
 	 * Checks for requirements such as authorization.
 	 */
-	public function injectPermission(Presenter $presenter, User $user): void
+	public function injectAuthorization(Presenter $presenter, User $user): void
 	{
 		$presenter->onStartup[] = function () use ($presenter, $user) {
 			try {

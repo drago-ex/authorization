@@ -30,13 +30,13 @@ extensions:
 ## Use trait in base presenter for access control
 
 ```php
-use Drago\Authorization\Permission
+use Drago\Authorization\Authorization
 ```
 
 ## Use trait in admin presenter for settings access control
 
 ```php
-use Drago\Authorization\Control\Authorization
+use Drago\Authorization\Control\AuthorizationControl
 ```
 
 ## Use components in admin latte
