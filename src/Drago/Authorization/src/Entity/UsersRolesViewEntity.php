@@ -17,6 +17,8 @@ class UsersRolesViewEntity extends Drago\Database\EntityOracle
 
 	public const TABLE = 'users_roles_view';
 	public const ROLE = 'role';
+	public const USER_ID = 'user_id';
 
 	public ?string $role = null;
+	public int $user_id;
 }
