@@ -6,7 +6,7 @@
 
 declare(strict_types=1);
 
-namespace App\Entity;
+namespace Drago\Authorization\Entity;
 
 use Drago;
 use Nette;

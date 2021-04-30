@@ -9,12 +9,12 @@ declare(strict_types=1);
 
 namespace Drago\Authorization\DI;
 
-use Drago\Authorization\ExtraPermission;
 use Drago\Authorization\Control\PermissionsControl;
 use Drago\Authorization\Control\PrivilegesControl;
 use Drago\Authorization\Control\ResetControl;
 use Drago\Authorization\Control\ResourcesControl;
 use Drago\Authorization\Control\RolesControl;
+use Drago\Authorization\ExtraPermission;
 use Drago\Authorization\Repository\PermissionsRepository;
 use Drago\Authorization\Repository\PermissionsRolesViewRepository;
 use Drago\Authorization\Repository\PermissionsViewRepository;
