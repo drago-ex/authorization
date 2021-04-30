@@ -74,7 +74,8 @@ CREATE TABLE `roles` (
 -- ---- insert values to table:
 INSERT INTO `roles` (`id`, `name`, `parent`) VALUES
 (1,	'guest',	0),
-(2,	'member',	1);
+(2,	'member',	1),
+(3,	'admin',	2);
 
 -- ---- create table:
 CREATE TABLE `users` (
