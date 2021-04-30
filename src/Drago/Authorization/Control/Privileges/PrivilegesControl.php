@@ -191,9 +191,12 @@ class PrivilegesControl extends Component implements Base
 			}
 
 		} catch (\Exception $e) {
-			if ($e->getCode() === 1062) {
-				$form->addError('This privilege already exists.');
-			}
+			$message = match ($e->getCode()) {
+				1062 => 'This privilege already exists.',
+				default => 'Unknown status code.',
+			};
+
+			$form->addError($message);
 			if ($this->isAjax()) {
 				$this->redrawPresenter($this->snippetFactory);
 				$this->redrawControl($this->snippetError);

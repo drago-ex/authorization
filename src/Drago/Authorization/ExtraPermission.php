@@ -60,7 +60,6 @@ class ExtraPermission
 						: 'deny'} ($row->role, $row->resource, $row->privilege);
 				}
 
-				$acl->addRole(Conf::ROLE_ADMIN, Conf::ROLE_MEMBER);
 				$acl->allow(Conf::ROLE_ADMIN, Permission::ALL, Permission::ALL);
 				$this->cache->save(Conf::CACHE, $acl);
 			}

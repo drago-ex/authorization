@@ -15,6 +15,7 @@ use Drago\Authorization\Conf;
 use Drago\Authorization\Data\PermissionsData;
 use Drago\Authorization\Entity\PrivilegesEntity;
 use Drago\Authorization\Entity\ResourcesEntity;
+use Drago\Authorization\Entity\RolesEntity;
 use Drago\Authorization\Repository\PermissionsRepository;
 use Drago\Authorization\Repository\PermissionsRolesViewRepository;
 use Drago\Authorization\Repository\PermissionsViewRepository;
@@ -68,7 +69,12 @@ class PermissionsControl extends Component implements Base
 	protected function createComponentFactory(): Form
 	{
 		$form = new Form;
-		$form->addSelect(PermissionsData::ROLE_ID, 'Role', $this->rolesRepository->getRoles())
+
+		$roles = $this->rolesRepository->all()
+			->where(RolesEntity::NAME, '!= ?', Conf::ROLE_ADMIN)
+			->fetchPairs(RolesEntity::PRIMARY, RolesEntity::NAME);
+
+		$form->addSelect(PermissionsData::ROLE_ID, 'Role', $roles)
 			->setPrompt('Select role')
 			->setRequired();
 

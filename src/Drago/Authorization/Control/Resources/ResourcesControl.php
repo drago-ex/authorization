@@ -172,10 +172,12 @@ class ResourcesControl extends Component implements Base
 			}
 
 		} catch (\Exception $e) {
-			if ($e->getCode() === 1062) {
-				$form->addError('This resource already exists.');
-			}
+			$message = match ($e->getCode()) {
+				1062 => 'This resource already exists.',
+				default => 'Unknown status code.',
+			};
 
+			$form->addError($message);
 			if ($this->isAjax()) {
 				$this->redrawPresenter($this->snippetFactory);
 				$this->redrawControl($this->snippetError);

@@ -118,7 +118,6 @@ class RolesControl extends Component implements Base
 		} catch (\Exception $e) {
 			$message = match ($e->getCode()) {
 				1062 => 'This role already exists.',
-				1644 => $e->getMessage(),
 				default => 'Unknown status code.',
 			};
 
