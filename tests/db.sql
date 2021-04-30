@@ -63,7 +63,9 @@ CREATE TABLE `privileges` (
 
 -- ---- insert values to table:
 INSERT INTO `privileges` (`id`, `name`) VALUES
-(1,	'*all');
+(1,	'*all'),
+(2,	'default'),
+(2,	'submit');
 
 -- ---- create table:
 CREATE TABLE `resources` (
