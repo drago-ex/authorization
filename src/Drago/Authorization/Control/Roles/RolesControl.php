@@ -87,100 +87,6 @@ class RolesControl extends Component implements Base
 	}
 
 
-	public function createComponentFactory(): Form
-	{
-		$form = new Form;
-
-		if ($this->translator instanceof Translator) {
-			$form->setTranslator($this->translator);
-		}
-
-		$form->addText(RolesData::NAME, 'Role')
-			->setHtmlAttribute('placeholder', 'Role name')
-			->setHtmlAttribute('autocomplete', 'nope')
-			->setRequired();
-
-		if ($this->getSignal()) {
-			$id = (int) $this->getParameter('id');
-			foreach ($this->repository->getRoles() as $key => $item) {
-				if ($id !== $key) {
-					$roles[$key] = $item;
-				}
-			}
-		}
-
-		$form->addSelect(RolesData::PARENT, 'Parent', $roles ?? $this->repository->getRoles())
-			->setPrompt('Select parent')
-			->setRequired();
-
-		$form->addHidden(RolesData::ID, 0)
-			->addRule(Form::INTEGER);
-
-		$form->addSubmit('send', 'Send');
-		$form->onSuccess[] = [$this, 'success'];
-		return $form;
-	}
-
-
-	public function success(Form $form, RolesData $data): void
-	{
-		try {
-			$form->reset();
-
-			$formId = $form[RolesData::ID];
-			if ($formId instanceof BaseControl) {
-				$formId->setDefaultValue(0)
-					->addRule(Form::INTEGER);
-			}
-
-			$this->repository->put($data->toArray());
-			$this->cache->remove(Conf::CACHE);
-
-			$parent = $this['factory']['parent'];
-			if ($parent instanceof SelectBox) {
-				$parent->setItems($this->repository->getRoles());
-			}
-
-			$message = $data->id ? 'Role updated.' : 'The role was inserted.';
-			$this->flashMessagePresenter($message);
-
-			if ($this->isAjax()) {
-				$this->redrawPresenter($this->snippetFactory);
-				$this->redrawPresenter($this->snippetRecords);
-				$this->redrawPresenter($this->snippetMessage);
-				$this->redrawPresenter($this->snippetPermissions);
-			}
-
-		} catch (\Exception $e) {
-			$message = match ($e->getCode()) {
-				1062 => 'This role already exists.',
-				default => 'Unknown status code.',
-			};
-
-			$form->addError($message);
-			if ($this->isAjax()) {
-				$this->redrawPresenter($this->snippetFactory);
-				$this->redrawControl($this->snippetError);
-			}
-		}
-	}
-
-
-	/**
-	 * @throws Exception
-	 */
-	public function getRecords(): array
-	{
-		$roles = [];
-		foreach ($this->repository->getAll() as $role) {
-			$parent = $this->repository->findByParent($role->parent);
-			$role->parent = $parent->name ?? 'none';
-			$roles[] = $role;
-		}
-		return $roles;
-	}
-
-
 	/**
 	 * @throws Exception
 	 * @throws BadRequestException
@@ -275,5 +181,99 @@ class RolesControl extends Component implements Base
 				$this->redrawPresenter($this->snippetRecords);
 			}
 		}
+	}
+
+
+	public function createComponentFactory(): Form
+	{
+		$form = new Form;
+
+		if ($this->translator instanceof Translator) {
+			$form->setTranslator($this->translator);
+		}
+
+		$form->addText(RolesData::NAME, 'Role')
+			->setHtmlAttribute('placeholder', 'Role name')
+			->setHtmlAttribute('autocomplete', 'nope')
+			->setRequired();
+
+		if ($this->getSignal()) {
+			$id = (int) $this->getParameter('id');
+			foreach ($this->repository->getRoles() as $key => $item) {
+				if ($id !== $key) {
+					$roles[$key] = $item;
+				}
+			}
+		}
+
+		$form->addSelect(RolesData::PARENT, 'Parent', $roles ?? $this->repository->getRoles())
+			->setPrompt('Select parent')
+			->setRequired();
+
+		$form->addHidden(RolesData::ID, 0)
+			->addRule(Form::INTEGER);
+
+		$form->addSubmit('send', 'Send');
+		$form->onSuccess[] = [$this, 'success'];
+		return $form;
+	}
+
+
+	public function success(Form $form, RolesData $data): void
+	{
+		try {
+			$form->reset();
+
+			$formId = $form[RolesData::ID];
+			if ($formId instanceof BaseControl) {
+				$formId->setDefaultValue(0)
+					->addRule(Form::INTEGER);
+			}
+
+			$this->repository->put($data->toArray());
+			$this->cache->remove(Conf::CACHE);
+
+			$parent = $this['factory']['parent'];
+			if ($parent instanceof SelectBox) {
+				$parent->setItems($this->repository->getRoles());
+			}
+
+			$message = $data->id ? 'Role updated.' : 'The role was inserted.';
+			$this->flashMessagePresenter($message);
+
+			if ($this->isAjax()) {
+				$this->redrawPresenter($this->snippetFactory);
+				$this->redrawPresenter($this->snippetRecords);
+				$this->redrawPresenter($this->snippetMessage);
+				$this->redrawPresenter($this->snippetPermissions);
+			}
+
+		} catch (\Exception $e) {
+			$message = match ($e->getCode()) {
+				1062 => 'This role already exists.',
+				default => 'Unknown status code.',
+			};
+
+			$form->addError($message);
+			if ($this->isAjax()) {
+				$this->redrawPresenter($this->snippetFactory);
+				$this->redrawControl($this->snippetError);
+			}
+		}
+	}
+
+
+	/**
+	 * @throws Exception
+	 */
+	public function getRecords(): array
+	{
+		$roles = [];
+		foreach ($this->repository->getAll() as $role) {
+			$parent = $this->repository->findByParent($role->parent);
+			$role->parent = $parent->name ?? 'none';
+			$roles[] = $role;
+		}
+		return $roles;
 	}
 }

@@ -95,6 +95,74 @@ class PermissionsControl extends Component implements Base
 	}
 
 
+	/**
+	 * @throws BadRequestException
+	 */
+	public function handleEdit(int $id): void
+	{
+		$permission = $this->permissionsRepository->get($id)->fetch();
+		$permission ?: $this->error();
+
+		if ($this->getSignal()) {
+			$form = $this['factory'];
+			$form->setDefaults($permission);
+
+			$buttonSend = $form['send'];
+			if ($buttonSend instanceof BaseControl) {
+				$buttonSend->setCaption('Edit');
+			}
+
+			if ($this->isAjax()) {
+				$this->redrawPresenter($this->snippetFactory);
+			}
+		}
+	}
+
+
+	/**
+	 * @throws BadRequestException
+	 * @throws Exception
+	 */
+	public function handleDelete(int $id): void
+	{
+		$permission = $this->permissionsRepository->getRecord($id);
+		$permission ?: $this->error();
+		$this->deleteId = $permission->id;
+
+		if ($this->isAjax()) {
+			$this->redrawPresenter($this->snippetRecords);
+		}
+	}
+
+
+	/**
+	 * @throws Exception
+	 * @throws BadRequestException
+	 */
+	public function handleDeleteConfirm(int $confirm, int $id): void
+	{
+		$permission = $this->permissionsRepository->get($id)->fetch();
+		$permission ?: $this->error();
+
+		if ($confirm === 1) {
+			$this->permissionsRepository->erase($id);
+			$this->cache->remove(Conf::CACHE);
+			$this->flashMessagePresenter('Permission removed.', Alert::DANGER);
+
+			if ($this->isAjax()) {
+				$this->redrawPresenter($this->snippetFactory);
+				$this->redrawPresenter($this->snippetRecords);
+				$this->redrawPresenter($this->snippetMessage);
+			}
+
+		} else {
+			if ($this->isAjax()) {
+				$this->redrawPresenter($this->snippetRecords);
+			}
+		}
+	}
+
+
 	protected function createComponentFactory(): Form
 	{
 		$form = new Form;
@@ -165,74 +233,6 @@ class PermissionsControl extends Component implements Base
 			$this->redrawPresenter($this->snippetFactory);
 			$this->redrawPresenter($this->snippetRecords);
 			$this->redrawPresenter($this->snippetMessage);
-		}
-	}
-
-
-	/**
-	 * @throws BadRequestException
-	 */
-	public function handleEdit(int $id): void
-	{
-		$permission = $this->permissionsRepository->get($id)->fetch();
-		$permission ?: $this->error();
-
-		if ($this->getSignal()) {
-			$form = $this['factory'];
-			$form->setDefaults($permission);
-
-			$buttonSend = $form['send'];
-			if ($buttonSend instanceof BaseControl) {
-				$buttonSend->setCaption('Edit');
-			}
-
-			if ($this->isAjax()) {
-				$this->redrawPresenter($this->snippetFactory);
-			}
-		}
-	}
-
-
-	/**
-	 * @throws BadRequestException
-	 * @throws Exception
-	 */
-	public function handleDelete(int $id): void
-	{
-		$permission = $this->permissionsRepository->getRecord($id);
-		$permission ?: $this->error();
-		$this->deleteId = $permission->id;
-
-		if ($this->isAjax()) {
-			$this->redrawPresenter($this->snippetRecords);
-		}
-	}
-
-
-	/**
-	 * @throws Exception
-	 * @throws BadRequestException
-	 */
-	public function handleDeleteConfirm(int $confirm, int $id): void
-	{
-		$permission = $this->permissionsRepository->get($id)->fetch();
-		$permission ?: $this->error();
-
-		if ($confirm === 1) {
-			$this->permissionsRepository->erase($id);
-			$this->cache->remove(Conf::CACHE);
-			$this->flashMessagePresenter('Permission removed.', Alert::DANGER);
-
-			if ($this->isAjax()) {
-				$this->redrawPresenter($this->snippetFactory);
-				$this->redrawPresenter($this->snippetRecords);
-				$this->redrawPresenter($this->snippetMessage);
-			}
-
-		} else {
-			if ($this->isAjax()) {
-				$this->redrawPresenter($this->snippetRecords);
-			}
 		}
 	}
 }
