@@ -182,7 +182,7 @@ class PermissionsControl extends Component implements Base
 			$form = $this['factory'];
 			$form->setDefaults($permission);
 
-			$buttonSend = $form['send'] ;
+			$buttonSend = $form['send'];
 			if ($buttonSend instanceof BaseControl) {
 				$buttonSend->setCaption('Edit');
 			}

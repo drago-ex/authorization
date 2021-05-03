@@ -97,7 +97,7 @@ class ResourcesControl extends Component implements Base
 			$form = $this['factory'];
 			$form->setDefaults($resource);
 
-			$buttonSend = $form['send'] ;
+			$buttonSend = $form['send'];
 			if ($buttonSend instanceof BaseControl) {
 				$buttonSend->setCaption('Edit');
 			}

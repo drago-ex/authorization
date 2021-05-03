@@ -99,7 +99,7 @@ class PrivilegesControl extends Component implements Base
 				$form = $this['factory'];
 				$form->setDefaults($privilege);
 
-				$buttonSend = $form['send'] ;
+				$buttonSend = $form['send'];
 				if ($buttonSend instanceof BaseControl) {
 					$buttonSend->setCaption('Edit');
 				}

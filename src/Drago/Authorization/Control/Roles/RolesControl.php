@@ -195,7 +195,7 @@ class RolesControl extends Component implements Base
 				$form = $this['factory'];
 				$form->setDefaults($role);
 
-				$buttonSend = $form['send'] ;
+				$buttonSend = $form['send'];
 				if ($buttonSend instanceof BaseControl) {
 					$buttonSend->setCaption('Edit');
 				}
