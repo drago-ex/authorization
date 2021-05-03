@@ -26,6 +26,7 @@ use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
 use Nette\Forms\Controls\BaseControl;
+use Nette\Localization\Translator;
 
 
 class PermissionsControl extends Component implements Base
@@ -69,6 +70,10 @@ class PermissionsControl extends Component implements Base
 		$this->templateRecords === null
 			? $template->setFile(__DIR__ . '/Templates/Permissions.records.latte')
 			: $template->setFile($this->templateRecords);
+
+		if ($this->translator instanceof Translator) {
+			$template->setTranslator($this->translator);
+		}
 
 		$template->render();
 	}

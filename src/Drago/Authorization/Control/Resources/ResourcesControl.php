@@ -18,6 +18,7 @@ use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
 use Nette\Forms\Controls\BaseControl;
+use Nette\Localization\Translator;
 
 
 class ResourcesControl extends Component implements Base
@@ -41,6 +42,10 @@ class ResourcesControl extends Component implements Base
 		$this->templateAdd === null
 			? $template->setFile(__DIR__ . '/Templates/Resources.add.latte')
 			: $template->setFile($this->templateAdd);
+
+		if ($this->translator instanceof Translator) {
+			$template->setTranslator($this->translator);
+		}
 
 		$template->render();
 	}

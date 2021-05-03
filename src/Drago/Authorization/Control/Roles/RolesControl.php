@@ -21,6 +21,7 @@ use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
 use Nette\Forms\Controls\BaseControl;
 use Nette\Forms\Controls\SelectBox;
+use Nette\Localization\Translator;
 
 
 class RolesControl extends Component implements Base
@@ -44,6 +45,10 @@ class RolesControl extends Component implements Base
 		$this->templateAdd === null
 			? $template->setFile(__DIR__ . '/Templates/Roles.add.latte')
 			: $template->setFile($this->templateAdd);
+
+		if ($this->translator instanceof Translator) {
+			$template->setTranslator($this->translator);
+		}
 
 		$template->render();
 	}

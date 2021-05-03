@@ -12,6 +12,7 @@ namespace Drago\Authorization\Control;
 
 use Drago\Application\UI;
 use Drago\Authorization\FileNotFoundException;
+use Nette\Localization\Translator;
 use Nette\SmartObject;
 use stdClass;
 
@@ -25,6 +26,7 @@ abstract class Component extends UI\ExtraControl
 {
 	use SmartObject;
 
+	public ?Translator $translator = null;
 	public ?string $templateAdd = null;
 	public ?string $templateRecords = null;
 	public int $deleteId = 0;
@@ -68,5 +70,11 @@ abstract class Component extends UI\ExtraControl
 		}
 
 		return $this;
+	}
+
+
+	public function setTranslator(Translator $translator): Translator
+	{
+		return $this->translator = $translator;
 	}
 }
