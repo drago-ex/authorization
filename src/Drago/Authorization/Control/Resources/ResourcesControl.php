@@ -37,7 +37,11 @@ class ResourcesControl extends Component implements Base
 	{
 		$template = $this->template;
 		$template->form = $this['factory'];
-		$template->setFile(__DIR__ . '/Templates/Resources.add.latte');
+
+		$this->templateAdd === null
+			? $template->setFile(__DIR__ . '/Templates/Resources.add.latte')
+			: $template->setFile($this->templateAdd);
+
 		$template->render();
 	}
 
@@ -49,8 +53,12 @@ class ResourcesControl extends Component implements Base
 	{
 		$template = $this->template;
 		$template->resources = $this->repository->getAll();
+
+		$this->templateRecords === null
+			? $template->setFile(__DIR__ . '/Templates/Resources.records.latte')
+			: $template->setFile($this->templateRecords);
+
 		$template->deleteId = $this->deleteId;
-		$template->setFile(__DIR__ . '/Templates/Resources.records.latte');
 		$template->render();
 	}
 

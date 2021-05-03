@@ -18,3 +18,8 @@ class Exception extends \Exception
 class NotAllowedChange extends Exception
 {
 }
+
+
+class FileNotFoundException extends  Exception
+{
+}

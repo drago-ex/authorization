@@ -11,7 +11,7 @@ namespace Drago\Authorization\Entity;
 use Drago;
 use Nette;
 
-class UsersRolesEntity extends Drago\Database\EntityOracle
+class UsersRolesEntity extends Drago\Database\Entity
 {
 	use Nette\SmartObject;
 

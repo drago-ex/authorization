@@ -39,7 +39,11 @@ class PrivilegesControl extends Component implements Base
 	{
 		$template = $this->template;
 		$template->form = $this['factory'];
-		$template->setFile(__DIR__ . '/Templates/Privileges.add.latte');
+
+		$this->templateAdd === null
+			? $template->setFile(__DIR__ . '/Templates/Privileges.add.latte')
+			: $template->setFile($this->templateAdd);
+
 		$template->render();
 	}
 
@@ -50,8 +54,11 @@ class PrivilegesControl extends Component implements Base
 		$template->privileges = $this->repository->all()
 			->orderBy(PrivilegesEntity::NAME, 'asc');
 
+		$this->templateRecords === null
+			? $template->setFile(__DIR__ . '/Templates/Privileges.records.latte')
+			: $template->setFile($this->templateRecords);
+
 		$template->deleteId = $this->deleteId;
-		$template->setFile(__DIR__ . '/Templates/Privileges.records.latte');
 		$template->render();
 	}
 

@@ -40,7 +40,11 @@ class RolesControl extends Component implements Base
 	{
 		$template = $this->template;
 		$template->form = $this['factory'];
-		$template->setFile(__DIR__ . '/Templates/Roles.add.latte');
+
+		$this->templateAdd === null
+			? $template->setFile(__DIR__ . '/Templates/Roles.add.latte')
+			: $template->setFile($this->templateAdd);
+
 		$template->render();
 	}
 
@@ -52,8 +56,12 @@ class RolesControl extends Component implements Base
 	{
 		$template = $this->template;
 		$template->roles = $this->getRecords();
+
+		$this->templateRecords === null
+			? $template->setFile(__DIR__ . '/Templates/Roles.records.latte')
+			: $template->setFile($this->templateRecords);
+
 		$template->deleteId = $this->deleteId;
-		$template->setFile(__DIR__ . '/Templates/Roles.records.latte');
 		$template->render();
 	}
 

@@ -50,7 +50,11 @@ class PermissionsControl extends Component implements Base
 	{
 		$template = $this->template;
 		$template->form = $this['factory'];
-		$template->setFile(__DIR__ . '/Templates/Permissions.add.latte');
+
+		$this->templateAdd === null
+			? $template->setFile(__DIR__ . '/Templates/Permissions.add.latte')
+			: $template->setFile($this->templateAdd);
+
 		$template->render();
 	}
 
@@ -61,7 +65,11 @@ class PermissionsControl extends Component implements Base
 		$template->roles = $this->permissionsRolesViewRepository->all();
 		$template->permissions = $this->permissionsViewRepository->all();
 		$template->deleteId = $this->deleteId;
-		$template->setFile(__DIR__ . '/Templates/Permissions.records.latte');
+
+		$this->templateRecords === null
+			? $template->setFile(__DIR__ . '/Templates/Permissions.records.latte')
+			: $template->setFile($this->templateRecords);
+
 		$template->render();
 	}
 

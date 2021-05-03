@@ -9,7 +9,22 @@ declare(strict_types=1);
 
 namespace Drago\Authorization\Control;
 
+use Drago\Authorization\FileNotFoundException;
 
+
+/**
+ * @property string $rolesTemplateAdd
+ * @property string $rolesTemplateRecords
+ *
+ * @property string $resourcesTemplateAdd
+ * @property string $resourcesTemplateRecords
+ *
+ * @property string $privilegesTemplateAdd
+ * @property string $privilegesTemplateRecords
+ *
+ * @property string $permissionsTemplateAdd
+ * @property string $permissionsTemplateRecords
+ */
 trait AuthorizationControl
 {
 	private RolesControl $rolesControl;
@@ -34,27 +49,64 @@ trait AuthorizationControl
 	}
 
 
+	/**
+	 * @throws FileNotFoundException
+	 */
 	protected function createComponentRolesControl(): RolesControl
 	{
-		return $this->rolesControl;
+		$control = $this->rolesControl;
+		if (isset($this->rolesTemplateAdd)) {
+			$control->setTemplateFile($this->rolesTemplateAdd);
+		}
+		if (isset($this->rolesTemplateRecords)) {
+			$control->setTemplateFile($this->rolesTemplateRecords, 'records');
+		}
+		return $control;
 	}
 
 
+	/**
+	 * @throws FileNotFoundException
+	 */
 	protected function createComponentResourcesControl(): ResourcesControl
 	{
-		return $this->resourcesControl;
+		$control = $this->resourcesControl;
+		if (isset($this->resourcesTemplateAdd)) {
+			$control->setTemplateFile($this->resourcesTemplateAdd);
+		}
+		if (isset($this->resourcesTemplateRecords)) {
+			$control->setTemplateFile($this->resourcesTemplateRecords, 'records');
+		}
+		return $control;
 	}
 
 
 	protected function createComponentPrivilegesControl(): PrivilegesControl
 	{
-		return $this->privilegesControl;
+		$control = $this->privilegesControl;
+		if (isset($this->privilegesTemplateAdd)) {
+			$control->setTemplateFile($this->privilegesTemplateAdd);
+		}
+		if (isset($this->privilegesTemplateRecords)) {
+			$control->setTemplateFile($this->privilegesTemplateRecords, 'records');
+		}
+		return $control;
 	}
 
 
+	/**
+	 * @throws FileNotFoundException
+	 */
 	protected function createComponentPermissionsControl(): PermissionsControl
 	{
-		return $this->permissionsControl;
+		$control = $this->permissionsControl;
+		if (isset($this->permissionsTemplateAdd)) {
+			$control->setTemplateFile($this->permissionsTemplateAdd);
+		}
+		if (isset($this->permissionsTemplateRecords)) {
+			$control->setTemplateFile($this->permissionsTemplateRecords, 'records');
+		}
+		return $control;
 	}
 
 
