@@ -33,7 +33,7 @@ extensions:
 use Drago\Authorization\Authorization
 ```
 
-## Use trait in admin presenter for settings access control
+## Use trait in presenter for settings access control
 
 ```php
 use Drago\Authorization\Control\AuthorizationControl
@@ -60,7 +60,7 @@ $control->setTemplateFile(__DIR__ . '/path/to/file', 'records');
 $control->setTranslator(...);
 ```
 
-## Use components in admin latte
+## Use components in latte
 ```
 {snippet permissions}
   {control permissionsControl}
