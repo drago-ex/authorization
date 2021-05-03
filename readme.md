@@ -50,6 +50,24 @@ protected function createComponentPermissionsControl(): PermissionsControl
 	return $control;
 }
 
+protected function createComponentRolesControl(): RolesControl
+{
+	$control = $this->rolesControl;
+	return $control;
+}
+
+protected function createComponentResourcesControl(): ResourcesControl
+{
+	$control = $this->resourcesControl;
+	return $control;
+}
+
+protected function createComponentPrivilegesControl(): PrivilegesControl
+{
+	$control = $this->privilegesControl;
+	return $control;
+}
+
 // Configure a custom form template.
 $control->setTemplateFile(__DIR__ . '/path/to/file');
 
