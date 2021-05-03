@@ -44,16 +44,18 @@ class ResetControl extends ExtraControl
 		foreach ($components as $component) {
 
 			/** @var Form $form */
-			$form = $this->getPresenter()[$component]['factory'];
-			$formElementId = $form->getElementPrototype()
-				->getAttribute('id');
+			$form = $this->getPresenter()[$component]['factory'] ?? null;
+			if ($form) {
+				$formElementId = $form->getElementPrototype()
+					->getAttribute('id');
 
-			if ($formElementId === $factoryId) {
-				$form->reset();
+				if ($formElementId === $factoryId) {
+					$form->reset();
 
-				if ($this->isAjax()) {
-					$snippet = $this->{$component}->snippetFactory;
-					$this->getPresenter()->redrawControl($snippet);
+					if ($this->isAjax()) {
+						$snippet = $this->{$component}->snippetFactory;
+						$this->getPresenter()->redrawControl($snippet);
+					}
 				}
 			}
 		}
