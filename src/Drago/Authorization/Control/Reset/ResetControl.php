@@ -48,8 +48,6 @@ class ResetControl extends ExtraControl
 					->getAttribute('id');
 
 				if ($formElementId === $factoryId) {
-					$form->reset();
-
 					if ($this->isAjax()) {
 						$snippet = $this->{$component}->snippetFactory;
 						$this->getPresenter()->redrawControl($snippet);
