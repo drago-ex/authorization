@@ -95,7 +95,6 @@ class PrivilegesControl extends Component implements Base
 
 		try {
 			if ($this->repository->isAllowed($privilege->name) && $this->getSignal()) {
-
 				$form = $this['factory'];
 				$form->setDefaults($privilege);
 

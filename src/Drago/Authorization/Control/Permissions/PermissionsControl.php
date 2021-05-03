@@ -178,7 +178,6 @@ class PermissionsControl extends Component implements Base
 		$permission ?: $this->error();
 
 		if ($this->getSignal()) {
-
 			$form = $this['factory'];
 			$form->setDefaults($permission);
 

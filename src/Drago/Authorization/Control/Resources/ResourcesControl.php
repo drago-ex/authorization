@@ -93,7 +93,6 @@ class ResourcesControl extends Component implements Base
 		$resource ?: $this->error();
 
 		if ($this->getSignal()) {
-
 			$form = $this['factory'];
 			$form->setDefaults($resource);
 

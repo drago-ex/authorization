@@ -136,9 +136,10 @@ class RolesControl extends Component implements Base
 			$this->repository->put($data->toArray());
 			$this->cache->remove(Conf::CACHE);
 
-			/** @var Form|SelectBox $parent */
 			$parent = $this['factory']['parent'];
-			$parent->setItems($this->repository->getRoles());
+			if ($parent instanceof SelectBox) {
+				$parent->setItems($this->repository->getRoles());
+			}
 
 			$message = $data->id ? 'Role updated.' : 'The role was inserted.';
 			$this->flashMessagePresenter($message);
@@ -191,7 +192,6 @@ class RolesControl extends Component implements Base
 
 		try {
 			if ($this->repository->isAllowed($role->name) && $this->getSignal()) {
-
 				$form = $this['factory'];
 				$form->setDefaults($role);
 
