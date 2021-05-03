@@ -149,11 +149,11 @@ class PermissionsControl extends Component implements Base
 	public function success(Form $form, PermissionsData $data): void
 	{
 		$form->reset();
-
 		$formId = $form[PermissionsData::ID];
-		assert($formId instanceof BaseControl);
-		$formId->setDefaultValue(0)
-			->addRule(Form::INTEGER);
+		if ($formId instanceof BaseControl) {
+			$formId->setDefaultValue(0)
+				->addRule(Form::INTEGER);
+		}
 
 		$this->permissionsRepository->put($data->toArray());
 		$this->cache->remove(Conf::CACHE);
@@ -179,10 +179,13 @@ class PermissionsControl extends Component implements Base
 
 		if ($this->getSignal()) {
 
-			/** @var Form|BaseControl $form */
 			$form = $this['factory'];
-			$form['send']->caption = 'Edit';
 			$form->setDefaults($permission);
+
+			$buttonSend = $form['send'] ;
+			if ($buttonSend instanceof BaseControl) {
+				$buttonSend->setCaption('Edit');
+			}
 
 			if ($this->isAjax()) {
 				$this->redrawPresenter($this->snippetFactory);

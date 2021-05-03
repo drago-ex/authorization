@@ -94,10 +94,13 @@ class ResourcesControl extends Component implements Base
 
 		if ($this->getSignal()) {
 
-			/** @var Form|BaseControl $form */
 			$form = $this['factory'];
-			$form['send']->caption = 'Edit';
 			$form->setDefaults($resource);
+
+			$buttonSend = $form['send'] ;
+			if ($buttonSend instanceof BaseControl) {
+				$buttonSend->setCaption('Edit');
+			}
 
 			if ($this->isAjax()) {
 				$this->redrawPresenter($this->snippetFactory);
@@ -188,9 +191,10 @@ class ResourcesControl extends Component implements Base
 			$form->reset();
 
 			$formId = $form[ResourcesData::ID];
-			assert($formId instanceof BaseControl);
-			$formId->setDefaultValue(0)
-				->addRule(Form::INTEGER);
+			if ($formId instanceof BaseControl) {
+				$formId->setDefaultValue(0)
+					->addRule(Form::INTEGER);
+			}
 
 			$this->repository->put($data->toArray());
 			$this->cache->remove(Conf::CACHE);

@@ -128,9 +128,10 @@ class RolesControl extends Component implements Base
 			$form->reset();
 
 			$formId = $form[RolesData::ID];
-			assert($formId instanceof BaseControl);
-			$formId->setDefaultValue(0)
-				->addRule(Form::INTEGER);
+			if ($formId instanceof BaseControl) {
+				$formId->setDefaultValue(0)
+					->addRule(Form::INTEGER);
+			}
 
 			$this->repository->put($data->toArray());
 			$this->cache->remove(Conf::CACHE);
@@ -191,10 +192,13 @@ class RolesControl extends Component implements Base
 		try {
 			if ($this->repository->isAllowed($role->name) && $this->getSignal()) {
 
-				/** @var Form|BaseControl $form */
 				$form = $this['factory'];
-				$form['send']->caption = 'Edit';
 				$form->setDefaults($role);
+
+				$buttonSend = $form['send'] ;
+				if ($buttonSend instanceof BaseControl) {
+					$buttonSend->setCaption('Edit');
+				}
 
 				if ($this->isAjax()) {
 					$this->redrawPresenter($this->snippetFactory);
