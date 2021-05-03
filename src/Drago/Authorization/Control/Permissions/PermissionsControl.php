@@ -99,6 +99,10 @@ class PermissionsControl extends Component implements Base
 	{
 		$form = new Form;
 
+		if ($this->translator instanceof Translator) {
+			$form->setTranslator($this->translator);
+		}
+
 		$roles = $this->rolesRepository->all()
 			->where(RolesEntity::NAME, '!= ?', Conf::ROLE_ADMIN)
 			->fetchPairs(RolesEntity::PRIMARY, RolesEntity::NAME);
