@@ -71,6 +71,36 @@ $control->setTranslator(...);
 {/snippet}
 ```
 
+```
+{snippet roles}
+  {control rolesControl}
+{/snippet}
+
+{snippet rolesRecords}
+  {control rolesControl:records}
+{/snippet}
+```
+
+```
+{snippet resources}
+  {control resourcesControl}
+{/snippet}
+
+{snippet resourcesRecords}
+  {control resourcesControl:records}
+{/snippet}
+```
+
+```
+{snippet privileges}
+  {control privilegesControl}
+{/snippet}
+
+{snippet privilegesRecords}
+  {control privilegesControl:records}
+{/snippet}
+```
+
 ## Use Nette ajax for reset form
 ```
 {control resetControl}
