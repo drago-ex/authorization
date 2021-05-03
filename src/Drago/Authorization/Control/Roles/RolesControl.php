@@ -90,6 +90,11 @@ class RolesControl extends Component implements Base
 	public function createComponentFactory(): Form
 	{
 		$form = new Form;
+
+		if ($this->translator instanceof Translator) {
+			$form->setTranslator($this->translator);
+		}
+
 		$form->addText(RolesData::NAME, 'Role')
 			->setHtmlAttribute('placeholder', 'Role name')
 			->setHtmlAttribute('autocomplete', 'nope')
