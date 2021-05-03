@@ -78,3 +78,10 @@ use Drago\Authorization\Control\AuthorizationControl
 ```
 {control resetControl}
 ```
+
+## To change the original templates, use in the presenter
+
+```php
+public string $permissionsTemplateAdd = __DIR__ . '/path/to/my/file';
+public string $permissionsTemplateRecords = __DIR__ . '/path/to/my/file';
+```
