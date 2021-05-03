@@ -53,7 +53,7 @@ protected function createComponentPermissionsControl(): PermissionsControl
 // Configure a custom form template.
 $control->setTemplateFile(__DIR__ . '/path/to/file');
 
-// Configure a custom record template.
+// Configure a custom records template.
 $control->setTemplateFile(__DIR__ . '/path/to/file', 'records');
 
 // Inserting a translator.
