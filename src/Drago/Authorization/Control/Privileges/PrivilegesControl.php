@@ -181,6 +181,11 @@ class PrivilegesControl extends Component implements Base
 	public function createComponentFactory(): Form
 	{
 		$form = new Form;
+
+		if ($this->translator instanceof Translator) {
+			$form->setTranslator($this->translator);
+		}
+
 		$form->addText(PrivilegesData::NAME, 'Action or signal')
 			->setHtmlAttribute('placeholder', 'Action or signal')
 			->setHtmlAttribute('autocomplete', 'off')
