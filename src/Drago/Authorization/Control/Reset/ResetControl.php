@@ -45,7 +45,7 @@ class ResetControl extends ExtraControl
 
 			/** @var Form $form */
 			$form = $this->getPresenter()[$component]['factory'] ?? null;
-			if ($form) {
+			if (is_object($form)) {
 				$formElementId = $form->getElementPrototype()
 					->getAttribute('id');
 
