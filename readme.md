@@ -39,6 +39,27 @@ use Drago\Authorization\Authorization
 use Drago\Authorization\Control\AuthorizationControl
 ```
 
+## Component creation and configuration
+
+```php
+
+// Minimum configuration.
+protected function createComponentPermissionsControl(): PermissionsControl
+{
+	$control = $this->permissionsControl;
+	return $control;
+}
+
+// Configure a custom form template.
+$control->setTemplateFile(__DIR__ . '/path/to/file');
+
+// Configure a custom record template.
+$control->setTemplateFile(__DIR__ . '/path/to/file', 'records');
+
+// Inserting a translator.
+$control->setTranslator(...);
+```
+
 ## Use components in admin latte
 ```
 {snippet permissions}
@@ -48,40 +69,9 @@ use Drago\Authorization\Control\AuthorizationControl
 {snippet permissionsRecords}
   {control permissionsControl:records}
 {/snippet}
-
-{snippet roles}
-  {control rolesControl}
-{/snippet}
-
-{snippet rolesRecords}
-  {control rolesControl:records}
-{/snippet}
-
-{snippet resources}
-  {control resourcesControl}
-{/snippet}
-
-{snippet resourcesRecords}
-  {control resourcesControl:records}
-{/snippet}
-
-{snippet privileges}
-  {control privilegesControl}
-{/snippet}
-
-{snippet privilegesRecords}
-  {control privilegesControl:records}
-{/snippet}
 ```
 
 ## Use Nette ajax for reset form
 ```
 {control resetControl}
-```
-
-## To change the original templates, use in the presenter
-
-```php
-public string $permissionsTemplateAdd = __DIR__ . '/path/to/my/file';
-public string $permissionsTemplateRecords = __DIR__ . '/path/to/my/file';
 ```
