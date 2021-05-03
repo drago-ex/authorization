@@ -244,7 +244,6 @@ class RolesControl extends Component implements Base
 		if ($confirm === 1) {
 			try {
 				$parent = $this->repository->findParent($id);
-
 				if (!$parent && $this->repository->isAllowed($role->name)) {
 					$this->repository->erase($id);
 					$this->cache->remove(Conf::CACHE);
