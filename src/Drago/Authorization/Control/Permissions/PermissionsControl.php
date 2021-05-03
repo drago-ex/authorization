@@ -24,8 +24,10 @@ use Drago\Authorization\Repository\ResourcesRepository;
 use Drago\Authorization\Repository\RolesRepository;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
+use Nette\Bridges\ApplicationLatte\Template;
 use Nette\Caching\Cache;
 use Nette\Forms\Controls\BaseControl;
+use Nette\InvalidStateException;
 use Nette\Localization\Translator;
 
 
@@ -49,33 +51,47 @@ class PermissionsControl extends Component implements Base
 
 	public function render(): void
 	{
-		$template = $this->template;
-		$template->form = $this['factory'];
+		if ($this->template instanceof Template) {
+			$template = $this->template;
+			$template->form = $this['factory'];
 
-		$this->templateAdd === null
-			? $template->setFile(__DIR__ . '/Templates/Permissions.add.latte')
-			: $template->setFile($this->templateAdd);
+			$this->templateAdd === null
+				? $template->setFile(__DIR__ . '/Templates/Permissions.add.latte')
+				: $template->setFile($this->templateAdd);
 
-		$template->render();
+			if ($this->translator instanceof Translator) {
+				$template->setTranslator($this->translator);
+			}
+
+			$template->render();
+
+		} else {
+			throw new InvalidStateException('Control is without template.');
+		}
 	}
 
 
 	public function renderRecords(): void
 	{
-		$template = $this->template;
-		$template->roles = $this->permissionsRolesViewRepository->all();
-		$template->permissions = $this->permissionsViewRepository->all();
-		$template->deleteId = $this->deleteId;
+		if ($this->template instanceof Template) {
+			$template = $this->template;
+			$template->roles = $this->permissionsRolesViewRepository->all();
+			$template->permissions = $this->permissionsViewRepository->all();
 
-		$this->templateRecords === null
-			? $template->setFile(__DIR__ . '/Templates/Permissions.records.latte')
-			: $template->setFile($this->templateRecords);
+			$this->templateRecords === null
+				? $template->setFile(__DIR__ . '/Templates/Permissions.records.latte')
+				: $template->setFile($this->templateRecords);
 
-		if ($this->translator instanceof Translator) {
-			$template->setTranslator($this->translator);
+			if ($this->translator instanceof Translator) {
+				$template->setTranslator($this->translator);
+			}
+
+			$template->deleteId = $this->deleteId;
+			$template->render();
+
+		} else {
+			throw new InvalidStateException('Control is without template.');
 		}
-
-		$template->render();
 	}
 
 
@@ -130,8 +146,8 @@ class PermissionsControl extends Component implements Base
 	{
 		$form->reset();
 
-		/** @var Form|BaseControl $formId */
 		$formId = $form[PermissionsData::ID];
+		assert($formId instanceof BaseControl);
 		$formId->setDefaultValue(0)
 			->addRule(Form::INTEGER);
 

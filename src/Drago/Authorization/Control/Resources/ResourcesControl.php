@@ -16,8 +16,10 @@ use Drago\Authorization\Data\ResourcesData;
 use Drago\Authorization\Repository\ResourcesRepository;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
+use Nette\Bridges\ApplicationLatte\Template;
 use Nette\Caching\Cache;
 use Nette\Forms\Controls\BaseControl;
+use Nette\InvalidStateException;
 use Nette\Localization\Translator;
 
 
@@ -36,18 +38,23 @@ class ResourcesControl extends Component implements Base
 
 	public function render(): void
 	{
-		$template = $this->template;
-		$template->form = $this['factory'];
+		if ($this->template instanceof Template) {
+			$template = $this->template;
+			$template->form = $this['factory'];
 
-		$this->templateAdd === null
-			? $template->setFile(__DIR__ . '/Templates/Resources.add.latte')
-			: $template->setFile($this->templateAdd);
+			$this->templateAdd === null
+				? $template->setFile(__DIR__ . '/Templates/Resources.add.latte')
+				: $template->setFile($this->templateAdd);
 
-		if ($this->translator instanceof Translator) {
-			$template->setTranslator($this->translator);
+			if ($this->translator instanceof Translator) {
+				$template->setTranslator($this->translator);
+			}
+
+			$template->render();
+
+		} else {
+			throw new InvalidStateException('Control is without template.');
 		}
-
-		$template->render();
 	}
 
 
@@ -56,15 +63,24 @@ class ResourcesControl extends Component implements Base
 	 */
 	public function renderRecords(): void
 	{
-		$template = $this->template;
-		$template->resources = $this->repository->getAll();
+		if ($this->template instanceof Template) {
+			$template = $this->template;
+			$template->resources = $this->repository->getAll();
 
-		$this->templateRecords === null
-			? $template->setFile(__DIR__ . '/Templates/Resources.records.latte')
-			: $template->setFile($this->templateRecords);
+			$this->templateRecords === null
+				? $template->setFile(__DIR__ . '/Templates/Resources.records.latte')
+				: $template->setFile($this->templateRecords);
 
-		$template->deleteId = $this->deleteId;
-		$template->render();
+			if ($this->translator instanceof Translator) {
+				$template->setTranslator($this->translator);
+			}
+
+			$template->deleteId = $this->deleteId;
+			$template->render();
+
+		} else {
+			throw new InvalidStateException('Control is without template.');
+		}
 	}
 
 
@@ -166,8 +182,8 @@ class ResourcesControl extends Component implements Base
 		try {
 			$form->reset();
 
-			/** @var Form|BaseControl $formId */
 			$formId = $form[ResourcesData::ID];
+			assert($formId instanceof BaseControl);
 			$formId->setDefaultValue(0)
 				->addRule(Form::INTEGER);
 

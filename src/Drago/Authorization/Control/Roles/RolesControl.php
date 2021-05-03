@@ -18,9 +18,11 @@ use Drago\Authorization\NotAllowedChange;
 use Drago\Authorization\Repository\RolesRepository;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
+use Nette\Bridges\ApplicationLatte\Template;
 use Nette\Caching\Cache;
 use Nette\Forms\Controls\BaseControl;
 use Nette\Forms\Controls\SelectBox;
+use Nette\InvalidStateException;
 use Nette\Localization\Translator;
 
 
@@ -39,18 +41,23 @@ class RolesControl extends Component implements Base
 
 	public function render(): void
 	{
-		$template = $this->template;
-		$template->form = $this['factory'];
+		if ($this->template instanceof Template) {
+			$template = $this->template;
+			$template->form = $this['factory'];
 
-		$this->templateAdd === null
-			? $template->setFile(__DIR__ . '/Templates/Roles.add.latte')
-			: $template->setFile($this->templateAdd);
+			$this->templateAdd === null
+				? $template->setFile(__DIR__ . '/Templates/Roles.add.latte')
+				: $template->setFile($this->templateAdd);
 
-		if ($this->translator instanceof Translator) {
-			$template->setTranslator($this->translator);
+			if ($this->translator instanceof Translator) {
+				$template->setTranslator($this->translator);
+			}
+
+			$template->render();
+
+		} else {
+			throw new InvalidStateException('Control is without template.');
 		}
-
-		$template->render();
 	}
 
 
@@ -59,15 +66,24 @@ class RolesControl extends Component implements Base
 	 */
 	public function renderRecords(): void
 	{
-		$template = $this->template;
-		$template->roles = $this->getRecords();
+		if ($this->template instanceof Template) {
+			$template = $this->template;
+			$template->roles = $this->getRecords();
 
-		$this->templateRecords === null
-			? $template->setFile(__DIR__ . '/Templates/Roles.records.latte')
-			: $template->setFile($this->templateRecords);
+			$this->templateRecords === null
+				? $template->setFile(__DIR__ . '/Templates/Roles.records.latte')
+				: $template->setFile($this->templateRecords);
 
-		$template->deleteId = $this->deleteId;
-		$template->render();
+			if ($this->translator instanceof Translator) {
+				$template->setTranslator($this->translator);
+			}
+
+			$template->deleteId = $this->deleteId;
+			$template->render();
+
+		} else {
+			throw new InvalidStateException('Control is without template.');
+		}
 	}
 
 
@@ -106,8 +122,8 @@ class RolesControl extends Component implements Base
 		try {
 			$form->reset();
 
-			/** @var Form|BaseControl $formId */
 			$formId = $form[RolesData::ID];
+			assert($formId instanceof BaseControl);
 			$formId->setDefaultValue(0)
 				->addRule(Form::INTEGER);
 
