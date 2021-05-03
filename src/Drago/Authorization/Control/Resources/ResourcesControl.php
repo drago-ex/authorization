@@ -163,6 +163,11 @@ class ResourcesControl extends Component implements Base
 	public function createComponentFactory(): Form
 	{
 		$form = new Form;
+
+		if ($this->translator instanceof Translator) {
+			$form->setTranslator($this->translator);
+		}
+
 		$form->addText(ResourcesData::NAME, 'Source')
 			->setHtmlAttribute('placeholder', 'Source name')
 			->setHtmlAttribute('autocomplete', 'off')
