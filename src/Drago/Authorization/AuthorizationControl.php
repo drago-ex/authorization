@@ -12,10 +12,10 @@ namespace Drago\Authorization\Control;
 
 trait AuthorizationControl
 {
-	private RolesControl $rolesControl;
-	private ResourcesControl $resourcesControl;
-	private PrivilegesControl $privilegesControl;
-	private PermissionsControl $permissionsControl;
+	public RolesControl $rolesControl;
+	public ResourcesControl $resourcesControl;
+	public PrivilegesControl $privilegesControl;
+	public PermissionsControl $permissionsControl;
 	private ResetControl $resetControl;
 
 
