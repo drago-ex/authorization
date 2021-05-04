@@ -40,13 +40,13 @@ class Panel implements IBarPanel
 			}
 
 			$location = $this->request->getUrl()->getPath();
-			header('Location: ' .  $location);
+			header('Location: ' . $location);
 			exit();
 		}
 	}
 
 
-	function getTab(): string
+	public function getTab(): string
 	{
 		$color = $this->user->isLoggedIn()
 			? $this->loggedColor
@@ -60,7 +60,7 @@ class Panel implements IBarPanel
 	}
 
 
-	function getPanel(): string
+	public function getPanel(): string
 	{
 		ob_start();
 

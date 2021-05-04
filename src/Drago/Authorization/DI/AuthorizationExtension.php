@@ -105,7 +105,7 @@ class AuthorizationExtension extends CompilerExtension
 	{
 		$init = $class->getMethods()['initialize'];
 		$init->addBody('$this->getService(?)->addPanel($this->getService(?));', [
-			$this->panel, $this->prefix('Panel')
+			$this->panel, $this->prefix('Panel'),
 		]);
 	}
 }
