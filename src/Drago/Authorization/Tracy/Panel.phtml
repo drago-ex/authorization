@@ -1,0 +1,42 @@
+<style>
+	#tracy-debug [type="submit"] {
+		background-color: #1e75f7;
+		padding: 4px 10px;
+		color: white;
+		border-radius: 3px;
+		margin-top: 8px;
+	}
+    #tracy-debug label {
+        display: block;
+    }
+    #tracy-debug [type="checkbox"] {
+        margin: 0 0 3px;
+        vertical-align: middle;
+    }
+</style>
+
+<h1>Choice of roles</h1>
+<div class="tracy-inner">
+	<div class="tracy-inner-container">
+		<div style="background-color: #eee; padding: 8px; border-radius: 3px">
+			<?php use Nette\Security\User; ?>
+			<?php use Nette\Security\Permission; ?>
+			<?php /**@var User $user */ ?>
+			<?php if ($user->isLoggedIn() === true): ?>
+				<form>
+					<?php /**@var Permission $permission */ ?>
+					<?php foreach ($permission->getRoles() as $role): ?>
+						<label>
+							<input type="checkbox" <?php if ($user->isInRole($role)): ?>checked="checked" <?php endif; ?>name="rolesList[]" value="<?php echo $role; ?>">
+							<?php echo $role; ?>
+						</label>
+					<?php endforeach; ?>
+					<input type="hidden" name="roleSwitchForm" value="1">
+					<input type="submit" value="Choose">
+				</form>
+			<?php else: ?>
+				<h2>You must be logged in to switch roles.</h2>
+			<?php endif; ?>
+		</div>
+	</div>
+</div>

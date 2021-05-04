@@ -21,12 +21,19 @@ use Drago\Authorization\Repository\PermissionsViewRepository;
 use Drago\Authorization\Repository\PrivilegesRepository;
 use Drago\Authorization\Repository\ResourcesRepository;
 use Drago\Authorization\Repository\RolesRepository;
+use Drago\Authorization\Tracy\Panel;
 use Nette\Caching\Cache;
 use Nette\DI\CompilerExtension;
+use Nette\PhpGenerator\ClassType;
+use Tracy\Bar;
 
 
 class AuthorizationExtension extends CompilerExtension
 {
+	/** @var mixed|string|null */
+	private mixed $panel;
+
+
 	public function loadConfiguration(): void
 	{
 		$builder = $this->getContainerBuilder();
@@ -83,5 +90,22 @@ class AuthorizationExtension extends CompilerExtension
 
 		$builder->addDefinition($this->prefix('authorization.up'))
 			->setFactory('@authorization.authorization::create');
+
+		/** Role switch panel */
+		$builder = $this->getContainerBuilder();
+		$builder->addDefinition($this->prefix('Panel'))
+			->setFactory(Panel::class);
+
+		$this->panel = $this->getContainerBuilder()
+			->getByType(Bar::class);
+	}
+
+
+	public function afterCompile(ClassType $class): void
+	{
+		$init = $class->getMethods()['initialize'];
+		$init->addBody('$this->getService(?)->addPanel($this->getService(?));', [
+			$this->panel, $this->prefix('Panel')
+		]);
 	}
 }
