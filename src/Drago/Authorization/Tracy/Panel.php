@@ -12,6 +12,7 @@ namespace Drago\Authorization\Tracy;
 use Nette\Application\Application;
 use Nette\Http\Request;
 use Nette\Security\Permission;
+use Nette\Security\SimpleIdentity;
 use Nette\Security\User;
 use Nette\SmartObject;
 use Tracy\IBarPanel;
@@ -32,9 +33,11 @@ class Panel implements IBarPanel
 		private Application $application,
 	) {
 		if ($this->request->getQuery('roleSwitchForm') === '1') {
-			$roles = $this->request->getQuery('rolesList');
 			$identity = $user->getIdentity();
-			$identity->setRoles($roles ?: []);
+			if ($identity instanceof SimpleIdentity) {
+				$roles = $this->request->getQuery('rolesList');
+				$identity->setRoles($roles ?: []);
+			}
 
 			$location = $this->request->getUrl()->getPath();
 			header('Location: ' .  $location);
