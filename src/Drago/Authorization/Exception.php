@@ -23,3 +23,8 @@ class NotAllowedChange extends Exception
 class FileNotFoundException extends Exception
 {
 }
+
+
+class DatabaseNotAvailable extends Exception
+{
+}
