@@ -15,6 +15,7 @@ use Nette\Security\Permission;
 use Nette\Security\SimpleIdentity;
 use Nette\Security\User;
 use Nette\SmartObject;
+use Tracy\Debugger;
 use Tracy\IBarPanel;
 
 
@@ -32,16 +33,18 @@ class Panel implements IBarPanel
 		private Request $request,
 		private Application $application,
 	) {
-		if ($this->request->getQuery('roleSwitchForm') === '1') {
-			$identity = $user->getIdentity();
-			if ($identity instanceof SimpleIdentity) {
-				$roles = $this->request->getQuery('rolesList');
-				$identity->setRoles($roles ?: []);
-			}
+		if (Debugger::$productionMode) {
+			if ($this->request->getQuery('roleSwitchForm') === '1') {
+				$identity = $user->getIdentity();
+				if ($identity instanceof SimpleIdentity) {
+					$roles = $this->request->getQuery('rolesList');
+					$identity->setRoles($roles ?: []);
+				}
 
-			$location = $this->request->getUrl()->getPath();
-			header('Location: ' . $location);
-			exit();
+				$location = $this->request->getUrl()->getPath();
+				header('Location: ' . $location);
+				exit();
+			}
 		}
 	}
 
