@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Drago\Authorization;
 
 use Nette\Application\UI\Presenter;
-use Nette\InvalidStateException;
 use Nette\Security\User;
 
 
