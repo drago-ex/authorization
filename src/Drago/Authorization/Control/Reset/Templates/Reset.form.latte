@@ -1,6 +1,6 @@
 <script>
 	$(function() {
-		$.nette.ext('nette.ajax.reset.factory', {
+		$.nette.ext('nette.ajax.reset.form', {
 			load: function() {
 				$('.reset-form-factory').on('click', function () {
 					const factoryId = $(this).closest('form').attr('id');
@@ -10,6 +10,15 @@
 							"resetControl-factoryId": factoryId
 						}
 					});
+				});
+			}
+		});
+		$.nette.ext('nette.ajax.deselect.multiselect', {
+			load: function() {
+				$('.multiselect').bind('click', function () {
+					{varType Nette\Forms\Controls\BaseControl $accessControl}
+					{var $accessControl = $control->presenter['accessControl']['factory']['role_id']}
+					$('#' + {$accessControl->getHtmlId()})[0].selectedIndex = -1;
 				});
 			}
 		});
