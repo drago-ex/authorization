@@ -238,7 +238,6 @@ class AccessControl extends Component implements Base
 			}
 
 			if (!$data->edit_id) {
-
 				$entity = new UsersRolesEntity;
 				$entity->user_id = $data->user_id;
 
@@ -260,7 +259,6 @@ class AccessControl extends Component implements Base
 				$deleteRoles = array_diff($roleList, $data->role_id);
 
 				if (count($insertRoles)) {
-
 					$entity = new UsersRolesEntity;
 					$entity->user_id = $data->user_id;
 
@@ -271,10 +269,8 @@ class AccessControl extends Component implements Base
 				}
 
 				if (count($deleteRoles)) {
-
 					$findRoles = $this->usersRolesRepository->getUserRoles($data->edit_id);
 					$entity = new UsersRolesEntity;
-
 					foreach ($deleteRoles as $roleForDelete) {
 						foreach ($findRoles as $arr) {
 							if ($arr->role_id === $roleForDelete) {
