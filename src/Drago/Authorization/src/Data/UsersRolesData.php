@@ -17,7 +17,9 @@ class UsersRolesData extends Drago\Utils\ExtraArrayHash
 
 	public const ROLE_ID = 'role_id';
 	public const USER_ID = 'user_id';
+	public const EDIT_ID = 'edit_id';
 
-	public int $role_id;
+	public array $role_id;
 	public int $user_id;
+	public int $edit_id;
 }

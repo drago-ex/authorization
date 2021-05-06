@@ -20,6 +20,7 @@ class ResetControl extends ExtraControl
 		private PrivilegesControl $privilegesControl,
 		private ResourcesControl $resourcesControl,
 		private RolesControl $rolesControl,
+		private AccessControl $accessControl,
 	) {
 	}
 
@@ -39,6 +40,7 @@ class ResetControl extends ExtraControl
 			'resourcesControl',
 			'privilegesControl',
 			'permissionsControl',
+			'accessControl',
 		];
 
 		foreach ($components as $component) {

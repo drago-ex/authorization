@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Drago\Authorization\DI;
 
+use Drago\Authorization\Control\AccessControl;
 use Drago\Authorization\Control\PermissionsControl;
 use Drago\Authorization\Control\PrivilegesControl;
 use Drago\Authorization\Control\ResetControl;
@@ -21,6 +22,9 @@ use Drago\Authorization\Repository\PermissionsViewRepository;
 use Drago\Authorization\Repository\PrivilegesRepository;
 use Drago\Authorization\Repository\ResourcesRepository;
 use Drago\Authorization\Repository\RolesRepository;
+use Drago\Authorization\Repository\UsersRepository;
+use Drago\Authorization\Repository\UsersRolesRepository;
+use Drago\Authorization\Repository\UsersRolesViewRepository;
 use Drago\Authorization\Tracy\Panel;
 use Nette\Caching\Cache;
 use Nette\DI\CompilerExtension;
@@ -61,6 +65,9 @@ class AuthorizationExtension extends CompilerExtension
 			->setFactory(PermissionsControl::class)
 			->setArguments(['@authorization.cache']);
 
+		$builder->addDefinition($this->prefix('accessControl'))
+			->setFactory(AccessControl::class);
+
 		$builder->addDefinition($this->prefix('resetControl'))
 			->setFactory(ResetControl::class);
 
@@ -83,6 +90,15 @@ class AuthorizationExtension extends CompilerExtension
 		$builder->addDefinition($this->prefix('permission.view.roles'))
 			->setFactory(PermissionsRolesViewRepository::class);
 
+		$builder->addDefinition($this->prefix('usersRepository'))
+			->setFactory(UsersRepository::class);
+
+		$builder->addDefinition($this->prefix('usersRolesRepository'))
+			->setFactory(UsersRolesRepository::class);
+
+		$builder->addDefinition($this->prefix('usersRolesViewRepository'))
+			->setFactory(UsersRolesViewRepository::class);
+
 		/** Authorization setup. */
 		$builder->addDefinition($this->prefix('authorization'))
 			->setFactory(ExtraPermission::class)
@@ -93,7 +109,7 @@ class AuthorizationExtension extends CompilerExtension
 
 		/** Role switch panel */
 		$builder = $this->getContainerBuilder();
-		$builder->addDefinition($this->prefix('Panel'))
+		$builder->addDefinition($this->prefix('panel'))
 			->setFactory(Panel::class);
 
 		$this->panel = $this->getContainerBuilder()
@@ -105,7 +121,7 @@ class AuthorizationExtension extends CompilerExtension
 	{
 		$init = $class->getMethods()['initialize'];
 		$init->addBody('$this->getService(?)->addPanel($this->getService(?));', [
-			$this->panel, $this->prefix('Panel'),
+			$this->panel, $this->prefix('panel'),
 		]);
 	}
 }

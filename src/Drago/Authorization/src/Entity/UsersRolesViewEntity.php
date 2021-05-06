@@ -16,9 +16,11 @@ class UsersRolesViewEntity extends Drago\Database\Entity
 	use Nette\SmartObject;
 
 	public const TABLE = 'users_roles_view';
-	public const ROLE = 'role';
 	public const USER_ID = 'user_id';
+	public const USERNAME = 'username';
+	public const ROLE = 'role';
 
-	public ?string $role = null;
-	public int $user_id;
+	public ?int $user_id = null;
+	public ?string $username = null;
+	public string|array|null $role = null;
 }
