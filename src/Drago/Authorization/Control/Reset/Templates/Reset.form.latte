@@ -15,7 +15,7 @@
 		});
 		$.nette.ext('nette.ajax.deselect.multiselect', {
 			load: function() {
-				$('.multiselect').bind('click', function () {
+				$('#multiselect').bind('click', function () {
 					{varType Nette\Forms\Controls\BaseControl $accessControl}
 					{var $accessControl = $control->presenter['accessControl']['factory']['role_id']}
 					$('#' + {$accessControl->getHtmlId()})[0].selectedIndex = -1;
