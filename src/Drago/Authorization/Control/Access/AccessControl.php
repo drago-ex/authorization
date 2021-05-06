@@ -274,7 +274,6 @@ class AccessControl extends Component implements Base
 					foreach ($deleteRoles as $roleForDelete) {
 						foreach ($findRoles as $arr) {
 							if ($arr->role_id === $roleForDelete) {
-
 								$entity->user_id = $arr->user_id;
 								$entity->role_id = $arr->role_id;
 
