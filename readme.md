@@ -68,6 +68,11 @@ protected function createComponentPrivilegesControl(): PrivilegesControl
 	return $control;
 }
 
+protected function createComponentAccessControl(): AccessControl
+{
+	return $this->accessControl;
+}
+
 // Configure a custom form template.
 $control->setTemplateFile(__DIR__ . '/path/to/file');
 
@@ -81,27 +86,27 @@ $control->setTranslator(...);
 ## Use components in latte
 ```
 {snippet permissions}
-  {control permissionsControl}
+	{control permissionsControl}
 {/snippet}
 
 {snippet permissionsRecords}
-  {control permissionsControl:records}
+	{control permissionsControl:records}
 {/snippet}
 ```
 
 ```
 {snippet roles}
-  {control rolesControl}
+	{control rolesControl}
 {/snippet}
 
 {snippet rolesRecords}
-  {control rolesControl:records}
+	{control rolesControl:records}
 {/snippet}
 ```
 
 ```
 {snippet resources}
-  {control resourcesControl}
+	{control resourcesControl}
 {/snippet}
 
 {snippet resourcesRecords}
@@ -111,11 +116,21 @@ $control->setTranslator(...);
 
 ```
 {snippet privileges}
-  {control privilegesControl}
+	{control privilegesControl}
 {/snippet}
 
 {snippet privilegesRecords}
-  {control privilegesControl:records}
+	{control privilegesControl:records}
+{/snippet}
+```
+
+```
+{snippet access}
+	{control accessControl}
+{/snippet}
+
+{snippet accessRecords}
+	{control accessControl:records}
 {/snippet}
 ```
 
