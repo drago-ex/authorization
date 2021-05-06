@@ -13,7 +13,7 @@
 				});
 			}
 		});
-		{if isset($control->presenter['accessControl']['factory']['role_id'])}
+		{ifset $control->presenter['accessControl']}
 			$.nette.ext('nette.ajax.deselect.multiselect', {
 				load: function() {
 					$('#multiselect').bind('click', function () {
@@ -23,6 +23,6 @@
 					});
 				}
 			});
-		{/if}
+		{/ifset}
 	});
 </script>
