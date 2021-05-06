@@ -33,7 +33,7 @@ class Panel implements IBarPanel
 		private Request $request,
 		private Application $application,
 	) {
-		if (Debugger::$productionMode) {
+		if (Debugger::$productionMode === false) {
 			if ($this->request->getQuery('roleSwitchForm') === '1') {
 				$identity = $user->getIdentity();
 				if ($identity instanceof SimpleIdentity) {
