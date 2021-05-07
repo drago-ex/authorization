@@ -14,6 +14,7 @@ use Drago\Application\UI;
 use Drago\Authorization\FileNotFoundException;
 use Nette\Application\UI\Form;
 use Nette\Bridges\ApplicationLatte\Template;
+use Nette\InvalidStateException;
 use Nette\Localization\Translator;
 use Nette\SmartObject;
 use stdClass;
