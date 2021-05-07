@@ -159,7 +159,7 @@ class PrivilegesControl extends Component implements Base
 						$this->redrawPresenter($this->snippetPermissions);
 					}
 				}
-			} catch (NotAllowedChange $e) {
+			} catch (\Exception $e) {
 				$message = match ($e->getCode()) {
 					1001 => 'The privilege is not allowed to be deleted.',
 					1451 => 'The privilege can not be deleted, you must first delete the records that are associated with it.',
