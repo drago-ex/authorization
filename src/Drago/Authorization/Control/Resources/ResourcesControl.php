@@ -16,11 +16,8 @@ use Drago\Authorization\Data\ResourcesData;
 use Drago\Authorization\Repository\ResourcesRepository;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
-use Nette\Bridges\ApplicationLatte\Template;
 use Nette\Caching\Cache;
 use Nette\Forms\Controls\BaseControl;
-use Nette\InvalidStateException;
-use Nette\Localization\Translator;
 
 
 class ResourcesControl extends Component implements Base

@@ -20,7 +20,6 @@ use Drago\Authorization\Repository\UsersRolesViewRepository;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Forms\Controls\BaseControl;
-use Nette\Localization\Translator;
 
 
 class AccessControl extends Component implements Base

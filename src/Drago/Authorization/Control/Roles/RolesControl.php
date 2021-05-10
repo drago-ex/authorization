@@ -18,12 +18,9 @@ use Drago\Authorization\NotAllowedChange;
 use Drago\Authorization\Repository\RolesRepository;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
-use Nette\Bridges\ApplicationLatte\Template;
 use Nette\Caching\Cache;
 use Nette\Forms\Controls\BaseControl;
 use Nette\Forms\Controls\SelectBox;
-use Nette\InvalidStateException;
-use Nette\Localization\Translator;
 
 
 class RolesControl extends Component implements Base
