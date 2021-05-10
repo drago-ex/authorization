@@ -40,47 +40,25 @@ class PrivilegesControl extends Component implements Base
 
 	public function render(): void
 	{
-		if ($this->template instanceof Template) {
-			$template = $this->template;
-			$template->form = $this['factory'];
-
-			$this->templateAdd === null
-				? $template->setFile(__DIR__ . '/Templates/Privileges.add.latte')
-				: $template->setFile($this->templateAdd);
-
-			if ($this->translator instanceof Translator) {
-				$template->setTranslator($this->translator);
-			}
-
-			$template->render();
-
-		} else {
-			throw new InvalidStateException('Control is without template.');
-		}
+		$template = __DIR__ . '/Templates/Privileges.add.latte';
+		$form = $this['factory'];
+		$this->setRenderControl($template, $form);
 	}
 
 
 	public function renderRecords(): void
 	{
-		if ($this->template instanceof Template) {
-			$template = $this->template;
-			$template->privileges = $this->repository->all()
-				->orderBy(PrivilegesEntity::NAME, 'asc');
+		$template = __DIR__ . '/Templates/Privileges.records.latte';
+		$privileges = $this->repository->all()
+			->orderBy(PrivilegesEntity::NAME, 'asc')
+			->fetchAll();
 
-			$this->templateRecords === null
-				? $template->setFile(__DIR__ . '/Templates/Privileges.records.latte')
-				: $template->setFile($this->templateRecords);
+		$items = [
+			'privileges' => $privileges,
+			'deleteId' => $this->deleteId,
+		];
 
-			if ($this->translator instanceof Translator) {
-				$template->setTranslator($this->translator);
-			}
-
-			$template->deleteId = $this->deleteId;
-			$template->render();
-
-		} else {
-			throw new InvalidStateException('Control is without template.');
-		}
+		$this->setRenderControl($template, items: $items);
 	}
 
 
@@ -182,12 +160,7 @@ class PrivilegesControl extends Component implements Base
 
 	public function createComponentFactory(): Form
 	{
-		$form = new Form;
-
-		if ($this->translator instanceof Translator) {
-			$form->setTranslator($this->translator);
-		}
-
+		$form = $this->factory();
 		$form->addText(PrivilegesData::NAME, 'Action or signal')
 			->setHtmlAttribute('placeholder', 'Action or signal')
 			->setHtmlAttribute('autocomplete', 'off')

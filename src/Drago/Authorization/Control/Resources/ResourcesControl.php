@@ -38,23 +38,9 @@ class ResourcesControl extends Component implements Base
 
 	public function render(): void
 	{
-		if ($this->template instanceof Template) {
-			$template = $this->template;
-			$template->form = $this['factory'];
-
-			$this->templateAdd === null
-				? $template->setFile(__DIR__ . '/Templates/Resources.add.latte')
-				: $template->setFile($this->templateAdd);
-
-			if ($this->translator instanceof Translator) {
-				$template->setTranslator($this->translator);
-			}
-
-			$template->render();
-
-		} else {
-			throw new InvalidStateException('Control is without template.');
-		}
+		$template = __DIR__ . '/Templates/Resources.add.latte';
+		$form = $this['factory'];
+		$this->setRenderControl($template, $form);
 	}
 
 
@@ -63,24 +49,14 @@ class ResourcesControl extends Component implements Base
 	 */
 	public function renderRecords(): void
 	{
-		if ($this->template instanceof Template) {
-			$template = $this->template;
-			$template->resources = $this->repository->getAll();
+		$template = __DIR__ . '/Templates/Resources.records.latte';
+		$resources = $this->repository->getAll();
+		$items = [
+			'resources' => $resources,
+			'deleteId' => $this->deleteId,
+		];
 
-			$this->templateRecords === null
-				? $template->setFile(__DIR__ . '/Templates/Resources.records.latte')
-				: $template->setFile($this->templateRecords);
-
-			if ($this->translator instanceof Translator) {
-				$template->setTranslator($this->translator);
-			}
-
-			$template->deleteId = $this->deleteId;
-			$template->render();
-
-		} else {
-			throw new InvalidStateException('Control is without template.');
-		}
+		$this->setRenderControl($template, items: $items);
 	}
 
 
@@ -164,12 +140,7 @@ class ResourcesControl extends Component implements Base
 
 	public function createComponentFactory(): Form
 	{
-		$form = new Form;
-
-		if ($this->translator instanceof Translator) {
-			$form->setTranslator($this->translator);
-		}
-
+		$form = $this->factory();
 		$form->addText(ResourcesData::NAME, 'Source')
 			->setHtmlAttribute('placeholder', 'Source name')
 			->setHtmlAttribute('autocomplete', 'off')

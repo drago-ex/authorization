@@ -51,47 +51,25 @@ class PermissionsControl extends Component implements Base
 
 	public function render(): void
 	{
-		if ($this->template instanceof Template) {
-			$template = $this->template;
-			$template->form = $this['factory'];
-
-			$this->templateAdd === null
-				? $template->setFile(__DIR__ . '/Templates/Permissions.add.latte')
-				: $template->setFile($this->templateAdd);
-
-			if ($this->translator instanceof Translator) {
-				$template->setTranslator($this->translator);
-			}
-
-			$template->render();
-
-		} else {
-			throw new InvalidStateException('Control is without template.');
-		}
+		$template = __DIR__ . '/Templates/Permissions.add.latte';
+		$form = $this['factory'];
+		$this->setRenderControl($template, $form);
 	}
 
 
 	public function renderRecords(): void
 	{
-		if ($this->template instanceof Template) {
-			$template = $this->template;
-			$template->roles = $this->permissionsRolesViewRepository->all();
-			$template->permissions = $this->permissionsViewRepository->all();
+		$template = __DIR__ . '/Templates/Permissions.records.latte';
+		$roles = $this->permissionsRolesViewRepository->all();
+		$permissions = $this->permissionsViewRepository->all();
 
-			$this->templateRecords === null
-				? $template->setFile(__DIR__ . '/Templates/Permissions.records.latte')
-				: $template->setFile($this->templateRecords);
+		$items = [
+			'roles' => $roles,
+			'permissions' => $permissions,
+			'deleteId' => $this->deleteId,
+		];
 
-			if ($this->translator instanceof Translator) {
-				$template->setTranslator($this->translator);
-			}
-
-			$template->deleteId = $this->deleteId;
-			$template->render();
-
-		} else {
-			throw new InvalidStateException('Control is without template.');
-		}
+		$this->setRenderControl($template, items: $items);
 	}
 
 
@@ -165,11 +143,7 @@ class PermissionsControl extends Component implements Base
 
 	protected function createComponentFactory(): Form
 	{
-		$form = new Form;
-
-		if ($this->translator instanceof Translator) {
-			$form->setTranslator($this->translator);
-		}
+		$form = $this->factory();
 
 		$roles = $this->rolesRepository->all()
 			->where(RolesEntity::NAME, '!= ?', Conf::ROLE_ADMIN)

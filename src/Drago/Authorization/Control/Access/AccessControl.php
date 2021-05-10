@@ -19,11 +19,8 @@ use Drago\Authorization\Repository\UsersRolesRepository;
 use Drago\Authorization\Repository\UsersRolesViewRepository;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
-use Nette\Bridges\ApplicationLatte\Template;
 use Nette\Forms\Controls\BaseControl;
-use Nette\InvalidStateException;
 use Nette\Localization\Translator;
-use Nette\Security\User;
 
 
 class AccessControl extends Component implements Base
@@ -37,30 +34,15 @@ class AccessControl extends Component implements Base
 		private UsersRolesRepository $usersRolesRepository,
 		private UsersRolesViewRepository $usersRolesViewRepository,
 		private RolesRepository $rolesRepository,
-		private User $user,
 	) {
 	}
 
 
 	public function render(): void
 	{
-		if ($this->template instanceof Template) {
-			$template = $this->template;
-			$template->form = $this['factory'];
-
-			$this->templateAdd === null
-				? $template->setFile(__DIR__ . '/Templates/Access.add.latte')
-				: $template->setFile($this->templateAdd);
-
-			if ($this->translator instanceof Translator) {
-				$template->setTranslator($this->translator);
-			}
-
-			$template->render();
-
-		} else {
-			throw new InvalidStateException('Control is without template.');
-		}
+		$template = __DIR__ . '/Templates/Access.add.latte';
+		$form = $this['factory'];
+		$this->setRenderControl($template, $form);
 	}
 
 
@@ -69,42 +51,32 @@ class AccessControl extends Component implements Base
 	 */
 	public function renderRecords(): void
 	{
-		if ($this->template instanceof Template) {
-			$template = $this->template;
+		$template = __DIR__ . '/Templates/Access.records.latte';
+		$users = $this->usersRolesViewRepository->getAllUsersRoles();
 
-			$users = $this->usersRolesViewRepository->getAllUsersRoles();
-			$usersRoleList = [];
-			foreach ($users as $user) {
-				$usersRoleList[$user->user_id] = $user;
-			}
-
-			foreach ($usersRoleList as $user) {
-				$usersRoleList[$user->user_id] = $user;
-				$roleList = [];
-				foreach ($users as $role) {
-					if ($user->user_id === $role->user_id) {
-						$roleList[] = $role->role;
-					}
-				}
-				$user->role = $roleList;
-				$usersRoleList[$user->user_id] = $user;
-			}
-
-			$template->usersRoles = $usersRoleList;
-			$this->templateRecords === null
-				? $template->setFile(__DIR__ . '/Templates/Access.records.latte')
-				: $template->setFile($this->templateRecords);
-
-			if ($this->translator instanceof Translator) {
-				$template->setTranslator($this->translator);
-			}
-
-			$template->deleteId = $this->deleteId;
-			$template->render();
-
-		} else {
-			throw new InvalidStateException('Control is without template.');
+		$usersRoleList = [];
+		foreach ($users as $user) {
+			$usersRoleList[$user->user_id] = $user;
 		}
+
+		foreach ($usersRoleList as $user) {
+			$usersRoleList[$user->user_id] = $user;
+			$roleList = [];
+			foreach ($users as $role) {
+				if ($user->user_id === $role->user_id) {
+					$roleList[] = $role->role;
+				}
+			}
+			$user->role = $roleList;
+			$usersRoleList[$user->user_id] = $user;
+		}
+
+		$items = [
+			'usersRoles' => $usersRoleList,
+			'deleteId' => $this->deleteId,
+		];
+
+		$this->setRenderControl($template, items: $items);
 	}
 
 
@@ -203,11 +175,7 @@ class AccessControl extends Component implements Base
 
 	protected function createComponentFactory(): Form
 	{
-		$form = new Form;
-
-		if ($this->translator instanceof Translator) {
-			$form->setTranslator($this->translator);
-		}
+		$form = $this->factory();
 
 		$users = $this->usersRepository->getAllUsers();
 		$form->addSelect(UsersRolesData::USER_ID, 'Select user', $users)
