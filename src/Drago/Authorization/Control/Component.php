@@ -68,7 +68,7 @@ abstract class Component extends UI\ExtraControl
 	/**
 	 * @throws FileNotFoundException
 	 */
-	public function setTemplateFile(string $templateFile, string $type = 'add'): self
+	public function setTemplateFile(string $templateFile, string $type = 'add'): void
 	{
 		if (!is_file($templateFile)) {
 			throw new FileNotFoundException('Template file ' . $templateFile . ' not found.');
@@ -80,8 +80,6 @@ abstract class Component extends UI\ExtraControl
 		} elseif ($type === 'records') {
 			$this->templateRecords = $templateFile;
 		}
-
-		return $this;
 	}
 
 
