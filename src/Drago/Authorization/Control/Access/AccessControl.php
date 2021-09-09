@@ -40,6 +40,7 @@ class AccessControl extends Component implements Base
 	public function render(): void
 	{
 		$template = __DIR__ . '/Templates/Access.add.latte';
+		$template = $this->templateAdd ?: $template;
 		$form = $this['factory'];
 		$this->setRenderControl($template, $form);
 	}
@@ -51,6 +52,7 @@ class AccessControl extends Component implements Base
 	public function renderRecords(): void
 	{
 		$template = __DIR__ . '/Templates/Access.records.latte';
+		$template = $this->templateRecords ?: $template;
 		$users = $this->usersRolesViewRepository->getAllUsersRoles();
 
 		$usersRoleList = [];
