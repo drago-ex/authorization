@@ -49,6 +49,7 @@ class PermissionsControl extends Component implements Base
 	public function render(): void
 	{
 		$template = __DIR__ . '/Templates/Permissions.add.latte';
+		$template = $this->templateAdd ?: $template;
 		$form = $this['factory'];
 		$this->setRenderControl($template, $form);
 	}
@@ -57,6 +58,7 @@ class PermissionsControl extends Component implements Base
 	public function renderRecords(): void
 	{
 		$template = __DIR__ . '/Templates/Permissions.records.latte';
+		$template = $this->templateRecords ?: $template;
 		$roles = $this->permissionsRolesViewRepository->all();
 		$permissions = $this->permissionsViewRepository->all();
 
