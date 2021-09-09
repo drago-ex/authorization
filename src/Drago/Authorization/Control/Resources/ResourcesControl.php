@@ -36,6 +36,7 @@ class ResourcesControl extends Component implements Base
 	public function render(): void
 	{
 		$template = __DIR__ . '/Templates/Resources.add.latte';
+		$template = $this->templateAdd ?: $template;
 		$form = $this['factory'];
 		$this->setRenderControl($template, $form);
 	}
@@ -47,6 +48,7 @@ class ResourcesControl extends Component implements Base
 	public function renderRecords(): void
 	{
 		$template = __DIR__ . '/Templates/Resources.records.latte';
+		$template = $this->templateRecords ?: $template;
 		$resources = $this->repository->getAll();
 		$items = [
 			'resources' => $resources,
