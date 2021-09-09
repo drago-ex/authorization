@@ -39,6 +39,7 @@ class RolesControl extends Component implements Base
 	public function render(): void
 	{
 		$template = __DIR__ . '/Templates/Roles.add.latte';
+		$template = $this->templateAdd ?: $template;
 		$form = $this['factory'];
 		$this->setRenderControl($template, $form);
 	}
@@ -50,6 +51,7 @@ class RolesControl extends Component implements Base
 	public function renderRecords(): void
 	{
 		$template = __DIR__ . '/Templates/Roles.records.latte';
+		$template = $this->templateRecords ?: $template;
 		$roles = $this->getRecords();
 
 		$items = [
