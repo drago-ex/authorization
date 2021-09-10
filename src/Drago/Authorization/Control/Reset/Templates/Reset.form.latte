@@ -1,1 +1,14 @@
-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
+<script>
+	document.addEventListener('DOMContentLoaded', () => {
+		document.addEventListener('click', (e) => {
+			const reset = document.querySelector('.reset-form-factory');
+			const factoryId = reset.closest('form').getAttribute('id');
+			if (e.target != reset)
+				return;
+
+			naja.makeRequest('GET', {link reset!},
+                {'resetControl-factoryId': factoryId},
+                { history: false }).then();
+        })
+    });
+</script>
