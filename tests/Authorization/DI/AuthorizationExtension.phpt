@@ -35,9 +35,9 @@ class TestAuthorizationExtension extends TestCase
 			$compiler->loadConfig(Tester\FileMock::create('
 			services:
 				journal:
-					factory: Nette\Caching\Storages\FileJournal
+					factory: Nette\Caching\Storages\FileJournal(tmp)
 				storage:
-					factory: Nette\Caching\Storages\FileStorage
+					factory: Nette\Caching\Storages\FileStorage(tmp/cache)
 				dibi.connection:
 					factory: Dibi\Connection([
 						driver: mysqli
