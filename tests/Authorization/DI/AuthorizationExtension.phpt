@@ -7,9 +7,11 @@
 declare(strict_types=1);
 
 use Drago\Authorization\DI\AuthorizationExtension;
+use Drago\Authorization\ExtraPermission;
 use Nette\DI\Compiler;
 use Nette\DI\Container;
 use Nette\DI\ContainerLoader;
+use Tester\Assert;
 use Tester\TestCase;
 
 $container = require __DIR__ . '/../../bootstrap.php';
@@ -45,6 +47,13 @@ class TestAuthorizationExtension extends TestCase
 			$compiler->addExtension('authorization', new AuthorizationExtension);
 		});
 		return new $class;
+	}
+
+
+	public function test01(): void
+	{
+		Assert::type(ExtraPermission::class, $this->createContainer()
+			->getByType(ExtraPermission::class));
 	}
 }
 

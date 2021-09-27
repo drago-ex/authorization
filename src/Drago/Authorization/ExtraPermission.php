@@ -15,6 +15,7 @@ use Drago\Authorization\Repository\PermissionsViewRepository;
 use Drago\Authorization\Repository\ResourcesRepository;
 use Drago\Authorization\Repository\RolesRepository;
 use Nette\Caching\Cache;
+use Nette\Security\Authorizator;
 use Nette\Security\Permission;
 use Throwable;
 
@@ -53,14 +54,14 @@ class ExtraPermission
 
 				foreach ($this->permissions->getAll() as $row) {
 					$row->privilege = $row->privilege === Conf::PRIVILEGE_ALL
-						? Permission::ALL
+						? Authorizator::ALL
 						: $row->privilege;
 					$acl->{$row->allowed === 'yes'
 						? 'allow'
 						: 'deny'} ($row->role, $row->resource, $row->privilege);
 				}
 
-				$acl->allow(Conf::ROLE_ADMIN, Permission::ALL, Permission::ALL);
+				$acl->allow(Conf::ROLE_ADMIN, Authorizator::ALL, Authorizator::ALL);
 				$this->cache->save(Conf::CACHE, $acl);
 			}
 

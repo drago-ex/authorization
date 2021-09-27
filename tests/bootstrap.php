@@ -12,7 +12,6 @@ Tester\Environment::setup();
 date_default_timezone_set('Europe/Prague');
 
 
-const TYPE_STRING = 'string';
 const TEMP_DIR = __DIR__ . '/tmp';
 
 @mkdir(dirname(TEMP_DIR));
