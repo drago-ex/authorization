@@ -37,6 +37,7 @@ class TestAuthorizationExtension extends TestCase
 				storage: Nette\Caching\Storages\FileStorage(tmp/cache)
 				security.userStorage: Nette\Security\User
 				nette.app: Nette\Application\Application
+				presenter.factory: Nette\Application\IPresenterFactory
 				http.request: Nette\Http\Request
 				dibi.connection:
 					factory: Dibi\Connection([
