@@ -28,9 +28,20 @@ class TestAuthorizationExtension extends TestCase
 
 	private function createContainer(): Container
 	{
-		$params = $this->container->getParameters();
-		$loader = new ContainerLoader($params['tempDir'], true);
+		$loader = new ContainerLoader($this->container->getParameters()['tempDir'], true);
 		$class = $loader->load(function (Compiler $compiler): void {
+			$compiler->loadConfig(Tester\FileMock::create('
+			services:
+				dibi.connection:
+					factory: Dibi\Connection([
+						driver: mysqli
+						host: 127.0.0.1
+						username: root
+						password: root
+						database: test
+						lazy: true
+					])
+			', 'neon'));
 			$compiler->addExtension('authorization', new AuthorizationExtension);
 		});
 		return new $class;
