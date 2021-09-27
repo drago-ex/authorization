@@ -35,7 +35,6 @@ class TestAuthorizationExtension extends TestCase
 		});
 		return new $class;
 	}
-
 }
 
 (new TestAuthorizationExtension($container))->run();
