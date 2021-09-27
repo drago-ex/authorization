@@ -34,8 +34,6 @@ class TestAuthorizationExtension extends TestCase
 		$class = $loader->load(function (Compiler $compiler): void {
 			$compiler->loadConfig(Tester\FileMock::create('
 			services:
-				journal:
-					factory: Nette\Caching\Storages\FileJournal(tmp)
 				storage:
 					factory: Nette\Caching\Storages\FileStorage(tmp/cache)
 				dibi.connection:
