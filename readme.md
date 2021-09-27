@@ -10,7 +10,7 @@ Simple dynamic access control list management.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://raw.githubusercontent.com/drago-ex/authorization/master/license.md)
 [![PHP version](https://badge.fury.io/ph/drago-ex%2Fauthorization.svg)](https://badge.fury.io/ph/drago-ex%2Fauthorization)
-[![Build Status](https://travis-ci.com/drago-ex/authorization.svg?branch=master)](https://travis-ci.com/drago-ex/authorization)
+[![Coding Style](https://github.com/drago-ex/authorization/actions/workflows/coding-style.yml/badge.svg)](https://github.com/drago-ex/authorization/actions/workflows/coding-style.yml)
 
 ## Technology
 - PHP 8.0 or higher
