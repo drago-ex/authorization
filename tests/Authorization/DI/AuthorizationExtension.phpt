@@ -33,11 +33,12 @@ class TestAuthorizationExtension extends TestCase
 		$loader = new ContainerLoader($this->container->getParameters()['tempDir'], true);
 		$class = $loader->load(function (Compiler $compiler): void {
 			$compiler->loadConfig(Tester\FileMock::create('
+			extensions:
+				application: Nette\Bridges\ApplicationDI\ApplicationExtension
 			services:
 				storage: Nette\Caching\Storages\FileStorage(tmp/cache)
 				security.userStorage: Nette\Security\User
 				nette.app: Nette\Application\Application
-				presenter: Nette\Application\Presenter
 				http.request: Nette\Http\Request
 				dibi.connection:
 					factory: Dibi\Connection([
