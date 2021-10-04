@@ -14,7 +14,6 @@ use Dibi\Row;
 use Drago\Attr\Table;
 use Drago\Authorization\Entity\PermissionsEntity;
 use Drago\Database\Connect;
-use Drago\Database\Repository;
 
 
 #[Table(PermissionsEntity::TABLE, PermissionsEntity::PRIMARY)]
