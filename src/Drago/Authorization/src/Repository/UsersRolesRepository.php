@@ -11,6 +11,7 @@ namespace Drago\Authorization\Repository;
 
 use Dibi\Exception;
 use Dibi\Result;
+use Dibi\Row;
 use Drago\Attr\Table;
 use Drago\Authorization\Entity\UsersRolesEntity;
 use Drago\Database\Connect;
@@ -56,7 +57,7 @@ class UsersRolesRepository extends Connect
 	/**
 	 * @throws Exception
 	 */
-	public function getRecord(int $id): array|UsersRolesEntity|null
+	public function getRecord(int $id): array|UsersRolesEntity|Row|null
 	{
 		return $this->discover(UsersRolesEntity::USER_ID, $id)->fetch();
 	}
