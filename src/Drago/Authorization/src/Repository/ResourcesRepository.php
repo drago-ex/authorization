@@ -14,7 +14,6 @@ use Dibi\Exception;
 use Drago\Attr\Table;
 use Drago\Authorization\Entity\ResourcesEntity;
 use Drago\Database\Connect;
-use Drago\Database\Repository;
 
 
 #[Table(ResourcesEntity::TABLE, ResourcesEntity::PRIMARY)]
