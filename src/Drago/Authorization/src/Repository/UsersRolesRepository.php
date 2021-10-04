@@ -14,7 +14,6 @@ use Dibi\Result;
 use Drago\Attr\Table;
 use Drago\Authorization\Entity\UsersRolesEntity;
 use Drago\Database\Connect;
-use Drago\Database\Repository;
 
 
 #[Table(UsersRolesEntity::TABLE)]
