@@ -10,6 +10,8 @@ declare(strict_types=1);
 namespace Drago\Authorization\Repository;
 
 use Dibi\Exception;
+use Dibi\Row;
+use Drago\Attr\Table;
 use Drago\Authorization\Conf;
 use Drago\Authorization\Entity\PrivilegesEntity;
 use Drago\Authorization\NotAllowedChange;
@@ -17,22 +19,15 @@ use Drago\Database\Connect;
 use Drago\Database\Repository;
 
 
+#[Table(PrivilegesEntity::TABLE, PrivilegesEntity::PRIMARY)]
 class PrivilegesRepository extends Connect
 {
-	use Repository;
-
-	public string $table = PrivilegesEntity::TABLE;
-	public string $primary = PrivilegesEntity::PRIMARY;
-
-
 	/**
 	 * @throws Exception
 	 */
-	public function getRecord(int $id): array|PrivilegesEntity|null
+	public function getRecord(int $id): array|PrivilegesEntity|Row|null
 	{
-		return $this->get($id)->execute()
-			->setRowClass(PrivilegesEntity::class)
-			->fetch();
+		return $this->get($id)->fetch();
 	}
 
 
