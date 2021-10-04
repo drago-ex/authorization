@@ -10,6 +10,8 @@ declare(strict_types=1);
 namespace Drago\Authorization\Repository;
 
 use Dibi\Exception;
+use Dibi\Row;
+use Drago\Attr\Table;
 use Drago\Authorization\Conf;
 use Drago\Authorization\Entity\RolesEntity;
 use Drago\Authorization\NotAllowedChange;
@@ -17,45 +19,34 @@ use Drago\Database\Connect;
 use Drago\Database\Repository;
 
 
+#[Table(RolesEntity::TABLE, RolesEntity::PRIMARY)]
 class RolesRepository extends Connect
 {
-	use Repository;
-
-	public string $table = RolesEntity::TABLE;
-	public string $primary = RolesEntity::PRIMARY;
-
-
 	/**
 	 * @return array[]|RolesEntity[]
 	 * @throws Exception
 	 */
 	public function getAll()
 	{
-		return $this->all()->execute()
-			->setRowClass(RolesEntity::class)
-			->fetchAll();
+		return $this->all()->fetchAll();
 	}
 
 
 	/**
 	 * @throws Exception
 	 */
-	public function findByParent(int $parent): array|RolesEntity|null
+	public function findByParent(int $parent): array|RolesEntity|Row|null
 	{
-		return $this->discover(RolesEntity::PRIMARY, $parent)->execute()
-			->setRowClass(RolesEntity::class)
-			->fetch();
+		return $this->discover(RolesEntity::PRIMARY, $parent)->fetch();
 	}
 
 
 	/**
 	 * @throws Exception
 	 */
-	public function getRole(int $id): array|RolesEntity|null
+	public function getRole(int $id): array|RolesEntity|Row|null
 	{
-		return $this->get($id)->execute()
-			->setRowClass(RolesEntity::class)
-			->fetch();
+		return $this->get($id)->fetch();
 	}
 
 
@@ -69,7 +60,7 @@ class RolesRepository extends Connect
 	/**
 	 * @throws NotAllowedChange
 	 */
-	public function findParent(int $id): array|RolesEntity|null
+	public function findParent(int $id): array|RolesEntity|Row|null
 	{
 		$row = $this->discover(RolesEntity::PARENT, $id)->fetch();
 		if ($row) {
