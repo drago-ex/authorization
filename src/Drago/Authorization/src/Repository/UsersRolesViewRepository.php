@@ -10,18 +10,14 @@ declare(strict_types=1);
 namespace Drago\Authorization\Repository;
 
 use Dibi\Exception;
+use Drago\Attr\Table;
 use Drago\Authorization\Entity\UsersRolesViewEntity;
 use Drago\Database\Connect;
 use Drago\Database\Repository;
 
-
+#[Table(UsersRolesViewEntity::TABLE)]
 class UsersRolesViewRepository extends Connect
 {
-	use Repository;
-
-	public string $table = UsersRolesViewEntity::TABLE;
-
-
 	/**
 	 * @return array[]|UsersRolesViewEntity[]
 	 * @throws Exception
@@ -29,16 +25,13 @@ class UsersRolesViewRepository extends Connect
 	public function getAllUsersRoles()
 	{
 		return $this->all()
-			->orderBy(UsersRolesViewEntity::USER_ID, 'asc')->execute()
-			->setRowClass(UsersRolesViewEntity::class)
+			->orderBy(UsersRolesViewEntity::USER_ID, 'asc')
 			->fetchAll();
 	}
 
 
 	public function getUserRoles(): array
 	{
-		return $this->all()->execute()
-			->setRowClass(UsersRolesViewEntity::class)
-			->fetchAll();
+		return $this->all()->fetchAll();
 	}
 }
