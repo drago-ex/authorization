@@ -16,4 +16,6 @@ use Drago\Database\Repository;
 
 
 #[Table(PermissionsRolesViewEntity::TABLE)]
-class PermissionsRolesViewRepository extends Connect {}
+class PermissionsRolesViewRepository extends Connect
+{
+}
