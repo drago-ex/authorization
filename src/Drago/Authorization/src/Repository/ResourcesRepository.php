@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Drago\Authorization\Repository;
 
 use Dibi\Exception;
+use Dibi\Row;
 use Drago\Attr\Table;
 use Drago\Authorization\Entity\ResourcesEntity;
 use Drago\Database\Connect;
@@ -34,7 +35,7 @@ class ResourcesRepository extends Connect
 	/**
 	 * @throws Exception
 	 */
-	public function getRecord(int $id): array|ResourcesEntity|null
+	public function getRecord(int $id): array|ResourcesEntity|Row|null
 	{
 		return $this->get($id)->fetch();
 	}
