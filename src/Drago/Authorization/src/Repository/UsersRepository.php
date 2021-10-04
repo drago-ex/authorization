@@ -12,7 +12,6 @@ namespace Drago\Authorization\Repository;
 use App\Entity\AccessEntity;
 use Drago\Attr\Table;
 use Drago\Database\Connect;
-use Drago\Database\Repository;
 
 
 #[Table(AccessEntity::TABLE, AccessEntity::PRIMARY)]
