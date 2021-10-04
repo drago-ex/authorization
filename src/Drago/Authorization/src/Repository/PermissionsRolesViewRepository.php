@@ -12,7 +12,6 @@ namespace Drago\Authorization\Repository;
 use Drago\Attr\Table;
 use Drago\Authorization\Entity\PermissionsRolesViewEntity;
 use Drago\Database\Connect;
-use Drago\Database\Repository;
 
 
 #[Table(PermissionsRolesViewEntity::TABLE)]
