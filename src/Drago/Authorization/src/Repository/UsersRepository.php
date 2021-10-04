@@ -10,18 +10,14 @@ declare(strict_types=1);
 namespace Drago\Authorization\Repository;
 
 use App\Entity\AccessEntity;
+use Drago\Attr\Table;
 use Drago\Database\Connect;
 use Drago\Database\Repository;
 
 
+#[Table(AccessEntity::TABLE, AccessEntity::PRIMARY)]
 class UsersRepository extends Connect
 {
-	use Repository;
-
-	public string $table = AccessEntity::TABLE;
-	public string $primary = AccessEntity::PRIMARY;
-
-
 	public function getAllUsers(): array
 	{
 		return $this->all()
