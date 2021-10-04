@@ -10,26 +10,21 @@ declare(strict_types=1);
 namespace Drago\Authorization\Repository;
 
 use Dibi\Exception;
+use Drago\Attr\Table;
 use Drago\Authorization\Entity\PermissionsViewEntity;
 use Drago\Database\Connect;
 use Drago\Database\Repository;
 
 
+#[Table(PermissionsViewEntity::TABLE)]
 class PermissionsViewRepository extends Connect
 {
-	use Repository;
-
-	public string $table = PermissionsViewEntity::TABLE;
-
-
 	/**
 	 * @return array[]|PermissionsViewEntity[]
 	 * @throws Exception
 	 */
 	public function getAll()
 	{
-		return $this->all()->execute()
-			->setRowClass(PermissionsViewEntity::class)
-			->fetchAll();
+		return $this->all()->fetchAll();
 	}
 }
