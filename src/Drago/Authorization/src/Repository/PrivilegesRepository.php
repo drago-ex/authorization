@@ -16,7 +16,6 @@ use Drago\Authorization\Conf;
 use Drago\Authorization\Entity\PrivilegesEntity;
 use Drago\Authorization\NotAllowedChange;
 use Drago\Database\Connect;
-use Drago\Database\Repository;
 
 
 #[Table(PrivilegesEntity::TABLE, PrivilegesEntity::PRIMARY)]
