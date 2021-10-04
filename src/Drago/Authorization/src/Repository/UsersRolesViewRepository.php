@@ -13,7 +13,6 @@ use Dibi\Exception;
 use Drago\Attr\Table;
 use Drago\Authorization\Entity\UsersRolesViewEntity;
 use Drago\Database\Connect;
-use Drago\Database\Repository;
 
 #[Table(UsersRolesViewEntity::TABLE)]
 class UsersRolesViewRepository extends Connect
