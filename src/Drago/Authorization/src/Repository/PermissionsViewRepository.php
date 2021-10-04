@@ -13,7 +13,6 @@ use Dibi\Exception;
 use Drago\Attr\Table;
 use Drago\Authorization\Entity\PermissionsViewEntity;
 use Drago\Database\Connect;
-use Drago\Database\Repository;
 
 
 #[Table(PermissionsViewEntity::TABLE)]
