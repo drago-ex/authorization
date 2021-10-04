@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Drago\Authorization\Repository;
 
 use Dibi\Exception;
+use Dibi\Row;
 use Drago\Attr\Table;
 use Drago\Authorization\Entity\PermissionsEntity;
 use Drago\Database\Connect;
@@ -22,7 +23,7 @@ class PermissionsRepository extends Connect
 	/**
 	 * @throws Exception
 	 */
-	public function getRecord(int $id): array|PermissionsEntity|null
+	public function getRecord(int $id): array|PermissionsEntity|Row|null
 	{
 		return $this->get($id)->fetch();
 	}
