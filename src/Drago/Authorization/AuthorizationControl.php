@@ -17,7 +17,7 @@ trait AuthorizationControl
 	public PrivilegesControl $privilegesControl;
 	public PermissionsControl $permissionsControl;
 	public AccessControl $accessControl;
-	private ResetControl $resetControl;
+	public ResetControl $resetControl;
 
 
 	public function injectAuthorizationControl(
