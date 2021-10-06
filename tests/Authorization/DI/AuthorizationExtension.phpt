@@ -42,10 +42,10 @@ class TestAuthorizationExtension extends TestCase
 				dibi.connection:
 					factory: Dibi\Connection([
 						driver: mysqli
-						host: 127.0.0.1
-						username: root
-						password: root
-						database: test
+						host: 172.25.18.36
+						username: monty
+						password: monty
+						database: test_auth
 						lazy: true
 					])
 			', 'neon'));
@@ -55,10 +55,50 @@ class TestAuthorizationExtension extends TestCase
 	}
 
 
+	private function geClassByType(): ExtraPermission
+	{
+		return $this->createContainer()
+			->getByType(ExtraPermission::class);
+	}
+
+
 	public function test01(): void
 	{
-		Assert::type(ExtraPermission::class, $this->createContainer()
-			->getByType(ExtraPermission::class));
+		Assert::type(ExtraPermission::class, $this->geClassByType());
+	}
+
+
+	public function test2(): void
+	{
+		$permission = $this->geClassByType()->create();
+		$roles = [
+			'guest',
+			'member',
+			'admin',
+		];
+		Assert::equal($roles, $permission->getRoles());
+	}
+
+
+	public function test3(): void
+	{
+		$permission = $this->geClassByType()->create();
+		$roles = [
+			'Admin:AccessControl',
+			'Admin:Admin',
+			'Admin:Sign',
+			'Web:Web',
+		];
+		Assert::equal($roles, $permission->getResources());
+	}
+
+
+	public function test4(): void
+	{
+		$permission = $this->geClassByType()->create();
+
+		Assert::equal(['guest'], $permission->getRoleParents('member'));
+		Assert::equal(['member'], $permission->getRoleParents('admin'));
 	}
 }
 
