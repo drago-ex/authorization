@@ -84,8 +84,10 @@ class TestAuthorizationExtension extends TestCase
 	{
 		$permission = $this->geClassByType()->create();
 		$resources = [
-			'Frontend:Presenter',
-			'ABackend:Presenter',
+			'Admin:AccessControl',
+			'Admin:Admin',
+			'Admin:Sign',
+			'Web:Web',
 		];
 		Assert::equal($resources, $permission->getResources());
 	}
