@@ -24,6 +24,14 @@ CREATE TABLE `permissions` (
     CONSTRAINT `permissions_ibfk_3` FOREIGN KEY (`privilege_id`) REFERENCES `privileges` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+-- ---- insert values to table:
+INSERT INTO `permissions` (`id`, `role_id`, `resource_id`, `privilege_id`, `allowed`) VALUES
+(1,	1,	1,	1,	'yes'),
+(2,	1,	2,	2,	'yes'),
+(3,	1,	3,	1,	'yes'),
+(4,	3,	2,	1,	'yes');
+
 -- ---- create view:
 CREATE TABLE `permissions_roles_view` (
     `id` int(11) unsigned,
@@ -61,6 +69,13 @@ CREATE TABLE `resources` (
     PRIMARY KEY (`id`),
     UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ---- insert values to table:
+INSERT INTO `resources` (`id`, `name`) VALUES
+(1,	'Web:Web'),
+(2,	'Admin:Admin'),
+(3,	'Admin:Sign'),
+(4,	'Admin:AccessControl');
 
 -- ---- create table:
 CREATE TABLE `roles` (
