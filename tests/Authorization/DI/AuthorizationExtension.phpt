@@ -42,10 +42,10 @@ class TestAuthorizationExtension extends TestCase
 				dibi.connection:
 					factory: Dibi\Connection([
 						driver: mysqli
-						host: 172.25.18.36
-						username: monty
-						password: monty
-						database: test_auth
+						host: 127.0.0.1
+						username: root
+						password: root
+						database: test
 						lazy: true
 					])
 			', 'neon'));
