@@ -20,6 +20,7 @@ use Drago\Authorization\Repository\UsersRolesViewRepository;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Forms\Controls\BaseControl;
+use Tracy\Debugger;
 
 
 class AccessControl extends Component implements Base
@@ -212,7 +213,7 @@ class AccessControl extends Component implements Base
 
 				foreach ($data->role_id as $item) {
 					$entity->role_id = $item;
-					$this->usersRolesRepository->put($entity->toArray());
+					$this->usersRolesRepository->save($entity);
 				}
 
 			} else {
@@ -233,7 +234,7 @@ class AccessControl extends Component implements Base
 
 					foreach ($insertRoles as $role) {
 						$entity->role_id = $role;
-						$this->usersRolesRepository->put($entity->toArray());
+						$this->usersRolesRepository->save($entity);
 					}
 				}
 
@@ -245,7 +246,6 @@ class AccessControl extends Component implements Base
 							if ($arr->role_id === $roleForDelete) {
 								$entity->user_id = $arr->user_id;
 								$entity->role_id = $arr->role_id;
-
 								$this->usersRolesRepository->delete($entity);
 							}
 						}
