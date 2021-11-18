@@ -47,9 +47,19 @@ class UsersRolesRepository extends Connect
 	 */
 	public function delete(UsersRolesEntity $entity): Result|int|null
 	{
-		return $this->db->delete($this->getTable())
+		return $this->db->delete(UsersRolesEntity::TABLE)
 			->where(UsersRolesEntity::USER_ID, '= ?', $entity->user_id)
 			->and(UsersRolesEntity::ROLE_ID, '= ?', $entity->role_id)
+			->execute();
+	}
+
+
+	/**
+	 * @throws Exception
+	 */
+	public function save(UsersRolesEntity $entity): Result|int|null
+	{
+		return $this->db->insert(UsersRolesEntity::TABLE, $entity->toArray())
 			->execute();
 	}
 
