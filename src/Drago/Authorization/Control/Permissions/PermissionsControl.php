@@ -26,7 +26,6 @@ use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
 use Nette\Forms\Controls\BaseControl;
-use Tracy\Debugger;
 
 
 class PermissionsControl extends Component implements Base
