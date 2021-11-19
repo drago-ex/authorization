@@ -26,6 +26,7 @@ use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
 use Nette\Forms\Controls\BaseControl;
+use Tracy\Debugger;
 
 
 class PermissionsControl extends Component implements Base
@@ -196,11 +197,20 @@ class PermissionsControl extends Component implements Base
 				->addRule(Form::INTEGER);
 		}
 
-		$this->permissionsRepository->put($data->toArray());
-		$this->cache->remove(Conf::CACHE);
+		try {
+			$this->permissionsRepository->put($data->toArray());
+			$this->cache->remove(Conf::CACHE);
 
-		$message = $data->role_id ? 'Permission was updated.' : 'Permission added.';
-		$this->flashMessagePresenter($message);
+			$message = $data->id ? 'Permission was updated.' : 'Permission added.';
+			$this->flashMessagePresenter($message);
+		} catch (\Exception $e) {
+			$message = match ($e->getCode()) {
+				1062 => 'This permission is already granted.',
+				default => 'Unknown status code.',
+			};
+
+			$form->addError($message);
+		}
 
 		if ($this->isAjax()) {
 			$this->redrawPresenter($this->snippetFactory);
