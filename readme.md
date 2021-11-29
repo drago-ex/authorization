@@ -24,7 +24,7 @@ composer require drago-ex/authorization
 ```
 
 ## Extension registration
-```php
+```neon
 extensions:
 	authorization: Drago\Authorization\DI\AuthorizationExtension
 ```
@@ -44,7 +44,6 @@ use Drago\Authorization\Control\AuthorizationControl
 ## Component creation and configuration
 
 ```php
-
 // Minimum configuration.
 protected function createComponentPermissionsControl(): PermissionsControl
 {
@@ -86,7 +85,7 @@ $control->setTranslator(...);
 ```
 
 ## Use components in latte
-```
+```latte
 {snippet permissions}
 	{control permissionsControl}
 {/snippet}
@@ -96,7 +95,7 @@ $control->setTranslator(...);
 {/snippet}
 ```
 
-```
+```latte
 {snippet roles}
 	{control rolesControl}
 {/snippet}
@@ -106,7 +105,7 @@ $control->setTranslator(...);
 {/snippet}
 ```
 
-```
+```latte
 {snippet resources}
 	{control resourcesControl}
 {/snippet}
@@ -116,7 +115,7 @@ $control->setTranslator(...);
 {/snippet}
 ```
 
-```
+```latte
 {snippet privileges}
 	{control privilegesControl}
 {/snippet}
@@ -126,7 +125,7 @@ $control->setTranslator(...);
 {/snippet}
 ```
 
-```
+```latte
 {snippet access}
 	{control accessControl}
 {/snippet}
@@ -137,6 +136,6 @@ $control->setTranslator(...);
 ```
 
 ## Use Nette ajax for reset form
-```
+```latte
 {control resetControl}
 ```
