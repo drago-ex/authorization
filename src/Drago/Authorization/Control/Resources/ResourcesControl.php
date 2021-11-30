@@ -122,7 +122,7 @@ class ResourcesControl extends Component implements Base
 
 			} catch (\Exception $e) {
 				if ($e->getCode() === 1451) {
-					$this->flashMessagePresenter('The resource can not be deleted, you must first delete the records that are associated with it', Alert::WARNING);
+					$this->flashMessagePresenter('The resource can not be deleted, you must first delete the records that are associated with it.', Alert::WARNING);
 					if ($this->isAjax()) {
 						$this->redrawPresenter($this->snippetMessage);
 					}
