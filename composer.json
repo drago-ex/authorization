@@ -16,9 +16,9 @@
 		"nette/caching": "^3.0",
 		"nette/di": "^3.0",
 		"latte/latte": "^2.8",
-		"drago-ex/database": "dev-master",
-		"drago-ex/application": "dev-master",
-		"drago-ex/utils": "dev-master"
+		"drago-ex/database": "^1.0",
+		"drago-ex/application": "^1.0",
+		"drago-ex/utils": "^1.0"
 	},
 	"require-dev": {
 		"nette/tester": "^2.3",
