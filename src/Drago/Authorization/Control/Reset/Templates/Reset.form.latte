@@ -1,16 +1,15 @@
 <script>
-	$(function() {
-		$.nette.ext('nette.ajax.reset.form', {
-			load: function() {
-				$('.reset-form-factory').on('click', function () {
-					const factoryId = $(this).closest('form').attr('id');
-					$.nette.ajax({
-						url: {link reset!},
-						data: {
-							"resetControl-factoryId": factoryId
-						}
-					});
-				});
+	document.addEventListener('DOMContentLoaded', () => {
+		document.addEventListener('click', (e) => {
+			const reset = document.querySelector('.reset-form-factory');
+			if (reset) {
+				const factoryId = reset.closest('form').getAttribute('id');
+				if (e.target != reset) {
+					return;
+				}
+				naja.makeRequest('GET', {link reset!},
+					{'resetControl-factoryId': factoryId},
+					{ history: false }).then();
 			}
 		});
 	});
