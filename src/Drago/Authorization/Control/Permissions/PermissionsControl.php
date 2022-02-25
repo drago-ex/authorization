@@ -50,8 +50,10 @@ class PermissionsControl extends Component implements Base
 	{
 		$template = __DIR__ . '/Templates/Permissions.add.latte';
 		$template = $this->templateAdd ?: $template;
-		$form = $this['factory'];
-		$this->setRenderControl($template, $form);
+		$items = [
+			'form' => $this['factory'],
+		];
+		$this->setRenderControl($template, $items);
 	}
 
 
@@ -68,7 +70,7 @@ class PermissionsControl extends Component implements Base
 			'deleteId' => $this->deleteId,
 		];
 
-		$this->setRenderControl($template, items: $items);
+		$this->setRenderControl($template, $items);
 	}
 
 
@@ -82,7 +84,9 @@ class PermissionsControl extends Component implements Base
 
 		if ($this->getSignal()) {
 			$form = $this['factory'];
-			$form->setDefaults($permission);
+			if ($form instanceof Form) {
+				$form->setDefaults($permission);
+			}
 
 			$buttonSend = $form['send'];
 			if ($buttonSend instanceof BaseControl) {
@@ -127,9 +131,11 @@ class PermissionsControl extends Component implements Base
 			$this->flashMessagePresenter('Permission removed.', Alert::DANGER);
 
 			if ($this->isAjax()) {
-				$this->redrawPresenter($this->snippetFactory);
-				$this->redrawPresenter($this->snippetRecords);
-				$this->redrawPresenter($this->snippetMessage);
+				$this->multipleRedrawPresenter([
+					$this->snippetFactory,
+					$this->snippetRecords,
+					$this->snippetMessage,
+				]);
 			}
 
 		} else {
@@ -212,9 +218,11 @@ class PermissionsControl extends Component implements Base
 		}
 
 		if ($this->isAjax()) {
-			$this->redrawPresenter($this->snippetFactory);
-			$this->redrawPresenter($this->snippetRecords);
-			$this->redrawPresenter($this->snippetMessage);
+			$this->multipleRedrawPresenter([
+				$this->snippetFactory,
+				$this->snippetRecords,
+				$this->snippetMessage
+			]);
 		}
 	}
 }

@@ -37,8 +37,10 @@ class ResourcesControl extends Component implements Base
 	{
 		$template = __DIR__ . '/Templates/Resources.add.latte';
 		$template = $this->templateAdd ?: $template;
-		$form = $this['factory'];
-		$this->setRenderControl($template, $form);
+		$items = [
+			'form' => $this['factory'],
+		];
+		$this->setRenderControl($template, $items);
 	}
 
 
@@ -55,7 +57,7 @@ class ResourcesControl extends Component implements Base
 			'deleteId' => $this->deleteId,
 		];
 
-		$this->setRenderControl($template, items: $items);
+		$this->setRenderControl($template, $items);
 	}
 
 
@@ -69,7 +71,10 @@ class ResourcesControl extends Component implements Base
 
 		if ($this->getSignal()) {
 			$form = $this['factory'];
-			$form->setDefaults($resource);
+			if ($form instanceof Form) {
+				$form->setDefaults($resource);
+			}
+
 
 			$buttonSend = $form['send'];
 			if ($buttonSend instanceof BaseControl) {
@@ -114,10 +119,12 @@ class ResourcesControl extends Component implements Base
 				$this->flashMessagePresenter('Resource deleted.', Alert::DANGER);
 
 				if ($this->isAjax()) {
-					$this->redrawPresenter($this->snippetFactory);
-					$this->redrawPresenter($this->snippetRecords);
-					$this->redrawPresenter($this->snippetMessage);
-					$this->redrawPresenter($this->snippetPermissions);
+					$this->multipleRedrawPresenter([
+						$this->snippetFactory,
+						$this->snippetRecords,
+						$this->snippetMessage,
+						$this->snippetPermissions,
+					]);
 				}
 
 			} catch (\Exception $e) {
@@ -172,10 +179,12 @@ class ResourcesControl extends Component implements Base
 			$this->flashMessagePresenter($message);
 
 			if ($this->isAjax()) {
-				$this->redrawPresenter($this->snippetFactory);
-				$this->redrawPresenter($this->snippetRecords);
-				$this->redrawPresenter($this->snippetMessage);
-				$this->redrawPresenter($this->snippetPermissions);
+				$this->multipleRedrawPresenter([
+					$this->snippetFactory,
+					$this->snippetRecords,
+					$this->snippetMessage,
+					$this->snippetPermissions,
+				]);
 			}
 
 		} catch (\Exception $e) {

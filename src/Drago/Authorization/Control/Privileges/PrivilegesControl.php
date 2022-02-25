@@ -39,8 +39,10 @@ class PrivilegesControl extends Component implements Base
 	{
 		$template = __DIR__ . '/Templates/Privileges.add.latte';
 		$template = $this->templateAdd ?: $template;
-		$form = $this['factory'];
-		$this->setRenderControl($template, $form);
+		$items = [
+			'form' => $this['factory'],
+		];
+		$this->setRenderControl($template, $items);
 	}
 
 
@@ -57,7 +59,7 @@ class PrivilegesControl extends Component implements Base
 			'deleteId' => $this->deleteId,
 		];
 
-		$this->setRenderControl($template, items: $items);
+		$this->setRenderControl($template, $items);
 	}
 
 
@@ -73,7 +75,9 @@ class PrivilegesControl extends Component implements Base
 		try {
 			if ($this->repository->isAllowed($privilege->name) && $this->getSignal()) {
 				$form = $this['factory'];
-				$form->setDefaults($privilege);
+				if ($form instanceof Form) {
+					$form->setDefaults($privilege);
+				}
 
 				$buttonSend = $form['send'];
 				if ($buttonSend instanceof BaseControl) {
@@ -130,10 +134,12 @@ class PrivilegesControl extends Component implements Base
 					$this->flashMessagePresenter('Privilege deleted.', Alert::DANGER);
 
 					if ($this->isAjax()) {
-						$this->redrawPresenter($this->snippetFactory);
-						$this->redrawPresenter($this->snippetRecords);
-						$this->redrawPresenter($this->snippetMessage);
-						$this->redrawPresenter($this->snippetPermissions);
+						$this->multipleRedrawPresenter([
+							$this->snippetFactory,
+							$this->snippetRecords,
+							$this->snippetMessage,
+							$this->snippetPermissions,
+						]);
 					}
 				}
 			} catch (\Exception $e) {
@@ -192,10 +198,12 @@ class PrivilegesControl extends Component implements Base
 			$this->flashMessagePresenter($message);
 
 			if ($this->isAjax()) {
-				$this->redrawPresenter($this->snippetFactory);
-				$this->redrawPresenter($this->snippetRecords);
-				$this->redrawPresenter($this->snippetMessage);
-				$this->redrawPresenter($this->snippetPermissions);
+				$this->multipleRedrawPresenter([
+					$this->snippetFactory,
+					$this->snippetRecords,
+					$this->snippetMessage,
+					$this->snippetPermissions,
+				]);
 			}
 
 		} catch (\Exception $e) {

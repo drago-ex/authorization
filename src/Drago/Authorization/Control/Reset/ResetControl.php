@@ -16,11 +16,11 @@ use Nette\Application\UI\Form;
 class ResetControl extends ExtraControl
 {
 	public function __construct(
-		private PermissionsControl $permissionsControl,
-		private PrivilegesControl $privilegesControl,
-		private ResourcesControl $resourcesControl,
-		private RolesControl $rolesControl,
-		private AccessControl $accessControl,
+		public PermissionsControl $permissionsControl,
+		public PrivilegesControl $privilegesControl,
+		public ResourcesControl $resourcesControl,
+		public RolesControl $rolesControl,
+		public AccessControl $accessControl,
 	) {
 	}
 
