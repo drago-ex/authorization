@@ -15,8 +15,8 @@ use Drago\Application\UI\Alert;
 use Drago\Authorization\Conf;
 use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
-use Drago\Authorization\Service\Data\RolesData;
 use Drago\Authorization\NotAllowedChange;
+use Drago\Authorization\Service\Data\RolesData;
 use Drago\Authorization\Service\Repository\RolesRepository;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
@@ -146,7 +146,7 @@ class RolesControl extends Component implements Base
 						]);
 					}
 				}
-			} catch (\Exception $e) {
+			} catch (\Throwable $e) {
 				$message = match ($e->getCode()) {
 					1001 => 'The role is not allowed to be deleted.',
 					1002 => 'The role cannot be deleted because it is bound to another role.',
@@ -159,7 +159,6 @@ class RolesControl extends Component implements Base
 					$this->redrawPresenter($this->snippetMessage);
 				}
 			}
-
 		} else {
 			if ($this->isAjax()) {
 				$this->redrawPresenter($this->snippetRecords);
@@ -229,7 +228,7 @@ class RolesControl extends Component implements Base
 				]);
 			}
 
-		} catch (\Exception $e) {
+		} catch (\Throwable $e) {
 			$message = match ($e->getCode()) {
 				1062 => 'This role already exists.',
 				default => 'Unknown status code.',
@@ -255,6 +254,7 @@ class RolesControl extends Component implements Base
 			$role->parent = $parent->name ?? 'none';
 			$roles[] = $role;
 		}
+
 		return $roles;
 	}
 }

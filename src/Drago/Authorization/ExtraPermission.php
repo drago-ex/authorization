@@ -71,6 +71,7 @@ class ExtraPermission
 		} catch (DriverException $e) {
 			// Not implemented.
 		}
+
 		return $acl;
 	}
 }

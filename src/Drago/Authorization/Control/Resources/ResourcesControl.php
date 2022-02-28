@@ -129,7 +129,7 @@ class ResourcesControl extends Component implements Base
 					]);
 				}
 
-			} catch (\Exception $e) {
+			} catch (\Throwable $e) {
 				if ($e->getCode() === 1451) {
 					$this->flashMessagePresenter('The resource can not be deleted, you must first delete the records that are associated with it.', Alert::WARNING);
 					if ($this->isAjax()) {
@@ -137,7 +137,6 @@ class ResourcesControl extends Component implements Base
 					}
 				}
 			}
-
 		} else {
 			if ($this->isAjax()) {
 				$this->redrawPresenter($this->snippetRecords);
@@ -189,7 +188,7 @@ class ResourcesControl extends Component implements Base
 				]);
 			}
 
-		} catch (\Exception $e) {
+		} catch (\Throwable $e) {
 			$message = match ($e->getCode()) {
 				1062 => 'This resource already exists.',
 				default => 'Unknown status code.',

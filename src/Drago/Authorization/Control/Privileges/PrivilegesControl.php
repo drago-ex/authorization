@@ -14,9 +14,9 @@ use Drago\Application\UI\Alert;
 use Drago\Authorization\Conf;
 use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
+use Drago\Authorization\NotAllowedChange;
 use Drago\Authorization\Service\Data\PrivilegesData;
 use Drago\Authorization\Service\Entity\PrivilegesEntity;
-use Drago\Authorization\NotAllowedChange;
 use Drago\Authorization\Service\Repository\PrivilegesRepository;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
@@ -144,7 +144,7 @@ class PrivilegesControl extends Component implements Base
 						]);
 					}
 				}
-			} catch (\Exception $e) {
+			} catch (\Throwable $e) {
 				$message = match ($e->getCode()) {
 					1001 => 'The privilege is not allowed to be deleted.',
 					1451 => 'The privilege can not be deleted, you must first delete the records that are associated with it.',
@@ -156,7 +156,6 @@ class PrivilegesControl extends Component implements Base
 					$this->redrawPresenter($this->snippetMessage);
 				}
 			}
-
 		} else {
 			if ($this->isAjax()) {
 				$this->redrawPresenter($this->snippetRecords);
@@ -208,7 +207,7 @@ class PrivilegesControl extends Component implements Base
 				]);
 			}
 
-		} catch (\Exception $e) {
+		} catch (\Throwable $e) {
 			$message = match ($e->getCode()) {
 				1062 => 'This privilege already exists.',
 				default => 'Unknown status code.',

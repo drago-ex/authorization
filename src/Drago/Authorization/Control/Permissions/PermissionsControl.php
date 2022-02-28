@@ -210,7 +210,7 @@ class PermissionsControl extends Component implements Base
 
 			$message = $data->id ? 'Permission was updated.' : 'Permission added.';
 			$this->flashMessagePresenter($message);
-		} catch (\Exception $e) {
+		} catch (\Throwable $e) {
 			$message = match ($e->getCode()) {
 				1062 => 'This permission is already granted.',
 				default => 'Unknown status code.',
@@ -223,7 +223,7 @@ class PermissionsControl extends Component implements Base
 			$this->multipleRedrawPresenter([
 				$this->snippetFactory,
 				$this->snippetRecords,
-				$this->snippetMessage
+				$this->snippetMessage,
 			]);
 		}
 	}

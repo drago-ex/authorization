@@ -13,8 +13,8 @@ use Dibi\Exception;
 use Dibi\Row;
 use Drago\Attr\Table;
 use Drago\Authorization\Conf;
-use Drago\Authorization\Service\Entity\PrivilegesEntity;
 use Drago\Authorization\NotAllowedChange;
+use Drago\Authorization\Service\Entity\PrivilegesEntity;
 use Drago\Database\Connect;
 
 

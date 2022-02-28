@@ -72,6 +72,7 @@ class AccessControl extends Component implements Base
 					$roleList[] = $role->role;
 				}
 			}
+
 			$user->role = $roleList;
 			$usersRoleList[$user->user_id] = $user;
 		}
@@ -221,7 +222,6 @@ class AccessControl extends Component implements Base
 					$entity->role_id = $item;
 					$this->usersRolesRepository->save($entity);
 				}
-
 			} else {
 				$allUserRoles = $this->usersRolesRepository->getAllUserRoles();
 				$roleList = [];
@@ -262,7 +262,7 @@ class AccessControl extends Component implements Base
 			$message = $data->edit_id ? 'Access was updated.' : 'Access added.';
 			$this->flashMessagePresenter($message);
 
-		} catch (\Exception $e) {
+		} catch (\Throwable $e) {
 			$message = match ($e->getCode()) {
 				1062 => 'The user already has this role assigned.',
 				default => 'Unknown status code.',
