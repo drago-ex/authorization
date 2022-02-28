@@ -43,7 +43,6 @@ jobs:
 
             - name: MySQL database
               run: |
-                sudo apt-get install -y mysql-client
                 mysql --host 127.0.0.1 --port 3306 -uroot -proot test < tests/db.sql
 
             - run: composer install --no-progress --prefer-dist
