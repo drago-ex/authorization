@@ -7,13 +7,13 @@
 
 declare(strict_types=1);
 
-namespace Drago\Authorization\Repository;
+namespace Drago\Authorization\Service\Repository;
 
 use Dibi\Exception;
 use Dibi\Row;
 use Drago\Attr\Table;
 use Drago\Authorization\Conf;
-use Drago\Authorization\Entity\PrivilegesEntity;
+use Drago\Authorization\Service\Entity\PrivilegesEntity;
 use Drago\Authorization\NotAllowedChange;
 use Drago\Database\Connect;
 

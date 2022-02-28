@@ -7,21 +7,23 @@
 
 declare(strict_types=1);
 
-namespace Drago\Authorization\Control;
+namespace Drago\Authorization\Control\Permissions;
 
 use Dibi\Exception;
 use Drago\Application\UI\Alert;
 use Drago\Authorization\Conf;
-use Drago\Authorization\Data\PermissionsData;
-use Drago\Authorization\Entity\PrivilegesEntity;
-use Drago\Authorization\Entity\ResourcesEntity;
-use Drago\Authorization\Entity\RolesEntity;
-use Drago\Authorization\Repository\PermissionsRepository;
-use Drago\Authorization\Repository\PermissionsRolesViewRepository;
-use Drago\Authorization\Repository\PermissionsViewRepository;
-use Drago\Authorization\Repository\PrivilegesRepository;
-use Drago\Authorization\Repository\ResourcesRepository;
-use Drago\Authorization\Repository\RolesRepository;
+use Drago\Authorization\Control\Base;
+use Drago\Authorization\Control\Component;
+use Drago\Authorization\Service\Data\PermissionsData;
+use Drago\Authorization\Service\Entity\PrivilegesEntity;
+use Drago\Authorization\Service\Entity\ResourcesEntity;
+use Drago\Authorization\Service\Entity\RolesEntity;
+use Drago\Authorization\Service\Repository\PermissionsRepository;
+use Drago\Authorization\Service\Repository\PermissionsRolesViewRepository;
+use Drago\Authorization\Service\Repository\PermissionsViewRepository;
+use Drago\Authorization\Service\Repository\PrivilegesRepository;
+use Drago\Authorization\Service\Repository\ResourcesRepository;
+use Drago\Authorization\Service\Repository\RolesRepository;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;

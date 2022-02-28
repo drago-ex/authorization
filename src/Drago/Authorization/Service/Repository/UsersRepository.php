@@ -7,9 +7,9 @@
 
 declare(strict_types=1);
 
-namespace Drago\Authorization\Repository;
+namespace Drago\Authorization\Service\Repository;
 
-use App\Entity\AccessEntity;
+use Drago\Authorization\Service\Entity\AccessEntity;
 use Drago\Attr\Table;
 use Drago\Database\Connect;
 

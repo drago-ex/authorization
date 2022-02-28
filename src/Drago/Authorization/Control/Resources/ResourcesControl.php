@@ -7,13 +7,15 @@
 
 declare(strict_types=1);
 
-namespace Drago\Authorization\Control;
+namespace Drago\Authorization\Control\Resources;
 
 use Dibi\Exception;
 use Drago\Application\UI\Alert;
 use Drago\Authorization\Conf;
-use Drago\Authorization\Data\ResourcesData;
-use Drago\Authorization\Repository\ResourcesRepository;
+use Drago\Authorization\Control\Base;
+use Drago\Authorization\Control\Component;
+use Drago\Authorization\Service\Data\ResourcesData;
+use Drago\Authorization\Service\Repository\ResourcesRepository;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;

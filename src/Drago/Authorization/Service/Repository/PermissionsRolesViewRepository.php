@@ -7,10 +7,10 @@
 
 declare(strict_types=1);
 
-namespace Drago\Authorization\Repository;
+namespace Drago\Authorization\Service\Repository;
 
 use Drago\Attr\Table;
-use Drago\Authorization\Entity\PermissionsRolesViewEntity;
+use Drago\Authorization\Service\Entity\PermissionsRolesViewEntity;
 use Drago\Database\Connect;
 
 

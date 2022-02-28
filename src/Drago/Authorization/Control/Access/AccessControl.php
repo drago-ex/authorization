@@ -7,16 +7,18 @@
 
 declare(strict_types=1);
 
-namespace Drago\Authorization\Control;
+namespace Drago\Authorization\Control\Access;
 
 use Dibi\Exception;
 use Drago\Application\UI\Alert;
-use Drago\Authorization\Data\UsersRolesData;
-use Drago\Authorization\Entity\UsersRolesEntity;
-use Drago\Authorization\Repository\RolesRepository;
-use Drago\Authorization\Repository\UsersRepository;
-use Drago\Authorization\Repository\UsersRolesRepository;
-use Drago\Authorization\Repository\UsersRolesViewRepository;
+use Drago\Authorization\Control\Base;
+use Drago\Authorization\Control\Component;
+use Drago\Authorization\Service\Data\UsersRolesData;
+use Drago\Authorization\Service\Entity\UsersRolesEntity;
+use Drago\Authorization\Service\Repository\RolesRepository;
+use Drago\Authorization\Service\Repository\UsersRepository;
+use Drago\Authorization\Service\Repository\UsersRolesRepository;
+use Drago\Authorization\Service\Repository\UsersRolesViewRepository;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Forms\Controls\BaseControl;

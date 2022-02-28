@@ -6,21 +6,18 @@
 
 declare(strict_types=1);
 
-namespace Drago\Authorization\Entity;
+namespace Drago\Authorization\Service\Data;
 
 use Drago;
 use Nette;
 
-class PermissionsRolesViewEntity extends Drago\Database\Entity
+class PrivilegesData extends Drago\Utils\ExtraArrayHash
 {
 	use Nette\SmartObject;
 
-	public const TABLE = 'permissions_roles_view';
 	public const ID = 'id';
 	public const NAME = 'name';
-	public const PARENT = 'parent';
 
 	public int $id;
 	public string $name;
-	public int $parent;
 }

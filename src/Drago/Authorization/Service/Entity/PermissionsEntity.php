@@ -6,16 +6,17 @@
 
 declare(strict_types=1);
 
-namespace Drago\Authorization\Data;
+namespace Drago\Authorization\Service\Entity;
 
 use Drago;
 use Nette;
 
-class PermissionsData extends Drago\Utils\ExtraArrayHash
+class PermissionsEntity extends Drago\Database\Entity
 {
 	use Nette\SmartObject;
 
-	public const ID = 'id';
+	public const TABLE = 'permissions';
+	public const PRIMARY = 'id';
 	public const ROLE_ID = 'role_id';
 	public const RESOURCE_ID = 'resource_id';
 	public const PRIVILEGE_ID = 'privilege_id';

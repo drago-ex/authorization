@@ -6,7 +6,7 @@
 
 declare(strict_types=1);
 
-namespace Drago\Authorization\Data;
+namespace Drago\Authorization\Service\Data;
 
 use Drago;
 use Nette;

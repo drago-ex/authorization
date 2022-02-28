@@ -11,9 +11,9 @@ namespace Drago\Authorization;
 
 use Dibi\DriverException;
 use Dibi\Exception;
-use Drago\Authorization\Repository\PermissionsViewRepository;
-use Drago\Authorization\Repository\ResourcesRepository;
-use Drago\Authorization\Repository\RolesRepository;
+use Drago\Authorization\Service\Repository\PermissionsViewRepository;
+use Drago\Authorization\Service\Repository\ResourcesRepository;
+use Drago\Authorization\Service\Repository\RolesRepository;
 use Nette\Caching\Cache;
 use Nette\Security\Authorizator;
 use Nette\Security\Permission;
