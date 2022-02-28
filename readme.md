@@ -135,7 +135,7 @@ $control->setTranslator(...);
 {/snippet}
 ```
 
-## Use Nette ajax for reset form
+## Use Naja.js for reset form
 ```latte
 {control resetControl}
 ```
