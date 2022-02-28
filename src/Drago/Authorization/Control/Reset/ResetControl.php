@@ -13,8 +13,8 @@ use Drago\Application\UI\ExtraControl;
 use Drago\Authorization\Control\Access\AccessControl;
 use Drago\Authorization\Control\Permissions\PermissionsControl;
 use Drago\Authorization\Control\Privileges\PrivilegesControl;
-use Drago\Authorization\Control\ResourcesControl;
-use Drago\Authorization\Control\RolesControl;
+use Drago\Authorization\Control\Resources\ResourcesControl;
+use Drago\Authorization\Control\Roles\RolesControl;
 use Nette\Application\UI\Form;
 
 
