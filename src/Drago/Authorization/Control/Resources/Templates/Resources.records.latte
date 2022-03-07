@@ -1,33 +1,28 @@
 {varType Drago\Authorization\Entity\ResourcesEntity $resource}
+<h5 class="text-primary">Resources</h5>
+<div class="table-responsive-sm">
+	<table class="table table-sm table-striped table-hover table-borderless">
 
-<div class="shadow-lg p-4 mb-4">
+		<thead>
+		<tr>
+			<th scope="col">Name</th>
+			<th scope="col">Action</th>
+		</tr>
+		</thead>
 
-	<h4 class="mb-3 display-4 text-primary font-weight-normal" style="font-size: 1.438em">Resources</h4>
-	<div class="table-responsive-sm">
-		<table class="table table-sm table-striped table-hover">
-
-			<thead>
-			<tr>
-				<th scope="col">Name</th>
-				<th scope="col">Action</th>
-			</tr>
-			</thead>
-
-			<tbody>
-			<tr n:foreach="$resources as $resource">
-				<td style="width: 75%">{$resource->name}</td>
-				<td style="width: 25%">
-					<a n:href="edit!, $resource->id" class="ajax">Edit</a>
-					{if $deleteId === $resource->id}
-						<a n:href="deleteConfirm!, 0, $resource->id" class="ajax">No</a>
-						<a n:href="deleteConfirm!, 1, $resource->id" class="ajax">Yes</a>
-					{else}
-						<a n:href="delete!, $resource->id" class="ajax">Delete</a>
-					{/if}
-				</td>
-			</tr>
-			</tbody>
-
-		</table>
-	</div>
+		<tbody>
+		<tr n:foreach="$resources as $resource">
+			<td style="width: 75%">{$resource->name}</td>
+			<td style="width: 25%">
+				<a n:href="edit!, $resource->id" class="ajax">Edit</a>
+				{if $deleteId === $resource->id}
+					<a n:href="deleteConfirm!, 0, $resource->id" class="ajax">No</a>
+					<a n:href="deleteConfirm!, 1, $resource->id" class="ajax">Yes</a>
+				{else}
+					<a n:href="delete!, $resource->id" class="ajax">Delete</a>
+				{/if}
+			</td>
+		</tr>
+		</tbody>
+	</table>
 </div>
