@@ -1,35 +1,30 @@
 {varType Drago\Authorization\Entity\RolesEntity $role}
+<h5 class="text-primary">Roles</h5>
+<div class="table-responsive-sm">
+	<table class="table table-sm table-striped table-hover table-borderless">
 
-<div class="shadow-lg p-4 mb-4">
+		<thead>
+		<tr>
+			<th scope="col">Name</th>
+			<th scope="col">Parent</th>
+			<th scope="col">Action</th>
+		</tr>
+		</thead>
 
-	<h4 class="mb-3 display-4 text-primary font-weight-normal" style="font-size: 1.438em">Roles</h4>
-	<div class="table-responsive-sm">
-		<table class="table table-sm table-striped table-hover">
-
-			<thead>
-			<tr>
-				<th scope="col">Name</th>
-				<th scope="col">Parent</th>
-				<th scope="col">Action</th>
-			</tr>
-			</thead>
-
-			<tbody>
-			<tr n:foreach="$roles as $role">
-				<td style="width: 40%">{$role->name}</td>
-				<td style="width: 35%">{$role->parent}</td>
-				<td style="width: 25%">
-					<a n:href="edit!, $role->id" class="ajax">Edit</a>
-					{if $deleteId === $role->id}
-						<a n:href="deleteConfirm!, 0, $role->id" class="ajax">No</a>
-						<a n:href="deleteConfirm!, 1, $role->id" class="ajax">Yes</a>
-					{else}
-						<a n:href="delete!, $role->id" class="ajax">Delete</a>
-					{/if}
-				</td>
-			</tr>
-			</tbody>
-
-		</table>
-	</div>
+		<tbody>
+		<tr n:foreach="$roles as $role">
+			<td style="width: 40%">{$role->name}</td>
+			<td style="width: 35%">{$role->parent}</td>
+			<td style="width: 25%">
+				<a n:href="edit!, $role->id" class="ajax">Edit</a>
+				{if $deleteId === $role->id}
+					<a n:href="deleteConfirm!, 0, $role->id" class="ajax">No</a>
+					<a n:href="deleteConfirm!, 1, $role->id" class="ajax">Yes</a>
+				{else}
+					<a n:href="delete!, $role->id" class="ajax">Delete</a>
+				{/if}
+			</td>
+		</tr>
+		</tbody>
+	</table>
 </div>
