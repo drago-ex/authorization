@@ -1,45 +1,34 @@
-<div class="shadow-lg p-4 mb-4">
+<h5 class="text-primary">Edit or add permissions</h5>
+<form n:name="factory" class="row g-3 ajax">
 
-	<h4 class="mb-3 display-4 text-primary font-weight-normal" style="font-size: 1.438em">Edit or add permissions</h4>
-	<form n:name="factory" class="ajax">
+	{snippet errors}
+		<ul n:if="$form->hasErrors()" class="errors">
+			<li n:foreach="$form->errors as $error">{$error}</li>
+		</ul>
+	{/snippet}
 
-		{snippet errors}
-			<ul n:if="$form->hasErrors()" class="errors">
-				<li n:foreach="$form->errors as $error">{$error}</li>
-			</ul>
-		{/snippet}
+	<div class="col-md-6">
+		<label n:name="role_id" class="form-label" />
+		<select n:name="role_id" class="form-control"></select>
+	</div>
 
-		<div class="form-row">
+	<div class="col-md-6">
+		<label n:name="resource_id" class="form-label" />
+		<select n:name="resource_id" class="form-control"></select>
+	</div>
 
-			<div class="form-group col-md-3">
-				<select n:name="role_id" class="form-control"></select>
-			</div>
+	<div class="col-md-6">
+		<label n:name="privilege_id" class="form-label" />
+		<select n:name="privilege_id" class="form-control"></select>
+	</div>
 
-			<div class="form-group col-md-3">
-				<select n:name="resource_id" class="form-control"></select>
-			</div>
+	<div class="col-md-6">
+		<label n:name="allowed" class="form-label" />
+		<select n:name="allowed" class="form-control"></select>
+	</div>
 
-			<div class="form-group col-md-3">
-				<select n:name="privilege_id" class="form-control"></select>
-			</div>
-
-			<div class="form-group col-md-3">
-				<select n:name="allowed" class="form-control"></select>
-			</div>
-
-		</div>
-
-		<div class="form-row">
-
-			<div class="form-group col-md-6">
-				<input type="submit" n:name="send" class="btn btn-block btn-primary">
-			</div>
-
-			<div class="form-group col-md-6">
-				<input type="reset" class="reset-form-factory btn-block btn btn-danger">
-			</div>
-
-		</div>
-
-	</form>
-</div>
+	<div class="col-md-12">
+		<input type="submit" n:name="send" class="btn btn-block btn-primary">
+		<input type="reset" class="reset-form-factory btn-block btn btn-danger">
+	</div>
+</form>
