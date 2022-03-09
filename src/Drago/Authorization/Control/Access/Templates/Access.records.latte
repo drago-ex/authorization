@@ -22,6 +22,7 @@
 			<td style="width: 25%">
 				<a n:href="edit!, $item->user_id" class="ajax">Edit</a>
 				{if $deleteId === $item->user_id}
+					<p class="d-inline">Confirm</p>
 					<a n:href="deleteConfirm!, 0, $item->user_id" class="ajax">No</a>
 					<a n:href="deleteConfirm!, 1, $item->user_id" class="ajax">Yes</a>
 				{else}
