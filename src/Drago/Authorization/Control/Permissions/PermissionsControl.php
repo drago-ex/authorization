@@ -175,7 +175,7 @@ class PermissionsControl extends Component implements Base
 			->setRequired();
 
 		$authorization = [
-			'Not allowed',
+			'Deny',
 			'Allowed',
 		];
 
