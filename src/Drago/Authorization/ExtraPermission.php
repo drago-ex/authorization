@@ -56,7 +56,7 @@ class ExtraPermission
 					$row->privilege = $row->privilege === Conf::PRIVILEGE_ALL
 						? Authorizator::ALL
 						: $row->privilege;
-					$acl->{$row->allowed === 'yes'
+					$acl->{$row->allowed === 1
 						? 'allow'
 						: 'deny'} ($row->role, $row->resource, $row->privilege);
 				}

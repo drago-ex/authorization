@@ -26,5 +26,5 @@ class PermissionsEntity extends Drago\Database\Entity
 	public int $role_id;
 	public int $resource_id;
 	public int $privilege_id;
-	public string $allowed;
+	public int $allowed;
 }

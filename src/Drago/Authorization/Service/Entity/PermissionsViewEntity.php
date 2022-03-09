@@ -26,5 +26,5 @@ class PermissionsViewEntity extends Drago\Database\Entity
 	public ?string $resource = null;
 	public ?string $privilege = null;
 	public ?string $role = null;
-	public string $allowed;
+	public int $allowed;
 }

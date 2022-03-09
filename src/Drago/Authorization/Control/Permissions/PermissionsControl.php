@@ -175,8 +175,8 @@ class PermissionsControl extends Component implements Base
 			->setRequired();
 
 		$authorization = [
-			'yes' => 'Allowed',
-			'no' => 'Not allowed',
+			'Not allowed',
+			'Allowed',
 		];
 
 		$form->addSelect(PermissionsData::ALLOWED, 'Permission', $authorization)

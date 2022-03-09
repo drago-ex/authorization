@@ -84,7 +84,6 @@ class TestAuthorizationExtension extends TestCase
 	{
 		$permission = $this->geClassByType()->create();
 		$resources = [
-			'Admin:AccessControl',
 			'Admin:Admin',
 			'Admin:Sign',
 			'Web:Web',

@@ -25,5 +25,5 @@ class PermissionsData extends Drago\Utils\ExtraArrayHash
 	public int $role_id;
 	public int $resource_id;
 	public int $privilege_id;
-	public string $allowed;
+	public int $allowed;
 }
