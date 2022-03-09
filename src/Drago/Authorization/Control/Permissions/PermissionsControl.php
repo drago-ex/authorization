@@ -174,12 +174,12 @@ class PermissionsControl extends Component implements Base
 			->setPrompt('Select privilege')
 			->setRequired();
 
-		$authorization = [
+		$permission = [
 			'Deny',
-			'Allowed',
+			'Allow',
 		];
 
-		$form->addSelect(PermissionsData::ALLOWED, 'Permission', $authorization)
+		$form->addSelect(PermissionsData::ALLOWED, 'Permission', $permission)
 			->setPrompt('Select permission')
 			->setRequired();
 
