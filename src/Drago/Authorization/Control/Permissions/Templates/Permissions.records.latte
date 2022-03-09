@@ -28,6 +28,7 @@
 				<td style="width: 25%">
 					<a n:href="edit!, $permission->id" class="ajax">Edit</a>
 					{if $deleteId === $permission->id}
+						<p class="d-inline">Confirm</p>
 						<a n:href="deleteConfirm!, 0, $permission->id" class="ajax">No</a>
 						<a n:href="deleteConfirm!, 1, $permission->id" class="ajax">Yes</a>
 					{else}

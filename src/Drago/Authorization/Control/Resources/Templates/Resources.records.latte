@@ -16,6 +16,7 @@
 			<td style="width: 25%">
 				<a n:href="edit!, $resource->id" class="ajax">Edit</a>
 				{if $deleteId === $resource->id}
+					<p class="d-inline">Confirm</p>
 					<a n:href="deleteConfirm!, 0, $resource->id" class="ajax">No</a>
 					<a n:href="deleteConfirm!, 1, $resource->id" class="ajax">Yes</a>
 				{else}
