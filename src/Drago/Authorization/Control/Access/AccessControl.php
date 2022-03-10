@@ -124,6 +124,7 @@ class AccessControl extends Component implements Base
 			}
 
 			if ($this->isAjax()) {
+				$this->presenter->payload->access = 'access';
 				$this->redrawPresenter($this->snippetFactory);
 			}
 		}
