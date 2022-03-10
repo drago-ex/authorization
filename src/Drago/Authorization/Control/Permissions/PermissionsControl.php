@@ -96,6 +96,7 @@ class PermissionsControl extends Component implements Base
 			}
 
 			if ($this->isAjax()) {
+				$this->presenter->payload->permissions = 'permissions';
 				$this->redrawPresenter($this->snippetFactory);
 			}
 		}
