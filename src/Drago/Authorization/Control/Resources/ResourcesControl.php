@@ -84,6 +84,7 @@ class ResourcesControl extends Component implements Base
 			}
 
 			if ($this->isAjax()) {
+				$this->presenter->payload->resources = 'resources';
 				$this->redrawPresenter($this->snippetFactory);
 			}
 		}
