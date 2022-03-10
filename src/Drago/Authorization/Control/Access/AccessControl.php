@@ -187,7 +187,7 @@ class AccessControl extends Component implements Base
 		$form = $this->factory();
 
 		$users = $this->usersRepository->getAllUsers();
-		$form->addSelect(UsersRolesData::USER_ID, 'Select user', $users)
+		$form->addSelect(UsersRolesData::USER_ID, 'User', $users)
 			->setPrompt('Select user')
 			->setRequired();
 
