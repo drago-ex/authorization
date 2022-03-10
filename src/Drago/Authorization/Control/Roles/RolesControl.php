@@ -89,6 +89,7 @@ class RolesControl extends Component implements Base
 				}
 
 				if ($this->isAjax()) {
+					$this->presenter->payload->roles = 'roles';
 					$this->redrawPresenter($this->snippetFactory);
 				}
 			}
