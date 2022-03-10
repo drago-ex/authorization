@@ -6,6 +6,7 @@
 	<p class="border-bottom pb-2 text-secondary">Role {$role->name}</p>
 	<div class="table-responsive-sm">
 		<table class="table table-sm table-hover table-borderless">
+			{first}
 			<thead>
 			<tr>
 				<th scope="col" class="text-uppercase small">Resource</th>
@@ -14,6 +15,7 @@
 				<th scope="col" class="text-uppercase small">Action</th>
 			</tr>
 			</thead>
+			{/first}
 
 			<tbody>
 			<tr n:foreach="$permissions as $permission" n:if="$role->name == $permission->role">
