@@ -176,7 +176,9 @@ class PrivilegesControl extends Component implements Base
 		$form->addHidden(PrivilegesData::ID, 0)
 			->addRule(Form::INTEGER);
 
-		$form->addSubmit('send', 'Send');
+		$form->addSubmit('send', 'Send')
+			->setHtmlAttribute('onclick', 'if( Nette.validateForm(this.form) ) { this.disabled=true; } return false;');
+
 		$form->onSuccess[] = [$this, 'success'];
 		return $form;
 	}
