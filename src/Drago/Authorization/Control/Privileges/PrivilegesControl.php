@@ -168,7 +168,7 @@ class PrivilegesControl extends Component implements Base
 	{
 		$form = $this->factory();
 		$form->addText(PrivilegesData::NAME, 'Action or signal')
-			->setHtmlAttribute('placeholder', 'Action or signal')
+			->setHtmlAttribute('placeholder', 'Name action or signal')
 			->setHtmlAttribute('autocomplete', 'off')
 			->setRequired();
 
