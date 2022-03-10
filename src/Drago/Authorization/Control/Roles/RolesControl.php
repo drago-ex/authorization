@@ -192,9 +192,7 @@ class RolesControl extends Component implements Base
 		$form->addHidden(RolesData::ID, 0)
 			->addRule(Form::INTEGER);
 
-		$form->addSubmit('send', 'Send')
-			->setHtmlAttribute('onclick', 'if( Nette.validateForm(this.form) ) { this.disabled=true; } return false;');
-
+		$form->addSubmit('send', 'Send');
 		$form->onSuccess[] = [$this, 'success'];
 		return $form;
 	}
