@@ -87,6 +87,7 @@ class PrivilegesControl extends Component implements Base
 				}
 
 				if ($this->isAjax()) {
+					$this->presenter->payload->privileges = 'privileges';
 					$this->redrawPresenter($this->snippetFactory);
 				}
 			}
