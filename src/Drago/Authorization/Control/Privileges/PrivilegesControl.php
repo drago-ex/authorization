@@ -87,7 +87,7 @@ class PrivilegesControl extends Component implements Base
 				}
 
 				if ($this->isAjax()) {
-					$this->presenter->payload->privileges = 'privileges';
+					$this->presenter->payload->{$this->snippetFactory} = $this->snippetFactory;
 					$this->redrawPresenter($this->snippetFactory);
 				}
 			}
@@ -219,6 +219,15 @@ class PrivilegesControl extends Component implements Base
 				$this->redrawPresenter($this->snippetFactory);
 				$this->redrawControl($this->snippetError);
 			}
+		}
+	}
+
+
+	public function handleClickOpen()
+	{
+		if ($this->isAjax()) {
+			$this->presenter->payload->{$this->snippetFactory} = $this->snippetFactory;
+			$this->redrawPresenter($this->snippetFactory);
 		}
 	}
 }
