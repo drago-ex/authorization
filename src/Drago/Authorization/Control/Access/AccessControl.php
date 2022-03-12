@@ -124,7 +124,7 @@ class AccessControl extends Component implements Base
 			}
 
 			if ($this->isAjax()) {
-				$this->presenter->payload->{$this->snippetFactory} = $this->snippetFactory;
+				$this->getPresenter->payload->{$this->snippetFactory} = $this->snippetFactory;
 				$this->redrawPresenter($this->snippetFactory);
 			}
 		}
@@ -285,7 +285,7 @@ class AccessControl extends Component implements Base
 	public function handleClickOpen()
 	{
 		if ($this->isAjax()) {
-			$this->presenter->payload->{$this->snippetFactory} = $this->snippetFactory;
+			$this->getPresenter->payload->{$this->snippetFactory} = $this->snippetFactory;
 			$this->redrawPresenter($this->snippetFactory);
 		}
 	}
