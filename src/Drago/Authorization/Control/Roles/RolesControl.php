@@ -89,7 +89,7 @@ class RolesControl extends Component implements Base
 				}
 
 				if ($this->isAjax()) {
-					$this->presenter->payload->roles = 'roles';
+					$this->presenter->payload->{$this->snippetFactory} = $this->snippetFactory;
 					$this->redrawPresenter($this->snippetFactory);
 				}
 			}
@@ -257,5 +257,14 @@ class RolesControl extends Component implements Base
 		}
 
 		return $roles;
+	}
+
+
+	public function handleClickOpen()
+	{
+		if ($this->isAjax()) {
+			$this->presenter->payload->{$this->snippetFactory} = $this->snippetFactory;
+			$this->redrawPresenter($this->snippetFactory);
+		}
 	}
 }
