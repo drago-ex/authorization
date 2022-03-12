@@ -24,7 +24,6 @@ trait AuthorizationControl
 	public PrivilegesControl $privilegesControl;
 	public PermissionsControl $permissionsControl;
 	public AccessControl $accessControl;
-	public ResetControl $resetControl;
 
 
 	public function injectAuthorizationControl(
@@ -33,19 +32,11 @@ trait AuthorizationControl
 		PrivilegesControl $privilegesControl,
 		PermissionsControl $permissionsControl,
 		AccessControl $accessControl,
-		ResetControl $resetControl,
 	) {
 		$this->rolesControl = $rolesControl;
 		$this->resourcesControl = $resourcesControl;
 		$this->privilegesControl = $privilegesControl;
 		$this->permissionsControl = $permissionsControl;
 		$this->accessControl = $accessControl;
-		$this->resetControl = $resetControl;
-	}
-
-
-	protected function createComponentResetControl(): ResetControl
-	{
-		return $this->resetControl;
 	}
 }
