@@ -230,11 +230,11 @@ class PermissionsControl extends Component implements Base
 	}
 
 
-    public function handleClickOpen()
-    {
+	public function handleClickOpen()
+	{
 		if ($this->isAjax()) {
 			$this->getPresenter->payload->{$this->snippetFactory} = $this->snippetFactory;
 			$this->redrawPresenter($this->snippetFactory);
 		}
-    }
+	}
 }
