@@ -96,7 +96,7 @@ class PermissionsControl extends Component implements Base
 			}
 
 			if ($this->isAjax()) {
-				$this->presenter->payload->permissions = 'permissions';
+				$this->presenter->payload->{$this->snippetFactory} = $this->snippetFactory;
 				$this->redrawPresenter($this->snippetFactory);
 			}
 		}
@@ -228,4 +228,13 @@ class PermissionsControl extends Component implements Base
 			]);
 		}
 	}
+
+
+    public function handleClickOpen()
+    {
+		if ($this->isAjax()) {
+			$this->presenter->payload->{$this->snippetFactory} = $this->snippetFactory;
+			$this->redrawPresenter($this->snippetFactory);
+		}
+    }
 }
