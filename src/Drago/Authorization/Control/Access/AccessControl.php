@@ -72,7 +72,6 @@ class AccessControl extends Component implements Base
 					$roleList[] = $role->role;
 				}
 			}
-
 			$user->role = $roleList;
 			$usersRoleList[$user->user_id] = $user;
 		}
@@ -158,7 +157,6 @@ class AccessControl extends Component implements Base
 
 		if ($confirm === 1) {
 			$records = $this->usersRolesRepository->getUserRoles($id);
-
 			$entity = new UsersRolesEntity;
 			foreach ($records as $record) {
 				$entity->user_id = $record->user_id;
@@ -218,11 +216,11 @@ class AccessControl extends Component implements Base
 			if (!$data->edit_id) {
 				$entity = new UsersRolesEntity;
 				$entity->user_id = $data->user_id;
-
 				foreach ($data->role_id as $item) {
 					$entity->role_id = $item;
 					$this->usersRolesRepository->save($entity);
 				}
+
 			} else {
 				$allUserRoles = $this->usersRolesRepository->getAllUserRoles();
 				$roleList = [];
@@ -234,11 +232,9 @@ class AccessControl extends Component implements Base
 
 				$insertRoles = array_diff($data->role_id, $roleList);
 				$deleteRoles = array_diff($roleList, $data->role_id);
-
 				if (count($insertRoles)) {
 					$entity = new UsersRolesEntity;
 					$entity->user_id = $data->user_id;
-
 					foreach ($insertRoles as $role) {
 						$entity->role_id = $role;
 						$this->usersRolesRepository->save($entity);
@@ -263,6 +259,17 @@ class AccessControl extends Component implements Base
 			$message = $data->edit_id ? 'Access was updated.' : 'Access added.';
 			$this->flashMessagePresenter($message);
 
+			if ($this->isAjax()) {
+				if ($formId) {
+					$this->getPresenter()->payload->close = 'close';
+				}
+				$this->multipleRedrawPresenter([
+					$this->snippetFactory,
+					$this->snippetRecords,
+					$this->snippetMessage,
+				]);
+			}
+
 		} catch (\Throwable $e) {
 			$message = match ($e->getCode()) {
 				1062 => 'The user already has this role assigned.',
@@ -270,14 +277,10 @@ class AccessControl extends Component implements Base
 			};
 
 			$form->addError($message);
-		}
-
-		if ($this->isAjax()) {
-			$this->multipleRedrawPresenter([
-				$this->snippetFactory,
-				$this->snippetRecords,
-				$this->snippetMessage,
-			]);
+			if ($this->isAjax()) {
+				$this->redrawPresenter($this->snippetFactory);
+				$this->redrawControl($this->snippetError);
+			}
 		}
 	}
 

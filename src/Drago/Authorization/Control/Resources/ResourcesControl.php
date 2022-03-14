@@ -138,6 +138,7 @@ class ResourcesControl extends Component implements Base
 					}
 				}
 			}
+
 		} else {
 			if ($this->isAjax()) {
 				$this->redrawPresenter($this->snippetRecords);
@@ -167,7 +168,6 @@ class ResourcesControl extends Component implements Base
 	{
 		try {
 			$form->reset();
-
 			$formId = $form[ResourcesData::ID];
 			if ($formId instanceof BaseControl) {
 				$formId->setDefaultValue(0)
@@ -181,6 +181,9 @@ class ResourcesControl extends Component implements Base
 			$this->flashMessagePresenter($message);
 
 			if ($this->isAjax()) {
+				if ($formId) {
+					$this->getPresenter()->payload->close = 'close';
+				}
 				$this->multipleRedrawPresenter([
 					$this->snippetFactory,
 					$this->snippetRecords,

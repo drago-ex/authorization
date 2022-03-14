@@ -145,6 +145,7 @@ class PrivilegesControl extends Component implements Base
 						]);
 					}
 				}
+
 			} catch (\Throwable $e) {
 				$message = match ($e->getCode()) {
 					1001 => 'The privilege is not allowed to be deleted.',
@@ -157,6 +158,7 @@ class PrivilegesControl extends Component implements Base
 					$this->redrawPresenter($this->snippetMessage);
 				}
 			}
+
 		} else {
 			if ($this->isAjax()) {
 				$this->redrawPresenter($this->snippetRecords);
@@ -186,7 +188,6 @@ class PrivilegesControl extends Component implements Base
 	{
 		try {
 			$form->reset();
-
 			$formId = $form[PrivilegesData::ID];
 			if ($formId instanceof BaseControl) {
 				$formId->setDefaultValue(0)
@@ -200,6 +201,9 @@ class PrivilegesControl extends Component implements Base
 			$this->flashMessagePresenter($message);
 
 			if ($this->isAjax()) {
+				if ($formId) {
+					$this->getPresenter()->payload->close = 'close';
+				}
 				$this->multipleRedrawPresenter([
 					$this->snippetFactory,
 					$this->snippetRecords,

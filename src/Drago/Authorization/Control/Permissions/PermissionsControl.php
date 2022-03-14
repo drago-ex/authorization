@@ -198,19 +198,31 @@ class PermissionsControl extends Component implements Base
 	 */
 	public function success(Form $form, PermissionsData $data): void
 	{
-		$form->reset();
-		$formId = $form[PermissionsData::ID];
-		if ($formId instanceof BaseControl) {
-			$formId->setDefaultValue(0)
-				->addRule(Form::INTEGER);
-		}
-
 		try {
+			$form->reset();
+			$formId = $form[PermissionsData::ID];
+			if ($formId instanceof BaseControl) {
+				$formId->setDefaultValue(0)
+					->addRule(Form::INTEGER);
+			}
+
 			$this->permissionsRepository->put($data->toArray());
 			$this->cache->remove(Conf::CACHE);
 
 			$message = $data->id ? 'Permission was updated.' : 'Permission added.';
 			$this->flashMessagePresenter($message);
+
+			if ($this->isAjax()) {
+				if ($formId) {
+					$this->getPresenter()->payload->close = 'close';
+				}
+				$this->multipleRedrawPresenter([
+					$this->snippetFactory,
+					$this->snippetRecords,
+					$this->snippetMessage,
+				]);
+			}
+
 		} catch (\Throwable $e) {
 			$message = match ($e->getCode()) {
 				1062 => 'This permission is already granted.',
@@ -218,14 +230,10 @@ class PermissionsControl extends Component implements Base
 			};
 
 			$form->addError($message);
-		}
-
-		if ($this->isAjax()) {
-			$this->multipleRedrawPresenter([
-				$this->snippetFactory,
-				$this->snippetRecords,
-				$this->snippetMessage,
-			]);
+			if ($this->isAjax()) {
+				$this->redrawPresenter($this->snippetFactory);
+				$this->redrawControl($this->snippetError);
+			}
 		}
 	}
 
