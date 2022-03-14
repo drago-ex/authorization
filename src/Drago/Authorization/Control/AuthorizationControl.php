@@ -12,7 +12,6 @@ namespace Drago\Authorization\Control;
 use Drago\Authorization\Control\Access\AccessControl;
 use Drago\Authorization\Control\Permissions\PermissionsControl;
 use Drago\Authorization\Control\Privileges\PrivilegesControl;
-use Drago\Authorization\Control\Reset\ResetControl;
 use Drago\Authorization\Control\Resources\ResourcesControl;
 use Drago\Authorization\Control\Roles\RolesControl;
 
