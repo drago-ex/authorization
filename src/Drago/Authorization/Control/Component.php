@@ -5,7 +5,6 @@
  * Package built on Nette Framework
  */
 
-
 declare(strict_types=1);
 
 namespace Drago\Authorization\Control;
