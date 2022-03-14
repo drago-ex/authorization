@@ -169,11 +169,6 @@ class ResourcesControl extends Component implements Base
 		try {
 			$form->reset();
 			$formId = $form[ResourcesData::ID];
-			if ($formId instanceof BaseControl) {
-				$formId->setDefaultValue(0)
-					->addRule(Form::INTEGER);
-			}
-
 			$this->repository->put($data->toArray());
 			$this->cache->remove(Conf::CACHE);
 
