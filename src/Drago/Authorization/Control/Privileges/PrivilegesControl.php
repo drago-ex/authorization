@@ -189,11 +189,6 @@ class PrivilegesControl extends Component implements Base
 		try {
 			$form->reset();
 			$formId = $form[PrivilegesData::ID];
-			if ($formId instanceof BaseControl) {
-				$formId->setDefaultValue(0)
-					->addRule(Form::INTEGER);
-			}
-
 			$this->repository->put($data->toArray());
 			$this->cache->remove(Conf::CACHE);
 
