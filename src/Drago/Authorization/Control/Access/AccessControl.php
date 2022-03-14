@@ -208,11 +208,6 @@ class AccessControl extends Component implements Base
 		try {
 			$form->reset();
 			$formId = $form[UsersRolesData::EDIT_ID];
-			if ($formId instanceof BaseControl) {
-				$formId->setDefaultValue(0)
-					->addRule(Form::INTEGER);
-			}
-
 			if (!$data->edit_id) {
 				$entity = new UsersRolesEntity;
 				$entity->user_id = $data->user_id;
