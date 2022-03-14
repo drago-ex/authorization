@@ -12,7 +12,6 @@ namespace Drago\Authorization\DI;
 use Drago\Authorization\Control\Access\AccessControl;
 use Drago\Authorization\Control\Permissions\PermissionsControl;
 use Drago\Authorization\Control\Privileges\PrivilegesControl;
-use Drago\Authorization\Control\Reset\ResetControl;
 use Drago\Authorization\Control\Resources\ResourcesControl;
 use Drago\Authorization\Control\Roles\RolesControl;
 use Drago\Authorization\ExtraPermission;
@@ -67,9 +66,6 @@ class AuthorizationExtension extends CompilerExtension
 
 		$builder->addDefinition($this->prefix('accessControl'))
 			->setFactory(AccessControl::class);
-
-		$builder->addDefinition($this->prefix('resetControl'))
-			->setFactory(ResetControl::class);
 
 		/** Authorization repository. */
 		$builder->addDefinition($this->prefix('role'))
