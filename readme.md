@@ -134,8 +134,3 @@ $control->setTranslator(...);
 	{control accessControl:records}
 {/snippet}
 ```
-
-## Use Naja.js for reset form
-```latte
-{control resetControl}
-```
