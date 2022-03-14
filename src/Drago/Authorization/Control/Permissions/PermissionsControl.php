@@ -201,11 +201,6 @@ class PermissionsControl extends Component implements Base
 		try {
 			$form->reset();
 			$formId = $form[PermissionsData::ID];
-			if ($formId instanceof BaseControl) {
-				$formId->setDefaultValue(0)
-					->addRule(Form::INTEGER);
-			}
-
 			$this->permissionsRepository->put($data->toArray());
 			$this->cache->remove(Conf::CACHE);
 
