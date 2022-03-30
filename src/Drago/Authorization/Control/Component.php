@@ -27,7 +27,7 @@ abstract class Component extends UI\ExtraControl
 	public ?string $templateRecords = null;
 	public int $deleteId = 0;
 
-	protected string $snippetError = 'error';
+	protected string $snippetError = 'errors';
 	protected string $snippetMessage = 'message';
 	protected string $snippetPermissions = 'permissions';
 
