@@ -27,7 +27,7 @@ class AuthorizationExtension extends CompilerExtension
 
 		// load the extension configuration file.
 		$this->compiler->loadDefinitionsFromConfig(
-			$this->loadFromFile(__DIR__ . '/services.neon')['services']
+			$this->loadFromFile(__DIR__ . '/services.neon')['services'],
 		);
 
 		/** Role switch panel */
