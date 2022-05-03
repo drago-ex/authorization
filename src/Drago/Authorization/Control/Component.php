@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control;
 
 use Drago\Application\UI;
-use Drago\Authorization\FileNotFoundException;
 use Nette\SmartObject;
 
 
