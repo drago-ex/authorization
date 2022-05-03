@@ -11,12 +11,13 @@ namespace Drago\Authorization;
 
 use Dibi\DriverException;
 use Dibi\Exception;
-use Drago\Authorization\Service\Repository\PermissionsViewRepository;
-use Drago\Authorization\Service\Repository\ResourcesRepository;
-use Drago\Authorization\Service\Repository\RolesRepository;
+use Drago\Authorization\Control\Permissions\PermissionsViewRepository;
+use Drago\Authorization\Control\Resources\ResourcesRepository;
+use Drago\Authorization\Control\Roles\RolesRepository;
 use Nette\Caching\Cache;
 use Nette\Security\Authorizator;
 use Nette\Security\Permission;
+use Nette\SmartObject;
 use Throwable;
 
 
@@ -25,11 +26,13 @@ use Throwable;
  */
 class ExtraPermission
 {
+	use SmartObject;
+
 	public function __construct(
 		private Cache $cache,
-		private RolesRepository $roles,
-		private ResourcesRepository $resources,
-		private PermissionsViewRepository $permissions,
+		private RolesRepository $rolesRepository,
+		private ResourcesRepository $resourcesRepository,
+		private PermissionsViewRepository $permissionsViewRepository,
 	) {
 	}
 
@@ -43,16 +46,16 @@ class ExtraPermission
 		$acl = new Permission;
 		try {
 			if (!$this->cache->load(Conf::CACHE)) {
-				foreach ($this->roles->getAll() as $role) {
-					$parent = $this->roles->findByParent($role->parent);
+				foreach ($this->rolesRepository->getAll() as $role) {
+					$parent = $this->rolesRepository->findByParent($role->parent);
 					$acl->addRole($role->name, $parent->name ?? null);
 				}
 
-				foreach ($this->resources->getAll() as $resource) {
+				foreach ($this->resourcesRepository->getAll() as $resource) {
 					$acl->addResource($resource->name);
 				}
 
-				foreach ($this->permissions->getAll() as $row) {
+				foreach ($this->permissionsViewRepository->getAll() as $row) {
 					$row->privilege = $row->privilege === Conf::PRIVILEGE_ALL
 						? Authorizator::ALL
 						: $row->privilege;

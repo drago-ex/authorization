@@ -11,29 +11,34 @@ namespace Drago\Authorization\Control\Permissions;
 
 use Dibi\Exception;
 use Drago\Application\UI\Alert;
+use Drago\Attr\AttributeDetectionException;
 use Drago\Authorization\Conf;
 use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
-use Drago\Authorization\Service\Data\PermissionsData;
-use Drago\Authorization\Service\Entity\PrivilegesEntity;
-use Drago\Authorization\Service\Entity\ResourcesEntity;
-use Drago\Authorization\Service\Entity\RolesEntity;
-use Drago\Authorization\Service\Repository\PermissionsRepository;
-use Drago\Authorization\Service\Repository\PermissionsRolesViewRepository;
-use Drago\Authorization\Service\Repository\PermissionsViewRepository;
-use Drago\Authorization\Service\Repository\PrivilegesRepository;
-use Drago\Authorization\Service\Repository\ResourcesRepository;
-use Drago\Authorization\Service\Repository\RolesRepository;
+use Drago\Authorization\Control\Privileges\PrivilegesEntity;
+use Drago\Authorization\Control\Privileges\PrivilegesRepository;
+use Drago\Authorization\Control\Resources\ResourcesData;
+use Drago\Authorization\Control\Resources\ResourcesEntity;
+use Drago\Authorization\Control\Resources\ResourcesRepository;
+use Drago\Authorization\Control\Roles\RolesEntity;
+use Drago\Authorization\Control\Roles\RolesRepository;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
 use Nette\Forms\Controls\BaseControl;
+use Nette\SmartObject;
+use Throwable;
 
 
+/**
+ * @property-read PermissionsTemplate $template;
+ */
 class PermissionsControl extends Component implements Base
 {
+	use SmartObject;
+
 	public string $snippetFactory = 'permissions';
-	public string $snippetRecords = 'permissionsRecords';
+	public string $snippetItems = 'permissionsItems';
 
 
 	public function __construct(
@@ -50,34 +55,31 @@ class PermissionsControl extends Component implements Base
 
 	public function render(): void
 	{
-		$template = __DIR__ . '/Templates/Permissions.add.latte';
-		$template = $this->templateAdd ?: $template;
-		$items = [
-			'form' => $this['factory'],
-		];
-		$this->setRenderControl($template, $items);
+		$template = $this->template;
+		$template->setFile($this->templateFactory ?: __DIR__ . '/Permissions.latte');
+		$template->form = $this['factory'];
+		$template->render();
 	}
 
 
-	public function renderRecords(): void
+	/**
+	 * @throws Exception
+	 * @throws AttributeDetectionException
+	 */
+	public function renderItems(): void
 	{
-		$template = __DIR__ . '/Templates/Permissions.records.latte';
-		$template = $this->templateRecords ?: $template;
-		$roles = $this->permissionsRolesViewRepository->all();
-		$permissions = $this->permissionsViewRepository->all();
-
-		$items = [
-			'roles' => $roles,
-			'permissions' => $permissions,
-			'deleteId' => $this->deleteId,
-		];
-
-		$this->setRenderControl($template, $items);
+		$template = $this->template;
+		$template->setFile($this->templateItems ?: __DIR__ . '/PermissionsItems.latte');
+		$template->roles = $this->permissionsRolesViewRepository->getAll();
+		$template->permissions = $this->permissionsViewRepository->getAll();
+		$template->deleteId = $this->deleteId;
+		$template->render();
 	}
 
 
 	/**
 	 * @throws BadRequestException
+	 * @throws AttributeDetectionException
 	 */
 	public function handleEdit(int $id): void
 	{
@@ -97,7 +99,7 @@ class PermissionsControl extends Component implements Base
 
 			if ($this->isAjax()) {
 				$this->getPresenter()->payload->{$this->snippetFactory} = $this->snippetFactory;
-				$this->redrawPresenter($this->snippetFactory);
+				$this->getPresenter()->redrawControl($this->snippetFactory);
 			}
 		}
 	}
@@ -106,15 +108,16 @@ class PermissionsControl extends Component implements Base
 	/**
 	 * @throws BadRequestException
 	 * @throws Exception
+	 * @throws AttributeDetectionException
 	 */
 	public function handleDelete(int $id): void
 	{
 		$permission = $this->permissionsRepository->getRecord($id);
 		$permission ?: $this->error();
 		$this->deleteId = $permission->id;
-
 		if ($this->isAjax()) {
-			$this->redrawPresenter($this->snippetRecords);
+			$this->getPresenter()
+				->redrawControl($this->snippetItems);
 		}
 	}
 
@@ -122,6 +125,7 @@ class PermissionsControl extends Component implements Base
 	/**
 	 * @throws Exception
 	 * @throws BadRequestException
+	 * @throws AttributeDetectionException
 	 */
 	public function handleDeleteConfirm(int $confirm, int $id): void
 	{
@@ -129,29 +133,39 @@ class PermissionsControl extends Component implements Base
 		$permission ?: $this->error();
 
 		if ($confirm === 1) {
-			$this->permissionsRepository->erase($id);
+			$this->permissionsRepository->remove($id);
 			$this->cache->remove(Conf::CACHE);
-			$this->flashMessagePresenter('Permission removed.', Alert::DANGER);
+			$this->getPresenter()->flashMessage(
+				'Permission removed.',
+				Alert::DANGER
+			);
 
+			$snippets = [
+				$this->snippetFactory,
+				$this->snippetItems,
+				$this->snippetMessage,
+			];
 			if ($this->isAjax()) {
-				$this->multipleRedrawPresenter([
-					$this->snippetFactory,
-					$this->snippetRecords,
-					$this->snippetMessage,
-				]);
+				foreach ($snippets as $snippet) {
+					$this->getPresenter()->redrawControl($snippet);
+				}
 			}
 
 		} else {
 			if ($this->isAjax()) {
-				$this->redrawPresenter($this->snippetRecords);
+				$this->getPresenter()
+					->redrawControl($this->snippetItems);
 			}
 		}
 	}
 
 
+	/**
+	 * @throws AttributeDetectionException
+	 */
 	protected function createComponentFactory(): Form
 	{
-		$form = $this->factory();
+		$form = new Form;
 
 		$roles = $this->rolesRepository->all()
 			->where(RolesEntity::NAME, '!= ?', Conf::ROLE_ADMIN)
@@ -185,7 +199,7 @@ class PermissionsControl extends Component implements Base
 			->setRequired();
 
 		$form->addHidden(PermissionsData::ID, 0)
-			->addRule(Form::INTEGER);
+			->addRule($form::INTEGER);
 
 		$form->addSubmit('send', 'Send');
 		$form->onSuccess[] = [$this, 'success'];
@@ -193,32 +207,38 @@ class PermissionsControl extends Component implements Base
 	}
 
 
-	/**
-	 * @throws Exception
-	 */
 	public function success(Form $form, PermissionsData $data): void
 	{
 		try {
-			$form->reset();
-			$formId = $form[PermissionsData::ID];
 			$this->permissionsRepository->put($data->toArray());
 			$this->cache->remove(Conf::CACHE);
 
 			$message = $data->id ? 'Permission was updated.' : 'Permission added.';
-			$this->flashMessagePresenter($message);
+			$this->getPresenter()->flashMessage($message, Alert::INFO);
 
 			if ($this->isAjax()) {
-				if ($formId) {
+				if ($data->id) {
 					$this->getPresenter()->payload->close = 'close';
 				}
-				$this->multipleRedrawPresenter([
+
+				$snippets = [
 					$this->snippetFactory,
-					$this->snippetRecords,
+					$this->snippetItems,
 					$this->snippetMessage,
-				]);
+				];
+				foreach ($snippets as $snippet) {
+					$this->getPresenter()->redrawControl($snippet);
+				}
 			}
 
-		} catch (\Throwable $e) {
+			$form->reset();
+			$formId = $form[ResourcesData::ID];
+			if ($formId instanceof BaseControl) {
+				$formId->setDefaultValue(0)
+					->addRule($form::INTEGER);
+			}
+
+		} catch (Throwable $e) {
 			$message = match ($e->getCode()) {
 				1062 => 'This permission is already granted.',
 				default => 'Unknown status code.',
@@ -226,7 +246,7 @@ class PermissionsControl extends Component implements Base
 
 			$form->addError($message);
 			if ($this->isAjax()) {
-				$this->redrawPresenter($this->snippetFactory);
+				$this->getPresenter()->redrawControl($this->snippetFactory);
 				$this->redrawControl($this->snippetError);
 			}
 		}
@@ -237,7 +257,7 @@ class PermissionsControl extends Component implements Base
 	{
 		if ($this->isAjax()) {
 			$this->getPresenter()->payload->{$this->snippetFactory} = $this->snippetFactory;
-			$this->redrawPresenter($this->snippetFactory);
+			$this->getPresenter()->redrawControl($this->snippetFactory);
 		}
 	}
 }

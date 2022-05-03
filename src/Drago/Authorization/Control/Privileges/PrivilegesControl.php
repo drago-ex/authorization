@@ -11,71 +11,72 @@ namespace Drago\Authorization\Control\Privileges;
 
 use Dibi\Exception;
 use Drago\Application\UI\Alert;
+use Drago\Attr\AttributeDetectionException;
 use Drago\Authorization\Conf;
 use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
 use Drago\Authorization\NotAllowedChange;
-use Drago\Authorization\Service\Data\PrivilegesData;
-use Drago\Authorization\Service\Entity\PrivilegesEntity;
-use Drago\Authorization\Service\Repository\PrivilegesRepository;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
 use Nette\Forms\Controls\BaseControl;
+use Nette\SmartObject;
+use Throwable;
 
 
+/**
+ * @property-read PrivilegesTemplate $template
+ */
 class PrivilegesControl extends Component implements Base
 {
+	use SmartObject;
+
 	public string $snippetFactory = 'privileges';
-	public string $snippetRecords = 'privilegesRecords';
+	public string $snippetItems = 'privilegesItems';
 
 
 	public function __construct(
 		private Cache $cache,
-		private PrivilegesRepository $repository,
+		private PrivilegesRepository $privilegesRepository,
 	) {
 	}
 
 
 	public function render(): void
 	{
-		$template = __DIR__ . '/Templates/Privileges.add.latte';
-		$template = $this->templateAdd ?: $template;
-		$items = [
-			'form' => $this['factory'],
-		];
-		$this->setRenderControl($template, $items);
+		$template = $this->template;
+		$template->setFile($this->templateFactory ?: __DIR__ . '/Privileges.latte');
+		$template->form = $this['factory'];
+		$template->render();
 	}
 
 
-	public function renderRecords(): void
+	/**
+	 * @throws AttributeDetectionException
+	 * @throws Exception
+	 */
+	public function renderItems(): void
 	{
-		$template = __DIR__ . '/Templates/Privileges.records.latte';
-		$template = $this->templateRecords ?: $template;
-		$privileges = $this->repository->all()
-			->orderBy(PrivilegesEntity::NAME, 'asc')
-			->fetchAll();
-
-		$items = [
-			'privileges' => $privileges,
-			'deleteId' => $this->deleteId,
-		];
-
-		$this->setRenderControl($template, $items);
+		$template = $this->template;
+		$template->setFile($this->templateItems ?: __DIR__ . '/PrivilegesItems.latte');
+		$template->privileges = $this->privilegesRepository->getAll();
+		$template->deleteId = $this->deleteId;
+		$template->render();
 	}
 
 
 	/**
 	 * @throws BadRequestException
 	 * @throws Exception
+	 * @throws AttributeDetectionException
 	 */
 	public function handleEdit(int $id): void
 	{
-		$privilege = $this->repository->getRecord($id);
+		$privilege = $this->privilegesRepository->getOne($id);
 		$privilege ?: $this->error();
 
 		try {
-			if ($this->repository->isAllowed($privilege->name) && $this->getSignal()) {
+			if ($this->privilegesRepository->isAllowed($privilege->name) && $this->getSignal()) {
 				$form = $this['factory'];
 				if ($form instanceof Form) {
 					$form->setDefaults($privilege);
@@ -88,16 +89,20 @@ class PrivilegesControl extends Component implements Base
 
 				if ($this->isAjax()) {
 					$this->getPresenter()->payload->{$this->snippetFactory} = $this->snippetFactory;
-					$this->redrawPresenter($this->snippetFactory);
+					$this->getPresenter()->redrawControl($this->snippetFactory);
 				}
 			}
 
 		} catch (NotAllowedChange $e) {
 			if ($e->getCode() === 1001) {
-				$this->flashMessagePresenter('The privilege is not allowed to be updated.', Alert::WARNING);
+				$this->getPresenter()->flashMessage(
+					'The privilege is not allowed to be updated.',
+					Alert::WARNING
+				);
 
 				if ($this->isAjax()) {
-					$this->redrawPresenter($this->snippetMessage);
+					$this->getPresenter()
+						->redrawControl($this->snippetMessage);
 				}
 			}
 		}
@@ -107,15 +112,16 @@ class PrivilegesControl extends Component implements Base
 	/**
 	 * @throws BadRequestException
 	 * @throws Exception
+	 * @throws AttributeDetectionException
 	 */
 	public function handleDelete(int $id): void
 	{
-		$privilege = $this->repository->getRecord($id);
+		$privilege = $this->privilegesRepository->getOne($id);
 		$privilege ?: $this->error();
 		$this->deleteId = $privilege->id;
-
 		if ($this->isAjax()) {
-			$this->redrawPresenter($this->snippetRecords);
+			$this->getPresenter()
+				->redrawControl($this->snippetItems);
 		}
 	}
 
@@ -123,45 +129,56 @@ class PrivilegesControl extends Component implements Base
 	/**
 	 * @throws BadRequestException
 	 * @throws Exception
+	 * @throws AttributeDetectionException
 	 */
 	public function handleDeleteConfirm(int $confirm, int $id): void
 	{
-		$privilege = $this->repository->getRecord($id);
+		$privilege = $this->privilegesRepository->getOne($id);
 		$privilege ?: $this->error();
 
 		if ($confirm === 1) {
 			try {
-				if ($this->repository->isAllowed($privilege->name)) {
-					$this->repository->erase($id);
+				if ($this->privilegesRepository->isAllowed($privilege->name)) {
+					$this->privilegesRepository->remove($id);
 					$this->cache->remove(Conf::CACHE);
-					$this->flashMessagePresenter('Privilege deleted.', Alert::DANGER);
+					$this->getPresenter()->flashMessage(
+						'Privilege deleted.',
+						Alert::DANGER
+					);
 
+					$snippets = [
+						$this->snippetFactory,
+						$this->snippetItems,
+						$this->snippetMessage,
+						$this->snippetPermissions,
+					];
 					if ($this->isAjax()) {
-						$this->multipleRedrawPresenter([
-							$this->snippetFactory,
-							$this->snippetRecords,
-							$this->snippetMessage,
-							$this->snippetPermissions,
-						]);
+						foreach ($snippets as $snippet) {
+							$this->getPresenter()->redrawControl($snippet);
+						}
 					}
 				}
 
-			} catch (\Throwable $e) {
+			} catch (Throwable $e) {
 				$message = match ($e->getCode()) {
 					1001 => 'The privilege is not allowed to be deleted.',
 					1451 => 'The privilege can not be deleted, you must first delete the records that are associated with it.',
 					default => 'Unknown status code.',
 				};
 
-				$this->flashMessagePresenter($message, Alert::WARNING);
+				$this->getPresenter()
+					->flashMessage($message, Alert::WARNING);
+
 				if ($this->isAjax()) {
-					$this->redrawPresenter($this->snippetMessage);
+					$this->getPresenter()
+						->redrawControl($this->snippetMessage);
 				}
 			}
 
 		} else {
 			if ($this->isAjax()) {
-				$this->redrawPresenter($this->snippetRecords);
+				$this->getPresenter()
+					->redrawControl($this->snippetItems);
 			}
 		}
 	}
@@ -169,14 +186,14 @@ class PrivilegesControl extends Component implements Base
 
 	public function createComponentFactory(): Form
 	{
-		$form = $this->factory();
+		$form = new Form;
 		$form->addText(PrivilegesData::NAME, 'Action or signal')
 			->setHtmlAttribute('placeholder', 'Name action or signal')
 			->setHtmlAttribute('autocomplete', 'off')
 			->setRequired();
 
 		$form->addHidden(PrivilegesData::ID, 0)
-			->addRule(Form::INTEGER);
+			->addRule($form::INTEGER);
 
 		$form->addSubmit('send', 'Send');
 		$form->onSuccess[] = [$this, 'success'];
@@ -187,27 +204,36 @@ class PrivilegesControl extends Component implements Base
 	public function success(Form $form, PrivilegesData $data): void
 	{
 		try {
-			$form->reset();
-			$formId = $form[PrivilegesData::ID];
-			$this->repository->put($data->toArray());
+			$this->privilegesRepository->put($data->toArray());
 			$this->cache->remove(Conf::CACHE);
 
 			$message = $data->id ? 'Privilege updated.' : 'Privilege inserted.';
-			$this->flashMessagePresenter($message);
+			$this->getPresenter()->flashMessage($message);
 
 			if ($this->isAjax()) {
-				if ($formId) {
+				if ($data->id) {
 					$this->getPresenter()->payload->close = 'close';
 				}
-				$this->multipleRedrawPresenter([
+
+				$snippets = [
 					$this->snippetFactory,
-					$this->snippetRecords,
+					$this->snippetItems,
 					$this->snippetMessage,
 					$this->snippetPermissions,
-				]);
+				];
+				foreach ($snippets as $snippet) {
+					$this->getPresenter()->redrawControl($snippet);
+				}
 			}
 
-		} catch (\Throwable $e) {
+			$form->reset();
+			$formId = $form[PrivilegesData::ID];
+			if ($formId instanceof BaseControl) {
+				$formId->setDefaultValue(0)
+					->addRule($form::INTEGER);
+			}
+
+		} catch (Throwable $e) {
 			$message = match ($e->getCode()) {
 				1062 => 'This privilege already exists.',
 				default => 'Unknown status code.',
@@ -215,7 +241,7 @@ class PrivilegesControl extends Component implements Base
 
 			$form->addError($message);
 			if ($this->isAjax()) {
-				$this->redrawPresenter($this->snippetFactory);
+				$this->getPresenter()->redrawControl($this->snippetFactory);
 				$this->redrawControl($this->snippetError);
 			}
 		}
@@ -226,7 +252,7 @@ class PrivilegesControl extends Component implements Base
 	{
 		if ($this->isAjax()) {
 			$this->getPresenter()->payload->{$this->snippetFactory} = $this->snippetFactory;
-			$this->redrawPresenter($this->snippetFactory);
+			$this->getPresenter()->redrawControl($this->snippetFactory);
 		}
 	}
 }

@@ -1,0 +1,24 @@
+services:
+	authorization.cache:
+		class: Nette\Caching\Cache
+		arguments: [@Nette\Caching\IStorage, drago.authorization]
+		autowired: no
+
+	authorization: Drago\Authorization\ExtraPermission(@authorization.cache)
+	authorization.up: @authorization::create
+
+	- Drago\Authorization\Control\Roles\RolesControl(@authorization.cache)
+	- Drago\Authorization\Control\Resources\ResourcesControl(@authorization.cache)
+	- Drago\Authorization\Control\Privileges\PrivilegesControl(@authorization.cache)
+	- Drago\Authorization\Control\Permissions\PermissionsControl(@authorization.cache)
+	- Drago\Authorization\Control\Access\AccessControl
+
+	- Drago\Authorization\Control\Roles\RolesRepository
+	- Drago\Authorization\Control\Resources\ResourcesRepository
+	- Drago\Authorization\Control\Privileges\PrivilegesRepository
+	- Drago\Authorization\Control\Permissions\PermissionsRepository
+	- Drago\Authorization\Control\Permissions\PermissionsViewRepository
+	- Drago\Authorization\Control\Permissions\PermissionsRolesViewRepository
+	- Drago\Authorization\Control\Access\UsersRepository
+	- Drago\Authorization\Control\Access\UsersRolesRepository
+	- Drago\Authorization\Control\Access\UsersRolesViewRepository

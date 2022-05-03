@@ -16,7 +16,7 @@ interface Base
 	public function render(): void;
 
 	/** Render template for data table. */
-	public function renderRecords(): void;
+	public function renderItems(): void;
 
 	/** Signal edit. */
 	public function handleEdit(int $id): void;

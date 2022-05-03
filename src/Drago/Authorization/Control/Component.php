@@ -17,35 +17,17 @@ use Nette\SmartObject;
 /**
  * Base control.
  * @property string $snippetFactory
- * @property string $snippetRecords
+ * @property string $snippetItems
  */
 abstract class Component extends UI\ExtraControl
 {
 	use SmartObject;
 
-	public ?string $templateAdd = null;
-	public ?string $templateRecords = null;
+	public ?string $templateFactory = null;
+	public ?string $templateItems = null;
 	public int $deleteId = 0;
 
 	protected string $snippetError = 'errors';
 	protected string $snippetMessage = 'message';
 	protected string $snippetPermissions = 'permissions';
-
-
-	/**
-	 * @throws FileNotFoundException
-	 */
-	public function setTemplateFile(string $templateFile, string $type = 'add'): void
-	{
-		if (!is_file($templateFile)) {
-			throw new FileNotFoundException('Template file ' . $templateFile . ' not found.');
-		}
-
-		if ($type === 'add') {
-			$this->templateAdd = $templateFile;
-
-		} elseif ($type === 'records') {
-			$this->templateRecords = $templateFile;
-		}
-	}
 }

@@ -11,64 +11,66 @@ namespace Drago\Authorization\Control\Resources;
 
 use Dibi\Exception;
 use Drago\Application\UI\Alert;
+use Drago\Attr\AttributeDetectionException;
 use Drago\Authorization\Conf;
 use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
-use Drago\Authorization\Service\Data\ResourcesData;
-use Drago\Authorization\Service\Repository\ResourcesRepository;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
 use Nette\Forms\Controls\BaseControl;
+use Nette\SmartObject;
+use Throwable;
 
 
+/**
+ * @property-read ResourcesTemplate $template
+ */
 class ResourcesControl extends Component implements Base
 {
+	use SmartObject;
+
 	public string $snippetFactory = 'resources';
-	public string $snippetRecords = 'resourcesRecords';
+	public string $snippetItems = 'resourcesItems';
 
 
 	public function __construct(
 		private Cache $cache,
-		private ResourcesRepository $repository,
+		private ResourcesRepository $resourcesRepository,
 	) {
 	}
 
 
 	public function render(): void
 	{
-		$template = __DIR__ . '/Templates/Resources.add.latte';
-		$template = $this->templateAdd ?: $template;
-		$items = [
-			'form' => $this['factory'],
-		];
-		$this->setRenderControl($template, $items);
+		$template = $this->template;
+		$template->setFile($this->templateFactory ?: __DIR__ . '/Resources.latte');
+		$template->form = $this['factory'];
+		$template->render();
 	}
 
 
 	/**
 	 * @throws Exception
+	 * @throws AttributeDetectionException
 	 */
-	public function renderRecords(): void
+	public function renderItems(): void
 	{
-		$template = __DIR__ . '/Templates/Resources.records.latte';
-		$template = $this->templateRecords ?: $template;
-		$resources = $this->repository->getAll();
-		$items = [
-			'resources' => $resources,
-			'deleteId' => $this->deleteId,
-		];
-
-		$this->setRenderControl($template, $items);
+		$template = $this->template;
+		$template->setFile($this->templateItems ?: __DIR__ . '/ResourcesItems.latte');
+		$template->resources = $this->resourcesRepository->getAll();
+		$template->deleteId = $this->deleteId;
+		$template->render();
 	}
 
 
 	/**
 	 * @throws BadRequestException
+	 * @throws AttributeDetectionException
 	 */
 	public function handleEdit(int $id): void
 	{
-		$resource = $this->repository->get($id)->fetch();
+		$resource = $this->resourcesRepository->get($id)->fetch();
 		$resource ?: $this->error();
 
 		if ($this->getSignal()) {
@@ -77,7 +79,6 @@ class ResourcesControl extends Component implements Base
 				$form->setDefaults($resource);
 			}
 
-
 			$buttonSend = $form['send'];
 			if ($buttonSend instanceof BaseControl) {
 				$buttonSend->setCaption('Edit');
@@ -85,7 +86,7 @@ class ResourcesControl extends Component implements Base
 
 			if ($this->isAjax()) {
 				$this->getPresenter()->payload->{$this->snippetFactory} = $this->snippetFactory;
-				$this->redrawPresenter($this->snippetFactory);
+				$this->getPresenter()->redrawControl($this->snippetFactory);
 			}
 		}
 	}
@@ -94,54 +95,67 @@ class ResourcesControl extends Component implements Base
 	/**
 	 * @throws BadRequestException
 	 * @throws Exception
+	 * @throws AttributeDetectionException
 	 */
 	public function handleDelete(int $id): void
 	{
-		$resource = $this->repository->getRecord($id);
+		$resource = $this->resourcesRepository->getOne($id);
 		$resource ?: $this->error();
 		$this->deleteId = $resource->id;
-
 		if ($this->isAjax()) {
-			$this->redrawPresenter($this->snippetRecords);
+			$this->getPresenter()
+				->redrawControl($this->snippetItems);
 		}
 	}
 
 
 	/**
 	 * @throws BadRequestException
+	 * @throws AttributeDetectionException
 	 */
 	public function handleDeleteConfirm(int $confirm, int $id): void
 	{
-		$resource = $this->repository->get($id)->fetch();
+		$resource = $this->resourcesRepository->get($id)->fetch();
 		$resource ?: $this->error();
 
 		if ($confirm === 1) {
 			try {
-				$this->repository->erase($id);
+				$this->resourcesRepository->remove($id);
 				$this->cache->remove(Conf::CACHE);
-				$this->flashMessagePresenter('Resource deleted.', Alert::DANGER);
+				$this->getPresenter()->flashMessage(
+					'Resource deleted.',
+					Alert::DANGER
+				);
 
+				$snippets = [
+					$this->snippetFactory,
+					$this->snippetItems,
+					$this->snippetMessage,
+					$this->snippetPermissions,
+				];
 				if ($this->isAjax()) {
-					$this->multipleRedrawPresenter([
-						$this->snippetFactory,
-						$this->snippetRecords,
-						$this->snippetMessage,
-						$this->snippetPermissions,
-					]);
+					foreach ($snippets as $snippet) {
+						$this->getPresenter()->redrawControl($snippet);
+					}
 				}
 
-			} catch (\Throwable $e) {
+			} catch (Throwable $e) {
 				if ($e->getCode() === 1451) {
-					$this->flashMessagePresenter('The resource can not be deleted, you must first delete the records that are associated with it.', Alert::WARNING);
+					$this->getPresenter()->flashMessage(
+						'The resource can not be deleted, you must first delete the records that are associated with it.',
+						Alert::WARNING
+					);
 					if ($this->isAjax()) {
-						$this->redrawPresenter($this->snippetMessage);
+						$this->getPresenter()
+							->redrawControl($this->snippetMessage);
 					}
 				}
 			}
 
 		} else {
 			if ($this->isAjax()) {
-				$this->redrawPresenter($this->snippetRecords);
+				$this->getPresenter()
+					->redrawControl($this->snippetItems);
 			}
 		}
 	}
@@ -149,14 +163,14 @@ class ResourcesControl extends Component implements Base
 
 	public function createComponentFactory(): Form
 	{
-		$form = $this->factory();
+		$form = new Form;
 		$form->addText(ResourcesData::NAME, 'Source')
 			->setHtmlAttribute('placeholder', 'Source name')
 			->setHtmlAttribute('autocomplete', 'off')
 			->setRequired();
 
 		$form->addHidden(ResourcesData::ID, 0)
-			->addRule(Form::INTEGER);
+			->addRule($form::INTEGER);
 
 		$form->addSubmit('send', 'Send');
 		$form->onSuccess[] = [$this, 'success'];
@@ -167,27 +181,36 @@ class ResourcesControl extends Component implements Base
 	public function success(Form $form, ResourcesData $data): void
 	{
 		try {
-			$form->reset();
-			$formId = $form[ResourcesData::ID];
-			$this->repository->put($data->toArray());
+			$this->resourcesRepository->put($data->toArray());
 			$this->cache->remove(Conf::CACHE);
 
 			$message = $data->id ? 'Resource updated.' : 'Resource inserted.';
-			$this->flashMessagePresenter($message);
+			$this->getPresenter()->flashMessage($message, Alert::INFO);
 
 			if ($this->isAjax()) {
-				if ($formId) {
+				if ($data->id) {
 					$this->getPresenter()->payload->close = 'close';
 				}
-				$this->multipleRedrawPresenter([
+
+				$snippets = [
 					$this->snippetFactory,
-					$this->snippetRecords,
+					$this->snippetItems,
 					$this->snippetMessage,
 					$this->snippetPermissions,
-				]);
+				];
+				foreach ($snippets as $snippet) {
+					$this->getPresenter()->redrawControl($snippet);
+				}
 			}
 
-		} catch (\Throwable $e) {
+			$form->reset();
+			$formId = $form[ResourcesData::ID];
+			if ($formId instanceof BaseControl) {
+				$formId->setDefaultValue(0)
+					->addRule($form::INTEGER);
+			}
+
+		} catch (Throwable $e) {
 			$message = match ($e->getCode()) {
 				1062 => 'This resource already exists.',
 				default => 'Unknown status code.',
@@ -195,7 +218,7 @@ class ResourcesControl extends Component implements Base
 
 			$form->addError($message);
 			if ($this->isAjax()) {
-				$this->redrawPresenter($this->snippetFactory);
+				$this->getPresenter()->redrawControl($this->snippetFactory);
 				$this->redrawControl($this->snippetError);
 			}
 		}
@@ -206,7 +229,7 @@ class ResourcesControl extends Component implements Base
 	{
 		if ($this->isAjax()) {
 			$this->getPresenter()->payload->{$this->snippetFactory} = $this->snippetFactory;
-			$this->redrawPresenter($this->snippetFactory);
+			$this->getPresenter()->redrawControl($this->snippetFactory);
 		}
 	}
 }

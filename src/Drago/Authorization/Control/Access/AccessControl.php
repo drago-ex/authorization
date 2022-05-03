@@ -11,23 +11,26 @@ namespace Drago\Authorization\Control\Access;
 
 use Dibi\Exception;
 use Drago\Application\UI\Alert;
+use Drago\Attr\AttributeDetectionException;
 use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
-use Drago\Authorization\Service\Data\UsersRolesData;
-use Drago\Authorization\Service\Entity\UsersRolesEntity;
-use Drago\Authorization\Service\Repository\RolesRepository;
-use Drago\Authorization\Service\Repository\UsersRepository;
-use Drago\Authorization\Service\Repository\UsersRolesRepository;
-use Drago\Authorization\Service\Repository\UsersRolesViewRepository;
+use Drago\Authorization\Control\Roles\RolesRepository;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Forms\Controls\BaseControl;
+use Nette\SmartObject;
+use Throwable;
 
 
+/**
+ * @property-read AccessTemplate $template
+ */
 class AccessControl extends Component implements Base
 {
+	use SmartObject;
+
 	public string $snippetFactory = 'access';
-	public string $snippetRecords = 'accessRecords';
+	public string $snippetItems = 'accessItems';
 
 
 	public function __construct(
@@ -41,53 +44,47 @@ class AccessControl extends Component implements Base
 
 	public function render(): void
 	{
-		$template = __DIR__ . '/Templates/Access.add.latte';
-		$template = $this->templateAdd ?: $template;
-		$items = [
-			'form' => $this['factory'],
-		];
-		$this->setRenderControl($template, $items);
+		$template = $this->template;
+		$template->setFile($this->templateFactory ?: __DIR__ . '/Access.latte');
+		$template->form = $this['factory'];
+		$template->render();
 	}
 
 
 	/**
 	 * @throws Exception
+	 * @throws AttributeDetectionException
 	 */
-	public function renderRecords(): void
+	public function renderItems(): void
 	{
-		$template = __DIR__ . '/Templates/Access.records.latte';
-		$template = $this->templateRecords ?: $template;
 		$users = $this->usersRolesViewRepository->getAllUsersRoles();
-
 		$usersRoleList = [];
 		foreach ($users as $user) {
 			$usersRoleList[$user->user_id] = $user;
 		}
 
+		$roleList = [];
 		foreach ($usersRoleList as $user) {
-			$usersRoleList[$user->user_id] = $user;
-			$roleList = [];
 			foreach ($users as $role) {
 				if ($user->user_id === $role->user_id) {
 					$roleList[] = $role->role;
 				}
 			}
 			$user->role = $roleList;
-			$usersRoleList[$user->user_id] = $user;
 		}
 
-		$items = [
-			'usersRoles' => $usersRoleList,
-			'deleteId' => $this->deleteId,
-		];
-
-		$this->setRenderControl($template, $items);
+		$template = $this->template;
+		$template->setFile($this->templateItems ?: __DIR__ . '/AccessItems.latte');
+		$template->deleteId = $this->deleteId;
+		$template->usersRoles = $usersRoleList;
+		$template->render();
 	}
 
 
 	/**
 	 * @throws Exception
 	 * @throws BadRequestException
+	 * @throws AttributeDetectionException
 	 */
 	public function handleEdit(int $id): void
 	{
@@ -99,16 +96,16 @@ class AccessControl extends Component implements Base
 			$userId[UsersRolesData::USER_ID] = $arr->user_id;
 		}
 
-		$rolesId = [];
+		$roleId = [];
 		foreach ($access as $arr) {
-			$rolesId[$arr->role_id] = $arr->role_id;
+			$roleId[$arr->role_id] = $arr->role_id;
 		}
 
 		$userId = $userId[UsersRolesData::USER_ID];
 		$items = [
 			UsersRolesData::USER_ID => $userId,
 			UsersRolesData::EDIT_ID => $userId,
-			UsersRolesEntity::ROLE_ID => $rolesId,
+			UsersRolesEntity::ROLE_ID => $roleId,
 		];
 
 		if ($this->getSignal()) {
@@ -124,7 +121,7 @@ class AccessControl extends Component implements Base
 
 			if ($this->isAjax()) {
 				$this->getPresenter()->payload->{$this->snippetFactory} = $this->snippetFactory;
-				$this->redrawPresenter($this->snippetFactory);
+				$this->getPresenter()->redrawControl($this->snippetFactory);
 			}
 		}
 	}
@@ -133,15 +130,16 @@ class AccessControl extends Component implements Base
 	/**
 	 * @throws BadRequestException
 	 * @throws Exception
+	 * @throws AttributeDetectionException
 	 */
 	public function handleDelete(int $id): void
 	{
 		$access = $this->usersRolesRepository->getRecord($id);
 		$access ?: $this->error();
 		$this->deleteId = $access->user_id;
-
 		if ($this->isAjax()) {
-			$this->redrawPresenter($this->snippetRecords);
+			$this->getPresenter()
+				->redrawControl($this->snippetItems);
 		}
 	}
 
@@ -149,6 +147,7 @@ class AccessControl extends Component implements Base
 	/**
 	 * @throws BadRequestException
 	 * @throws Exception
+	 * @throws AttributeDetectionException
 	 */
 	public function handleDeleteConfirm(int $confirm, int $id): void
 	{
@@ -164,26 +163,37 @@ class AccessControl extends Component implements Base
 				$this->usersRolesRepository->delete($entity);
 			}
 
-			$this->flashMessagePresenter('Access removed.', Alert::DANGER);
+			$this->getPresenter()->flashMessage(
+				'Access removed.',
+				Alert::DANGER
+			);
+
+			$snippets = [
+				$this->snippetFactory,
+				$this->snippetItems,
+				$this->snippetMessage,
+			];
 			if ($this->isAjax()) {
-				$this->multipleRedrawPresenter([
-					$this->snippetFactory,
-					$this->snippetRecords,
-					$this->snippetMessage,
-				]);
+				foreach ($snippets as $snippet) {
+					$this->getPresenter()->redrawControl($snippet);
+				}
 			}
 
 		} else {
 			if ($this->isAjax()) {
-				$this->redrawPresenter($this->snippetRecords);
+				$this->getPresenter()
+					->redrawControl($this->snippetItems);
 			}
 		}
 	}
 
 
+	/**
+	 * @throws AttributeDetectionException
+	 */
 	protected function createComponentFactory(): Form
 	{
-		$form = $this->factory();
+		$form = new Form;
 
 		$users = $this->usersRepository->getAllUsers();
 		$form->addSelect(UsersRolesData::USER_ID, 'User', $users)
@@ -195,7 +205,7 @@ class AccessControl extends Component implements Base
 			->setRequired();
 
 		$form->addHidden(UsersRolesData::EDIT_ID, 0)
-			->addRule(Form::INTEGER);
+			->addRule($form::INTEGER);
 
 		$form->addSubmit('send', 'Send');
 		$form->onSuccess[] = [$this, 'success'];
@@ -206,8 +216,6 @@ class AccessControl extends Component implements Base
 	public function success(Form $form, UsersRolesData $data): void
 	{
 		try {
-			$form->reset();
-			$formId = $form[UsersRolesData::EDIT_ID];
 			if (!$data->edit_id) {
 				$entity = new UsersRolesEntity;
 				$entity->user_id = $data->user_id;
@@ -252,20 +260,31 @@ class AccessControl extends Component implements Base
 			}
 
 			$message = $data->edit_id ? 'Access was updated.' : 'Access added.';
-			$this->flashMessagePresenter($message);
+			$this->getPresenter()->flashMessage($message, Alert::INFO);
 
 			if ($this->isAjax()) {
-				if ($formId) {
+				if ($data->user_id) {
 					$this->getPresenter()->payload->close = 'close';
 				}
-				$this->multipleRedrawPresenter([
+
+				$snippets = [
 					$this->snippetFactory,
-					$this->snippetRecords,
+					$this->snippetItems,
 					$this->snippetMessage,
-				]);
+				];
+				foreach ($snippets as $snippet) {
+					$this->getPresenter()->redrawControl($snippet);
+				}
 			}
 
-		} catch (\Throwable $e) {
+			$form->reset();
+			$formId = $form[UsersRolesData::EDIT_ID];
+			if ($formId instanceof BaseControl) {
+				$formId->setDefaultValue(0)
+					->addRule($form::INTEGER);
+			}
+
+		} catch (Throwable $e) {
 			$message = match ($e->getCode()) {
 				1062 => 'The user already has this role assigned.',
 				default => 'Unknown status code.',
@@ -273,7 +292,7 @@ class AccessControl extends Component implements Base
 
 			$form->addError($message);
 			if ($this->isAjax()) {
-				$this->redrawPresenter($this->snippetFactory);
+				$this->getPresenter()->redrawControl($this->snippetFactory);
 				$this->redrawControl($this->snippetError);
 			}
 		}
@@ -284,7 +303,7 @@ class AccessControl extends Component implements Base
 	{
 		if ($this->isAjax()) {
 			$this->getPresenter()->payload->{$this->snippetFactory} = $this->snippetFactory;
-			$this->redrawPresenter($this->snippetFactory);
+			$this->getPresenter()->redrawControl($this->snippetFactory);
 		}
 	}
 }
