@@ -15,6 +15,7 @@ use Drago\Attr\AttributeDetectionException;
 use Drago\Authorization\Conf;
 use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
+use Drago\Authorization\Control\Factory;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
@@ -29,6 +30,7 @@ use Throwable;
 class ResourcesControl extends Component implements Base
 {
 	use SmartObject;
+	use Factory;
 
 	public string $snippetFactory = 'resources';
 	public string $snippetItems = 'resourcesItems';
@@ -45,6 +47,7 @@ class ResourcesControl extends Component implements Base
 	{
 		$template = $this->template;
 		$template->setFile($this->templateFactory ?: __DIR__ . '/Resources.latte');
+		$template->setTranslator($this->translator);
 		$template->form = $this['factory'];
 		$template->render();
 	}
@@ -58,6 +61,7 @@ class ResourcesControl extends Component implements Base
 	{
 		$template = $this->template;
 		$template->setFile($this->templateItems ?: __DIR__ . '/ResourcesItems.latte');
+		$template->setTranslator($this->translator);
 		$template->resources = $this->resourcesRepository->getAll();
 		$template->deleteId = $this->deleteId;
 		$template->render();
@@ -163,7 +167,7 @@ class ResourcesControl extends Component implements Base
 
 	public function createComponentFactory(): Form
 	{
-		$form = new Form;
+		$form = $this->create();
 		$form->addText(ResourcesData::NAME, 'Source')
 			->setHtmlAttribute('placeholder', 'Source name')
 			->setHtmlAttribute('autocomplete', 'off')

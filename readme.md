@@ -75,13 +75,13 @@ protected function createComponentAccessControl(): AccessControl
 }
 
 // Configure a custom form template.
-$control->setTemplateFile(__DIR__ . '/path/to/file');
+$control->templateFactory = __DIR__ . '/path/to/file';
 
-// Configure a custom records template.
-$control->setTemplateFile(__DIR__ . '/path/to/file', 'records');
+// Configure a custom items template.
+$control->templateItems = __DIR__ . '/path/to/file';
 
 // Inserting a translator.
-$control->setTranslator(...);
+$control->translator = $this->getTranslator();
 ```
 
 ## Use components in latte
@@ -90,8 +90,8 @@ $control->setTranslator(...);
 	{control permissionsControl}
 {/snippet}
 
-{snippet permissionsRecords}
-	{control permissionsControl:records}
+{snippet permissionsItems}
+	{control permissionsControl:items}
 {/snippet}
 ```
 
@@ -100,8 +100,8 @@ $control->setTranslator(...);
 	{control rolesControl}
 {/snippet}
 
-{snippet rolesRecords}
-	{control rolesControl:records}
+{snippet rolesItems}
+	{control rolesControl:items}
 {/snippet}
 ```
 
@@ -110,8 +110,8 @@ $control->setTranslator(...);
 	{control resourcesControl}
 {/snippet}
 
-{snippet resourcesRecords}
-  {control resourcesControl:records}
+{snippet resourcesItems}
+  {control resourcesControl:items}
 {/snippet}
 ```
 
@@ -120,8 +120,8 @@ $control->setTranslator(...);
 	{control privilegesControl}
 {/snippet}
 
-{snippet privilegesRecords}
-	{control privilegesControl:records}
+{snippet privilegesItems}
+	{control privilegesControl:items}
 {/snippet}
 ```
 
@@ -130,7 +130,7 @@ $control->setTranslator(...);
 	{control accessControl}
 {/snippet}
 
-{snippet accessRecords}
-	{control accessControl:records}
+{snippet accessItems}
+	{control accessControl:items}
 {/snippet}
 ```

@@ -15,6 +15,7 @@ use Drago\Attr\AttributeDetectionException;
 use Drago\Authorization\Conf;
 use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
+use Drago\Authorization\Control\Factory;
 use Drago\Authorization\Control\Privileges\PrivilegesEntity;
 use Drago\Authorization\Control\Privileges\PrivilegesRepository;
 use Drago\Authorization\Control\Resources\ResourcesData;
@@ -36,6 +37,7 @@ use Throwable;
 class PermissionsControl extends Component implements Base
 {
 	use SmartObject;
+	use Factory;
 
 	public string $snippetFactory = 'permissions';
 	public string $snippetItems = 'permissionsItems';
@@ -57,6 +59,7 @@ class PermissionsControl extends Component implements Base
 	{
 		$template = $this->template;
 		$template->setFile($this->templateFactory ?: __DIR__ . '/Permissions.latte');
+		$template->setTranslator($this->translator);
 		$template->form = $this['factory'];
 		$template->render();
 	}
@@ -70,6 +73,7 @@ class PermissionsControl extends Component implements Base
 	{
 		$template = $this->template;
 		$template->setFile($this->templateItems ?: __DIR__ . '/PermissionsItems.latte');
+		$template->setTranslator($this->translator);
 		$template->roles = $this->permissionsRolesViewRepository->getAll();
 		$template->permissions = $this->permissionsViewRepository->getAll();
 		$template->deleteId = $this->deleteId;
@@ -165,7 +169,7 @@ class PermissionsControl extends Component implements Base
 	 */
 	protected function createComponentFactory(): Form
 	{
-		$form = new Form;
+		$form = $this->create();
 
 		$roles = $this->rolesRepository->all()
 			->where(RolesEntity::NAME, '!= ?', Conf::ROLE_ADMIN)

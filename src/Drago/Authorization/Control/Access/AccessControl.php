@@ -14,6 +14,7 @@ use Drago\Application\UI\Alert;
 use Drago\Attr\AttributeDetectionException;
 use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
+use Drago\Authorization\Control\Factory;
 use Drago\Authorization\Control\Roles\RolesRepository;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
@@ -28,6 +29,7 @@ use Throwable;
 class AccessControl extends Component implements Base
 {
 	use SmartObject;
+	use Factory;
 
 	public string $snippetFactory = 'access';
 	public string $snippetItems = 'accessItems';
@@ -46,6 +48,7 @@ class AccessControl extends Component implements Base
 	{
 		$template = $this->template;
 		$template->setFile($this->templateFactory ?: __DIR__ . '/Access.latte');
+		$template->setTranslator($this->translator);
 		$template->form = $this['factory'];
 		$template->render();
 	}
@@ -193,7 +196,7 @@ class AccessControl extends Component implements Base
 	 */
 	protected function createComponentFactory(): Form
 	{
-		$form = new Form;
+		$form = $this->create();
 
 		$users = $this->usersRepository->getAllUsers();
 		$form->addSelect(UsersRolesData::USER_ID, 'User', $users)

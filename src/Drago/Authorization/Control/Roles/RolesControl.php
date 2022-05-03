@@ -15,6 +15,7 @@ use Drago\Attr\AttributeDetectionException;
 use Drago\Authorization\Conf;
 use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
+use Drago\Authorization\Control\Factory;
 use Drago\Authorization\NotAllowedChange;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
@@ -31,6 +32,7 @@ use Throwable;
 class RolesControl extends Component implements Base
 {
 	use SmartObject;
+	use Factory;
 
 	public string $snippetFactory = 'roles';
 	public string $snippetItems = 'rolesItems';
@@ -47,6 +49,7 @@ class RolesControl extends Component implements Base
 	{
 		$template = $this->template;
 		$template->setFile($this->templateFactory ?: __DIR__ . '/Roles.latte');
+		$template->setTranslator($this->translator);
 		$template->form = $this['factory'];
 		$template->render();
 	}
@@ -60,6 +63,7 @@ class RolesControl extends Component implements Base
 	{
 		$template = $this->template;
 		$template->setFile($this->templateItems ?: __DIR__ . '/RolesItems.latte');
+		$template->setTranslator($this->translator);
 		$template->roles = $this->getRecords();
 		$template->deleteId = $this->deleteId;
 		$template->render();
@@ -185,7 +189,7 @@ class RolesControl extends Component implements Base
 	 */
 	public function createComponentFactory(): Form
 	{
-		$form = new Form;
+		$form = $this->create();
 		$form->addText(RolesData::NAME, 'Role')
 			->setHtmlAttribute('placeholder', 'Role name')
 			->setHtmlAttribute('autocomplete', 'nope')

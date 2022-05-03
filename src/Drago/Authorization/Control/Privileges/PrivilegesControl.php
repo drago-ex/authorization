@@ -15,6 +15,7 @@ use Drago\Attr\AttributeDetectionException;
 use Drago\Authorization\Conf;
 use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
+use Drago\Authorization\Control\Factory;
 use Drago\Authorization\NotAllowedChange;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
@@ -30,6 +31,7 @@ use Throwable;
 class PrivilegesControl extends Component implements Base
 {
 	use SmartObject;
+	use Factory;
 
 	public string $snippetFactory = 'privileges';
 	public string $snippetItems = 'privilegesItems';
@@ -46,6 +48,7 @@ class PrivilegesControl extends Component implements Base
 	{
 		$template = $this->template;
 		$template->setFile($this->templateFactory ?: __DIR__ . '/Privileges.latte');
+		$template->setTranslator($this->translator);
 		$template->form = $this['factory'];
 		$template->render();
 	}
@@ -59,6 +62,7 @@ class PrivilegesControl extends Component implements Base
 	{
 		$template = $this->template;
 		$template->setFile($this->templateItems ?: __DIR__ . '/PrivilegesItems.latte');
+		$template->setTranslator($this->translator);
 		$template->privileges = $this->privilegesRepository->getAll();
 		$template->deleteId = $this->deleteId;
 		$template->render();
@@ -186,7 +190,7 @@ class PrivilegesControl extends Component implements Base
 
 	public function createComponentFactory(): Form
 	{
-		$form = new Form;
+		$form = $this->create();
 		$form->addText(PrivilegesData::NAME, 'Action or signal')
 			->setHtmlAttribute('placeholder', 'Name action or signal')
 			->setHtmlAttribute('autocomplete', 'off')
