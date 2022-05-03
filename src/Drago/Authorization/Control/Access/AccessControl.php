@@ -168,7 +168,7 @@ class AccessControl extends Component implements Base
 
 			$this->getPresenter()->flashMessage(
 				'Access removed.',
-				Alert::DANGER
+				Alert::DANGER,
 			);
 
 			$snippets = [
