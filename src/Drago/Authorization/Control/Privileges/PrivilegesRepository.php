@@ -65,7 +65,7 @@ class PrivilegesRepository
 		if ($privilege === Conf::PRIVILEGE_ALL) {
 			throw new NotAllowedChange(
 				'The record is not allowed to be edited or deleted.',
-				1001
+				1001,
 			);
 		}
 		return true;
