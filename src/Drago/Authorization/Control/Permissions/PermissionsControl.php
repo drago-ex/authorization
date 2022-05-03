@@ -141,7 +141,7 @@ class PermissionsControl extends Component implements Base
 			$this->cache->remove(Conf::CACHE);
 			$this->getPresenter()->flashMessage(
 				'Permission removed.',
-				Alert::DANGER
+				Alert::DANGER,
 			);
 
 			$snippets = [
