@@ -128,7 +128,7 @@ class ResourcesControl extends Component implements Base
 				$this->cache->remove(Conf::CACHE);
 				$this->getPresenter()->flashMessage(
 					'Resource deleted.',
-					Alert::DANGER
+					Alert::DANGER,
 				);
 
 				$snippets = [
@@ -147,7 +147,7 @@ class ResourcesControl extends Component implements Base
 				if ($e->getCode() === 1451) {
 					$this->getPresenter()->flashMessage(
 						'The resource can not be deleted, you must first delete the records that are associated with it.',
-						Alert::WARNING
+						Alert::WARNING,
 					);
 					if ($this->isAjax()) {
 						$this->getPresenter()
