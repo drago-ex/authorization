@@ -14,7 +14,7 @@ use Nette\Localization\Translator;
 
 
 /**
- * @property Translator $translator
+ * @property-read Translator $translator
  */
 trait Factory
 {
