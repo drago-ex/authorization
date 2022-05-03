@@ -89,7 +89,7 @@ class RolesRepository
 		if ($row) {
 			throw new NotAllowedChange(
 				'The record can not be deleted, you must first delete the records that are associated with it.',
-				1002
+				1002,
 			);
 		}
 		return $row;
@@ -104,7 +104,7 @@ class RolesRepository
 		if (isset(Conf::$roles[$role])) {
 			throw new NotAllowedChange(
 				'The record is not allowed to be edited or deleted.',
-				1001
+				1001,
 			);
 		}
 		return true;
