@@ -102,7 +102,7 @@ class RolesControl extends Component implements Base
 			if ($e->getCode() === 1001) {
 				$this->getPresenter()->flashMessage(
 					'The role is not allowed to be updated.',
-					Alert::WARNING
+					Alert::WARNING,
 				);
 
 				if ($this->isAjax()) {
