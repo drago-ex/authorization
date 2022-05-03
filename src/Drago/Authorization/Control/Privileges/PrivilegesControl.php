@@ -101,7 +101,7 @@ class PrivilegesControl extends Component implements Base
 			if ($e->getCode() === 1001) {
 				$this->getPresenter()->flashMessage(
 					'The privilege is not allowed to be updated.',
-					Alert::WARNING
+					Alert::WARNING,
 				);
 
 				if ($this->isAjax()) {
@@ -147,7 +147,7 @@ class PrivilegesControl extends Component implements Base
 					$this->cache->remove(Conf::CACHE);
 					$this->getPresenter()->flashMessage(
 						'Privilege deleted.',
-						Alert::DANGER
+						Alert::DANGER,
 					);
 
 					$snippets = [
