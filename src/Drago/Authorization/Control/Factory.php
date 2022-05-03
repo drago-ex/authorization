@@ -10,12 +10,8 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control;
 
 use Nette\Application\UI\Form;
-use Nette\Localization\Translator;
 
 
-/**
- * @property-read Translator $translator
- */
 trait Factory
 {
 	public function create(): Form

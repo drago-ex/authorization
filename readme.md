@@ -26,7 +26,7 @@ composer require drago-ex/authorization
 ## Extension registration
 ```neon
 extensions:
-	authorization: Drago\Authorization\DI\AuthorizationExtension
+	- Drago\Authorization\DI\AuthorizationExtension
 ```
 
 ## Use trait in base presenter for access control
