@@ -1,0 +1,31 @@
+<form n:name="$name" class="row g-3 ajax">
+	{block inputs}{/block}
+</form>
+
+{define form-errores}
+	{snippet errors}
+		<ul n:if="$form->hasErrors()" class="errors">
+			<li n:foreach="$form->errors as $error">{$error}</li>
+		</ul>
+	{/snippet}
+{/define}
+
+{define input-text, $name, $columns}
+	<div class="col-md-{$columns}">
+		<label n:name="$name" class="form-label" />
+		<input n:name="$name" class="form-control">
+	</div>
+{/define}
+
+{define input-select, $name, $columns}
+	<div class="col-md-{$columns}">
+		<label n:name="$name" class="form-label" />
+		<select n:name="$name" class="form-control"></select>
+	</div>
+{/define}
+
+{define input-submit, $name, $columns}
+	<div class="col-md-{$columns}">
+		<input n:name="$name" class="btn btn-block btn-primary">
+	</div>
+{/define}

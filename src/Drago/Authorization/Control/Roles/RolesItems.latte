@@ -1,31 +1,29 @@
 {templateType Drago\Authorization\Control\Roles\RolesTemplate}
 {varType Drago\Authorization\Control\Roles\RolesEntity[] $roles}
 
-<h5 class="border-bottom pb-2">Roles</h5>
-<div class="table-responsive-sm">
-	<table class="table table-sm table-hover table-borderless">
-		<thead>
-		<tr>
-			<th scope="col" class="text-uppercase small">Name</th>
-			<th scope="col" class="text-uppercase small">Parent</th>
-			<th scope="col" class="text-uppercase small">Action</th>
-		</tr>
-		</thead>
-		<tbody>
+{embed '../../UI/heading.latte'}
+	{block title}Roles{/block}
+{/embed}
+
+{embed '../../UI/table.latte'}
+	{block table-thead}
+		{include table-th, 'Name'}
+		{include table-th, 'Parent'}
+		{include table-th-action}
+	{/block}
+	{block table-tbody}
 		<tr n:foreach="$roles as $role">
 			<td style="width: 40%">{$role->name}</td>
 			<td style="width: 35%">{$role->parent}</td>
 			<td style="width: 25%">
-				<a n:href="edit!, $role->id" class="ajax">Edit</a>
-				{if $deleteId === $role->id}
-					<p class="d-inline">Confirm</p>
-					<a n:href="deleteConfirm!, 0, $role->id" class="ajax">No</a>
-					<a n:href="deleteConfirm!, 1, $role->id" class="ajax">Yes</a>
-				{else}
-					<a n:href="delete!, $role->id" class="ajax">Delete</a>
+				{include table-link-edit, $role->id}
+					{if $deleteId === $role->id}
+					{include table-confirm-text}
+					{include table-link-confirm, 0, $role->id, 'No'}
+					{include table-link-confirm, 1, $role->id, 'Yes'}{else}
+					{include table-link-delete, $role->id}
 				{/if}
 			</td>
 		</tr>
-		</tbody>
-	</table>
-</div>
+	{/block}
+{/embed}

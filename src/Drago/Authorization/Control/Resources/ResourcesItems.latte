@@ -1,31 +1,27 @@
 {templateType Drago\Authorization\Control\Resources\ResourcesTemplate}
 {varType Drago\Authorization\Control\Resources\ResourcesEntity[] $resources}
 
-<h5 class="border-bottom pb-2">Resources</h5>
-<div class="table-responsive-sm">
-	<table class="table table-sm table-hover table-borderless">
+{embed '../../UI/heading.latte'}
+	{block title}Resources{/block}
+{/embed}
 
-		<thead>
-		<tr>
-			<th scope="col" class="text-uppercase small">Name</th>
-			<th scope="col" class="text-uppercase small">Action</th>
-		</tr>
-		</thead>
-
-		<tbody>
+{embed '../../UI/table.latte'}
+	{block table-thead}
+		{include table-th, 'Name'}
+		{include table-th-action}
+	{/block}
+	{block table-tbody}
 		<tr n:foreach="$resources as $resource">
 			<td style="width: 75%">{$resource->name}</td>
 			<td style="width: 25%">
-				<a n:href="edit!, $resource->id" class="ajax">Edit</a>
-				{if $deleteId === $resource->id}
-					<p class="d-inline">Confirm</p>
-					<a n:href="deleteConfirm!, 0, $resource->id" class="ajax">No</a>
-					<a n:href="deleteConfirm!, 1, $resource->id" class="ajax">Yes</a>
-				{else}
-					<a n:href="delete!, $resource->id" class="ajax">Delete</a>
+				{include table-link-edit, $resource->id}
+					{if $deleteId === $resource->id}
+					{include table-confirm-text}
+					{include table-link-confirm, 0, $resource->id, 'No'}
+					{include table-link-confirm, 1, $resource->id, 'Yes'}{else}
+					{include table-link-delete, $resource->id}
 				{/if}
 			</td>
 		</tr>
-		</tbody>
-	</table>
-</div>
+	{/block}
+{/embed}

@@ -1,31 +1,27 @@
 {templateType Drago\Authorization\Control\Privileges\PrivilegesTemplate}
 {varType Drago\Authorization\Control\Privileges\PrivilegesEntity[] $privileges}
 
-<h5 class="border-bottom pb-2">Privileges</h5>
-<div class="table-responsive-sm">
-	<table class="table table-sm table-hover table-borderless">
+{embed '../../UI/heading.latte'}
+	{block title}Privileges{/block}
+{/embed}
 
-		<thead>
-		<tr>
-			<th scope="col" class="text-uppercase small">Name</th>
-			<th scope="col" class="text-uppercase small">Action</th>
-		</tr>
-		</thead>
-
-		<tbody>
+{embed '../../UI/table.latte'}
+	{block table-thead}
+		{include table-th, 'Name'}
+		{include table-th-action}
+	{/block}
+	{block table-tbody}
 		<tr n:foreach="$privileges as $privilege">
 			<td style="width: 75%">{$privilege->name}</td>
 			<td style="width: 25%">
-				<a n:href="edit!, $privilege->id" class="ajax">Edit</a>
-				{if $deleteId === $privilege->id}
-					<p class="d-inline">Confirm</p>
-					<a n:href="deleteConfirm!, 0, $privilege->id" class="ajax">No</a>
-					<a n:href="deleteConfirm!, 1, $privilege->id" class="ajax">Yes</a>
-				{else}
-					<a n:href="delete!, $privilege->id" class="ajax">Delete</a>
+				{include table-link-edit, $privilege->id}
+					{if $deleteId === $privilege->id}
+					{include table-confirm-text}
+					{include table-link-confirm, 0, $privilege->id, 'No'}
+					{include table-link-confirm, 1, $privilege->id, 'Yes'}{else}
+					{include table-link-delete, $privilege->id}
 				{/if}
 			</td>
 		</tr>
-		</tbody>
-	</table>
-</div>
+	{/block}
+{/embed}

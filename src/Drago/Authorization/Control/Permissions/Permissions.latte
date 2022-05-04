@@ -1,33 +1,14 @@
-<h5 class="border-bottom pb-2">Edit or add permissions</h5>
-<form n:name="factory" class="row g-3 ajax">
+{embed '../../UI/heading.latte'}
+	{block title}Edit or add permissions{/block}
+{/embed}
 
-	{snippet errors}
-		<ul n:if="$form->hasErrors()" class="errors">
-			<li n:foreach="$form->errors as $error">{$error}</li>
-		</ul>
-	{/snippet}
-
-	<div class="col-md-6">
-		<label n:name="role_id" class="form-label" />
-		<select n:name="role_id" class="form-control"></select>
-	</div>
-
-	<div class="col-md-6">
-		<label n:name="resource_id" class="form-label" />
-		<select n:name="resource_id" class="form-control"></select>
-	</div>
-
-	<div class="col-md-6">
-		<label n:name="privilege_id" class="form-label" />
-		<select n:name="privilege_id" class="form-control"></select>
-	</div>
-
-	<div class="col-md-6">
-		<label n:name="allowed" class="form-label" />
-		<select n:name="allowed" class="form-control"></select>
-	</div>
-
-	<div class="col-md-12">
-		<input type="submit" n:name="send" class="btn btn-block btn-primary">
-	</div>
-</form>
+{embed '../../UI/form.latte', name: 'factory'}
+	{include form-errors}
+	{block inputs}
+		{include input-select, 'role_id', 6}
+		{include input-select, 'resource_id', 6}
+		{include input-select, 'privilege_id', 6}
+		{include input-select, 'allowed', 6}
+		{include input-submit, 'send', 12}
+	{/block}
+{/embed}

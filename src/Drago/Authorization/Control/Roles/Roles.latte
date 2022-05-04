@@ -1,23 +1,12 @@
-<h5 class="border-bottom pb-2">Edit or add roles</h5>
-<form n:name="factory" class="row g-3 ajax">
+{embed '../../UI/heading.latte'}
+	{block title}Edit or add roles{/block}
+{/embed}
 
-	{snippet errors}
-		<ul n:if="$form->hasErrors()" class="errors">
-			<li n:foreach="$form->errors as $error">{$error}</li>
-		</ul>
-	{/snippet}
-
-	<div class="col-md-6">
-		<label n:name="name" class="form-label" />
-		<input n:name="name" class="form-control">
-	</div>
-
-	<div class="col-md-6">
-		<label n:name="parent" class="form-label" />
-		<select n:name="parent" class="form-control"></select>
-	</div>
-
-	<div class="col-md-12">
-		<input type="submit" n:name="send" class="btn btn-block btn-primary">
-	</div>
-</form>
+{embed '../../UI/form.latte', name: 'factory'}
+	{include form-errors}
+	{block inputs}
+		{include input-text, 'name', 6}
+		{include input-select, 'parent', 6}
+		{include input-submit, 'send', 12}
+	{/block}
+{/embed}
