@@ -11,11 +11,11 @@
 	],
 	"require": {
 		"php": ">=8.0",
-		"nette/security": "^3.0",
-		"nette/application": "^3.0",
-		"nette/caching": "^3.0",
+		"nette/security": "^3.1",
+		"nette/application": "^3.1",
+		"nette/caching": "^3.1",
 		"nette/di": "^3.0",
-		"latte/latte": "^2.8",
+		"latte/latte": "^3.0",
 		"drago-ex/database": "^1.0",
 		"drago-ex/application": "^1.0",
 		"drago-ex/utils": "^1.0"
@@ -23,7 +23,7 @@
 	"require-dev": {
 		"nette/tester": "^2.3",
 		"nette/bootstrap": "^3.0",
-		"tracy/tracy": "^2.7",
+		"tracy/tracy": "^2.9",
 		"phpstan/phpstan-nette": "^0.12"
 	},
 	"autoload": {
