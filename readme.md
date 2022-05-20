@@ -16,6 +16,7 @@ Simple dynamic access control list management.
 
 ## Technology
 - PHP 8.0 or higher
+- Bootstrap
 - composer
 
 ## Installation
