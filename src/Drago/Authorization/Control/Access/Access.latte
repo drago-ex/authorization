@@ -1,12 +1,12 @@
-{embed '../../UI/heading.latte'}
+{embed '../../UI/@heading.latte'}
 	{block title}Edit or add roles to users{/block}
 {/embed}
 
-{embed '../../UI/form.latte', name: 'factory'}
+{embed '../../UI/@form.latte', name: 'factory'}
 	{include form-errors}
 	{block inputs}
-		{include input-select, 'user_id', 12}
-		{include input-select, 'role_id', 12}
-		{include input-submit, 'send', 12}
+		{include input-select, name: 'user_id', columns: 12}
+		{include input-select, name: 'role_id', columns: 12}
+		{include input-submit, name: 'send', columns: 12}
 	{/block}
 {/embed}

@@ -1,11 +1,11 @@
-{embed '../../UI/heading.latte'}
+{embed '../../UI/@heading.latte'}
 	{block title}Edit or add privileges{/block}
 {/embed}
 
-{embed '../../UI/form.latte', name: 'factory'}
+{embed '../../UI/@form.latte', name: 'factory'}
 	{include form-errors}
 	{block inputs}
-		{include input-text, 'name', 12}
-		{include input-submit, 'send', 12}
+		{include input-text, name: 'name', columns: 12}
+		{include input-submit, name: 'send', columns: 12}
 	{/block}
 {/embed}

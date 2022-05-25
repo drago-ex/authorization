@@ -5,7 +5,7 @@
 	</table>
 </div>
 
-{define table-th, $name}
+{define table-th, string $name}
 	<th scope="col" class="text-uppercase small">
 		{$name}
 	</th>
@@ -15,19 +15,19 @@
 	{include table-th, 'Action'}
 {/define}
 
-{define table-badge, $type, $name}
+{define table-badge, string $type, string $name}
 	<span class="badge bg-{$type} rounded-pill p-1 ps-3 pe-3">
 		{$name}
 	</span>
 {/define}
 
-{define table-link-edit, $id}
+{define table-link-edit, int $id}
 	<a n:href="edit!, $id" class="ajax">
 		Edit
 	</a>
 {/define}
 
-{define table-link-delete, $id}
+{define table-link-delete, int $id}
 	<a n:href="delete!, $id" class="ajax">
 		Delete
 	</a>
@@ -37,7 +37,7 @@
 	<p class="d-inline">Confirm</p>
 {/define}
 
-{define table-link-confirm, $confirm, $id, $name}
+{define table-link-confirm, int $confirm, int $id, string $name}
 	<a n:href="deleteConfirm!, $confirm, $id" class="ajax">
 		{$name}
 	</a>

@@ -1,14 +1,14 @@
-{embed '../../UI/heading.latte'}
+{embed '../../UI/@heading.latte'}
 	{block title}Edit or add permissions{/block}
 {/embed}
 
-{embed '../../UI/form.latte', name: 'factory'}
+{embed '../../UI/@form.latte', name: 'factory'}
 	{include form-errors}
 	{block inputs}
-		{include input-select, 'role_id', 6}
-		{include input-select, 'resource_id', 6}
-		{include input-select, 'privilege_id', 6}
-		{include input-select, 'allowed', 6}
-		{include input-submit, 'send', 12}
+		{include input-select, name: 'role_id', columns: 6}
+		{include input-select, name: 'resource_id', columns: 6}
+		{include input-select, name: 'privilege_id', columns: 6}
+		{include input-select, name: 'allowed', columns: 6}
+		{include input-submit, name: 'send', columns: 12}
 	{/block}
 {/embed}
