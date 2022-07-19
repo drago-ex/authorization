@@ -7,15 +7,14 @@
 {/embed}
 
 {foreach $roles as $role}
+	<p class="border-bottom pb-2 text-secondary">Role {$role->name}</p>
 	{embed '../../UI/@table.latte'}
-		{if $iterator->first}
 			{block table-thead}
 				{include table-th, 'Resource'}
 				{include table-th, 'Action / signal'}
 				{include table-th, 'Permission'}
 				{include table-th-action}
 			{/block}
-		{/if}
 		{block table-tbody}
 			<tr n:foreach="$permissions as $permission" n:if="$role->name == $permission->role">
 				<td style="width: 25%">{$permission->resource}</td>
