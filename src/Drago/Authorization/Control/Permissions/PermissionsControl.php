@@ -189,7 +189,7 @@ class PermissionsControl extends Component implements Base
 		$privileges = $this->privilegesRepository->all()
 			->fetchPairs(PrivilegesEntity::PRIMARY, PrivilegesEntity::NAME);
 
-		$form->addSelect(PermissionsData::PRIVILEGE_ID, 'Action or signal', $privileges)
+		$form->addSelect(PermissionsData::PRIVILEGE_ID, 'Actions and signals', $privileges)
 			->setPrompt('Select privilege')
 			->setRequired();
 
