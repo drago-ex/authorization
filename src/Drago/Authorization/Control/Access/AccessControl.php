@@ -167,7 +167,7 @@ class AccessControl extends Component implements Base
 			}
 
 			$this->getPresenter()->flashMessage(
-				'Access removed.',
+				'Role removed.',
 				Alert::DANGER,
 			);
 
@@ -262,7 +262,7 @@ class AccessControl extends Component implements Base
 				}
 			}
 
-			$message = $data->edit_id ? 'Access was updated.' : 'Access added.';
+			$message = $data->edit_id ? 'Roles have been updated.' : 'Role assigned.';
 			$this->getPresenter()->flashMessage($message, Alert::INFO);
 
 			if ($this->isAjax()) {
