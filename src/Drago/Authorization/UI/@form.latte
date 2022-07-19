@@ -1,18 +1,11 @@
 {varType string $name}
 
 <form n:name="$name" class="row g-3 ajax">
+	<ul n:if="$form->hasErrors()" class="errors">
+		<li n:foreach="$form->errors as $error">{$error}</li>
+	</ul>
 	{block inputs}{/block}
 </form>
-
-{define form-errores}
-	{ifset $form}
-		{snippet errors}
-			<ul n:if="$form->hasErrors()" class="errors">
-				<li n:foreach="$form->errors as $error">{$error}</li>
-			</ul>
-		{/snippet}
-	{/ifset}
-{/define}
 
 {define input-text, string $name, int $columns}
 	<div class="col-md-{$columns}">
