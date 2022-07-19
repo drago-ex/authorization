@@ -263,7 +263,6 @@ class RolesControl extends Component implements Base
 			$form->addError($message);
 			if ($this->isAjax()) {
 				$this->getPresenter()->redrawControl($this->snippetFactory);
-				$this->redrawControl($this->snippetError);
 			}
 		}
 	}
