@@ -209,7 +209,7 @@ class PrivilegesControl extends Component implements Base
 	public function success(Form $form, PrivilegesData $data): void
 	{
 		try {
-			$this->privilegesRepository->put($data->toArray());
+			$this->privilegesRepository->save($data);
 			$this->cache->remove(Conf::CACHE);
 
 			$message = $data->id ? 'Privilege updated.' : 'Privilege inserted.';

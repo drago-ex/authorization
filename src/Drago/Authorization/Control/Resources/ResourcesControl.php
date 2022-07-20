@@ -72,10 +72,11 @@ class ResourcesControl extends Component implements Base
 	/**
 	 * @throws BadRequestException
 	 * @throws AttributeDetectionException
+	 * @throws Exception
 	 */
 	public function handleEdit(int $id): void
 	{
-		$resource = $this->resourcesRepository->get($id)->fetch();
+		$resource = $this->resourcesRepository->getOne($id);
 		$resource ?: $this->error();
 
 		if ($this->getSignal()) {
@@ -117,10 +118,11 @@ class ResourcesControl extends Component implements Base
 	/**
 	 * @throws BadRequestException
 	 * @throws AttributeDetectionException
+	 * @throws Exception
 	 */
 	public function handleDeleteConfirm(int $confirm, int $id): void
 	{
-		$resource = $this->resourcesRepository->get($id)->fetch();
+		$resource = $this->resourcesRepository->getOne($id);
 		$resource ?: $this->error();
 
 		if ($confirm === 1) {
@@ -187,7 +189,7 @@ class ResourcesControl extends Component implements Base
 	public function success(Form $form, ResourcesData $data): void
 	{
 		try {
-			$this->resourcesRepository->put($data->toArray());
+			$this->resourcesRepository->save($data);
 			$this->cache->remove(Conf::CACHE);
 
 			$message = $data->id ? 'Resource updated.' : 'Resource inserted.';

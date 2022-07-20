@@ -11,6 +11,7 @@ namespace Drago\Authorization\Control\Resources;
 
 use Dibi\Connection;
 use Dibi\Exception;
+use Dibi\Result;
 use Drago\Attr\AttributeDetectionException;
 use Drago\Attr\Table;
 use Drago\Database\Repository;
@@ -50,5 +51,15 @@ class ResourcesRepository
 		return $this->get($id)->execute()
 			->setRowClass(ResourcesEntity::class)
 			->fetch();
+	}
+
+
+	/**
+	 * @throws Exception
+	 */
+	public function save(ResourcesData $data): Result|int|null
+	{
+		return $this->db->insert(ResourcesEntity::TABLE, $data->toArray())
+			->execute();
 	}
 }

@@ -11,6 +11,7 @@ namespace Drago\Authorization\Control\Privileges;
 
 use Dibi\Connection;
 use Dibi\Exception;
+use Dibi\Result;
 use Drago\Attr\AttributeDetectionException;
 use Drago\Attr\Table;
 use Drago\Authorization\Conf;
@@ -69,5 +70,15 @@ class PrivilegesRepository
 			);
 		}
 		return true;
+	}
+
+
+	/**
+	 * @throws Exception
+	 */
+	public function save(PrivilegesData $data): Result|int|null
+	{
+		return $this->db->insert(PrivilegesEntity::TABLE, $data->toArray())
+			->execute();
 	}
 }

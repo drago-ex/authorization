@@ -11,6 +11,7 @@ namespace Drago\Authorization\Control\Roles;
 
 use Dibi\Connection;
 use Dibi\Exception;
+use Dibi\Result;
 use Dibi\Row;
 use Drago\Attr\AttributeDetectionException;
 use Drago\Attr\Table;
@@ -61,7 +62,7 @@ class RolesRepository
 	 * @throws Exception
 	 * @throws AttributeDetectionException
 	 */
-	public function getRole(int $id): array|RolesEntity|null
+	public function getOne(int $id): array|RolesEntity|null
 	{
 		return $this->get($id)->execute()
 			->setRowClass(RolesEntity::class)
@@ -108,5 +109,15 @@ class RolesRepository
 			);
 		}
 		return true;
+	}
+
+
+	/**
+	 * @throws Exception
+	 */
+	public function save(RolesData $data): Result|int|null
+	{
+		return $this->db->insert(RolesEntity::TABLE, $data->toArray())
+			->execute();
 	}
 }

@@ -77,7 +77,7 @@ class RolesControl extends Component implements Base
 	 */
 	public function handleEdit(int $id): void
 	{
-		$role = $this->rolesRepository->getRole($id);
+		$role = $this->rolesRepository->getOne($id);
 		$role ?: $this->error();
 
 		try {
@@ -121,7 +121,7 @@ class RolesControl extends Component implements Base
 	 */
 	public function handleDelete(int $id): void
 	{
-		$role = $this->rolesRepository->getRole($id);
+		$role = $this->rolesRepository->getOne($id);
 		$role ?: $this->error();
 		$this->deleteId = $role->id;
 		if ($this->isAjax()) {
@@ -138,7 +138,7 @@ class RolesControl extends Component implements Base
 	 */
 	public function handleDeleteConfirm(int $confirm, int $id): void
 	{
-		$role = $this->rolesRepository->getRole($id);
+		$role = $this->rolesRepository->getOne($id);
 		$role ?: $this->error();
 
 		if ($confirm === 1) {
@@ -221,7 +221,7 @@ class RolesControl extends Component implements Base
 	public function success(Form $form, RolesData $data): void
 	{
 		try {
-			$this->rolesRepository->put($data->toArray());
+			$this->rolesRepository->save($data);
 			$this->cache->remove(Conf::CACHE);
 
 			$parent = $this['factory']['parent'];

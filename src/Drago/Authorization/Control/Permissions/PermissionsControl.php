@@ -83,11 +83,12 @@ class PermissionsControl extends Component implements Base
 
 	/**
 	 * @throws BadRequestException
+	 * @throws Exception
 	 * @throws AttributeDetectionException
 	 */
 	public function handleEdit(int $id): void
 	{
-		$permission = $this->permissionsRepository->get($id)->fetch();
+		$permission = $this->permissionsRepository->getOne($id);
 		$permission ?: $this->error();
 
 		if ($this->getSignal()) {
@@ -133,7 +134,7 @@ class PermissionsControl extends Component implements Base
 	 */
 	public function handleDeleteConfirm(int $confirm, int $id): void
 	{
-		$permission = $this->permissionsRepository->get($id)->fetch();
+		$permission = $this->permissionsRepository->getOne($id);
 		$permission ?: $this->error();
 
 		if ($confirm === 1) {
@@ -215,7 +216,7 @@ class PermissionsControl extends Component implements Base
 	public function success(Form $form, PermissionsData $data): void
 	{
 		try {
-			$this->permissionsRepository->put($data->toArray());
+			$this->permissionsRepository->save($data);
 			$this->cache->remove(Conf::CACHE);
 
 			$message = $data->id ? 'Permission was updated.' : 'Permission added.';
