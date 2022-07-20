@@ -209,6 +209,7 @@ class RolesControl extends Component implements Base
 			->setRequired();
 
 		$form->addHidden(RolesData::ID)
+			->addRule($form::INTEGER)
 			->setNullable();
 
 		$form->addSubmit('send', 'Send');
@@ -248,11 +249,6 @@ class RolesControl extends Component implements Base
 			}
 
 			$form->reset();
-			$formId = $form[RolesData::ID];
-			if ($formId instanceof BaseControl) {
-				$formId->setDefaultValue(0)
-					->addRule($form::INTEGER);
-			}
 
 		} catch (Throwable $e) {
 			$message = match ($e->getCode()) {

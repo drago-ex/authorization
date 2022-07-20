@@ -197,6 +197,7 @@ class PrivilegesControl extends Component implements Base
 			->setRequired();
 
 		$form->addHidden(PrivilegesData::ID)
+			->addRule($form::INTEGER)
 			->setNullable();
 
 		$form->addSubmit('send', 'Send');
@@ -231,11 +232,6 @@ class PrivilegesControl extends Component implements Base
 			}
 
 			$form->reset();
-			$formId = $form[PrivilegesData::ID];
-			if ($formId instanceof BaseControl) {
-				$formId->setDefaultValue(0)
-					->addRule($form::INTEGER);
-			}
 
 		} catch (Throwable $e) {
 			$message = match ($e->getCode()) {

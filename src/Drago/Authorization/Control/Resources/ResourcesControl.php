@@ -20,6 +20,7 @@ use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
 use Nette\Forms\Controls\BaseControl;
+use Nette\Forms\Controls\HiddenField;
 use Nette\SmartObject;
 use Throwable;
 
@@ -174,6 +175,7 @@ class ResourcesControl extends Component implements Base
 			->setRequired();
 
 		$form->addHidden(ResourcesData::ID)
+			->addRule($form::INTEGER)
 			->setNullable();
 
 		$form->addSubmit('send', 'Send');
@@ -208,11 +210,6 @@ class ResourcesControl extends Component implements Base
 			}
 
 			$form->reset();
-			$formId = $form[ResourcesData::ID];
-			if ($formId instanceof BaseControl) {
-				$formId->setDefaultValue(0)
-					->addRule($form::INTEGER);
-			}
 
 		} catch (Throwable $e) {
 			$message = match ($e->getCode()) {

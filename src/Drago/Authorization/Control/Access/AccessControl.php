@@ -208,6 +208,7 @@ class AccessControl extends Component implements Base
 			->setRequired();
 
 		$form->addHidden(UsersRolesData::EDIT_ID)
+			->addRule($form::INTEGER)
 			->setNullable();
 
 		$form->addSubmit('send', 'Send');
@@ -281,11 +282,6 @@ class AccessControl extends Component implements Base
 			}
 
 			$form->reset();
-			$formId = $form[UsersRolesData::EDIT_ID];
-			if ($formId instanceof BaseControl) {
-				$formId->setDefaultValue(0)
-					->addRule($form::INTEGER);
-			}
 
 		} catch (Throwable $e) {
 			$message = match ($e->getCode()) {

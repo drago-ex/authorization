@@ -203,6 +203,7 @@ class PermissionsControl extends Component implements Base
 			->setRequired();
 
 		$form->addHidden(PermissionsData::ID)
+			->addRule($form::INTEGER)
 			->setNullable();
 
 		$form->addSubmit('send', 'Send');
@@ -236,11 +237,6 @@ class PermissionsControl extends Component implements Base
 			}
 
 			$form->reset();
-			$formId = $form[ResourcesData::ID];
-			if ($formId instanceof BaseControl) {
-				$formId->setDefaultValue(0)
-					->addRule($form::INTEGER);
-			}
 
 		} catch (Throwable $e) {
 			$message = match ($e->getCode()) {
