@@ -225,7 +225,7 @@ class AccessControl extends Component implements Base
 				$entity->user_id = $data->user_id;
 				foreach ($data->role_id as $item) {
 					$entity->role_id = $item;
-					$this->usersRolesRepository->save($entity);
+					$this->usersRolesRepository->insert($entity);
 				}
 
 			} else {
@@ -244,7 +244,7 @@ class AccessControl extends Component implements Base
 					$entity->user_id = $data->user_id;
 					foreach ($insertRoles as $role) {
 						$entity->role_id = $role;
-						$this->usersRolesRepository->save($entity);
+						$this->usersRolesRepository->insert($entity);
 					}
 				}
 

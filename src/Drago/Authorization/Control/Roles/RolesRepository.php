@@ -114,10 +114,10 @@ class RolesRepository
 
 	/**
 	 * @throws Exception
+	 * @throws AttributeDetectionException
 	 */
 	public function save(RolesData $data): Result|int|null
 	{
-		return $this->db->insert(RolesEntity::TABLE, $data->toArray())
-			->execute();
+		return $this->put($data->toArray());
 	}
 }

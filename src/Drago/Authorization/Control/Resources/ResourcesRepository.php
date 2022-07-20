@@ -56,10 +56,10 @@ class ResourcesRepository
 
 	/**
 	 * @throws Exception
+	 * @throws AttributeDetectionException
 	 */
 	public function save(ResourcesData $data): Result|int|null
 	{
-		return $this->db->insert(ResourcesEntity::TABLE, $data->toArray())
-			->execute();
+		return $this->put($data->toArray());
 	}
 }

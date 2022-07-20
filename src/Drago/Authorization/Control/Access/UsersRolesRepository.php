@@ -72,7 +72,7 @@ class UsersRolesRepository
 	/**
 	 * @throws Exception
 	 */
-	public function save(UsersRolesEntity $entity): Result|int|null
+	public function insert(UsersRolesEntity $entity): Result|int|null
 	{
 		return $this->db->insert(UsersRolesEntity::TABLE, $entity->toArray())
 			->execute();

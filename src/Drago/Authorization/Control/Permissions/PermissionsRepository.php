@@ -56,10 +56,10 @@ class PermissionsRepository
 
 	/**
 	 * @throws Exception
+	 * @throws AttributeDetectionException
 	 */
 	public function save(PermissionsData $data): Result|int|null
 	{
-		return $this->db->insert(PermissionsEntity::TABLE, $data->toArray())
-			->execute();
+		return $this->put($data->toArray());
 	}
 }

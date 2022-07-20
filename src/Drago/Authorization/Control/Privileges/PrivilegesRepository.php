@@ -75,10 +75,10 @@ class PrivilegesRepository
 
 	/**
 	 * @throws Exception
+	 * @throws AttributeDetectionException
 	 */
 	public function save(PrivilegesData $data): Result|int|null
 	{
-		return $this->db->insert(PrivilegesEntity::TABLE, $data->toArray())
-			->execute();
+		return $this->put($data->toArray());
 	}
 }
