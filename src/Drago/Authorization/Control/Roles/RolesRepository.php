@@ -40,7 +40,7 @@ class RolesRepository
 	 */
 	public function getAll(): array
 	{
-		return $this->all()->execute()
+		return $this->all()->orderBy(RolesEntity::PRIMARY)->execute()
 			->setRowClass(RolesEntity::class)
 			->fetchAll();
 	}
