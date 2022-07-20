@@ -108,7 +108,7 @@ class AccessControl extends Component implements Base
 		$items = [
 			UsersRolesData::USER_ID => $userId,
 			UsersRolesData::EDIT_ID => $userId,
-			UsersRolesEntity::ROLE_ID => $roleId,
+			UsersRolesData::ROLE_ID => $roleId,
 		];
 
 		if ($this->getSignal()) {
