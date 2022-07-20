@@ -22,5 +22,5 @@ class UsersRolesData extends Drago\Utils\ExtraArrayHash
 
 	public array $role_id;
 	public int $user_id;
-	public int $edit_id;
+	public ?int $edit_id;
 }

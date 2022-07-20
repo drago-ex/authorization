@@ -208,8 +208,8 @@ class RolesControl extends Component implements Base
 			->setPrompt('Select parent')
 			->setRequired();
 
-		$form->addHidden(RolesData::ID, 0)
-			->addRule($form::INTEGER);
+		$form->addHidden(RolesData::ID)
+			->setNullable();
 
 		$form->addSubmit('send', 'Send');
 		$form->onSuccess[] = [$this, 'success'];

@@ -22,7 +22,7 @@ class AccessEntity extends Drago\Database\Entity
 	public const EMAIL = 'email';
 	public const PASSWORD = 'password';
 
-	public int $id;
+	public ?int $id;
 	public string $username;
 	public string $email;
 	public string $password;

@@ -196,8 +196,8 @@ class PrivilegesControl extends Component implements Base
 			->setHtmlAttribute('autocomplete', 'off')
 			->setRequired();
 
-		$form->addHidden(PrivilegesData::ID, 0)
-			->addRule($form::INTEGER);
+		$form->addHidden(PrivilegesData::ID)
+			->setNullable();
 
 		$form->addSubmit('send', 'Send');
 		$form->onSuccess[] = [$this, 'success'];

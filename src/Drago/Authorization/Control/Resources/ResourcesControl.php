@@ -173,8 +173,8 @@ class ResourcesControl extends Component implements Base
 			->setHtmlAttribute('autocomplete', 'off')
 			->setRequired();
 
-		$form->addHidden(ResourcesData::ID, 0)
-			->addRule($form::INTEGER);
+		$form->addHidden(ResourcesData::ID)
+			->setNullable();
 
 		$form->addSubmit('send', 'Send');
 		$form->onSuccess[] = [$this, 'success'];

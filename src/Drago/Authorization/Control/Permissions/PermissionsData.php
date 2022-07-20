@@ -22,7 +22,7 @@ class PermissionsData extends Drago\Utils\ExtraArrayHash
 	public const PRIVILEGE_ID = 'privilege_id';
 	public const ALLOWED = 'allowed';
 
-	public int $id;
+	public ?int $id;
 	public int $role_id;
 	public int $resource_id;
 	public int $privilege_id;

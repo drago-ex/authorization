@@ -19,6 +19,6 @@ class PrivilegesData extends Drago\Utils\ExtraArrayHash
 	public const ID = 'id';
 	public const NAME = 'name';
 
-	public int $id;
+	public ?int $id;
 	public string $name;
 }

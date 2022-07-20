@@ -20,6 +20,6 @@ class PrivilegesEntity extends Drago\Database\Entity
 	public const PRIMARY = 'id';
 	public const NAME = 'name';
 
-	public int $id;
+	public ?int $id;
 	public string $name;
 }

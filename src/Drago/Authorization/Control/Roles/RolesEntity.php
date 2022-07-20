@@ -21,7 +21,7 @@ class RolesEntity extends Drago\Database\Entity
 	public const NAME = 'name';
 	public const PARENT = 'parent';
 
-	public int $id;
+	public ?int $id;
 	public string $name;
 	public string|int $parent;
 }

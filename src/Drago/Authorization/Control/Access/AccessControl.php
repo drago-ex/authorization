@@ -207,8 +207,8 @@ class AccessControl extends Component implements Base
 		$form->addMultiSelect(UsersRolesData::ROLE_ID, 'Select roles', $roles)
 			->setRequired();
 
-		$form->addHidden(UsersRolesData::EDIT_ID, 0)
-			->addRule($form::INTEGER);
+		$form->addHidden(UsersRolesData::EDIT_ID)
+			->setNullable();
 
 		$form->addSubmit('send', 'Send');
 		$form->onSuccess[] = [$this, 'success'];

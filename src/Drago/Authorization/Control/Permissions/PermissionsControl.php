@@ -202,8 +202,8 @@ class PermissionsControl extends Component implements Base
 			->setPrompt('Select permission')
 			->setRequired();
 
-		$form->addHidden(PermissionsData::ID, 0)
-			->addRule($form::INTEGER);
+		$form->addHidden(PermissionsData::ID)
+			->setNullable();
 
 		$form->addSubmit('send', 'Send');
 		$form->onSuccess[] = [$this, 'success'];
