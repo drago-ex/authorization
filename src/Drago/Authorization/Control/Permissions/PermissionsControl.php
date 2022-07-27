@@ -18,7 +18,6 @@ use Drago\Authorization\Control\Component;
 use Drago\Authorization\Control\Factory;
 use Drago\Authorization\Control\Privileges\PrivilegesEntity;
 use Drago\Authorization\Control\Privileges\PrivilegesRepository;
-use Drago\Authorization\Control\Resources\ResourcesData;
 use Drago\Authorization\Control\Resources\ResourcesEntity;
 use Drago\Authorization\Control\Resources\ResourcesRepository;
 use Drago\Authorization\Control\Roles\RolesEntity;
