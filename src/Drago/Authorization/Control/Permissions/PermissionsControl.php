@@ -238,7 +238,7 @@ class PermissionsControl extends Component implements Base
 
 			$form->reset();
 
-		} catch (\Exception $e) {
+		} catch (Throwable $e) {
 			$message = match ($e->getCode()) {
 				1062 => 'This permission is already granted.',
 				default => 'Unknown status code.',

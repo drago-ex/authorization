@@ -23,6 +23,7 @@ use Nette\Caching\Cache;
 use Nette\Forms\Controls\BaseControl;
 use Nette\Forms\Controls\SelectBox;
 use Nette\SmartObject;
+use Throwable;
 
 
 /**
@@ -160,7 +161,7 @@ class RolesControl extends Component implements Base
 					}
 				}
 
-			} catch (\Exception $e) {
+			} catch (Throwable $e) {
 				$message = match ($e->getCode()) {
 					1001 => 'The role is not allowed to be deleted.',
 					1002 => 'The role cannot be deleted because it is bound to another role.',
@@ -248,7 +249,7 @@ class RolesControl extends Component implements Base
 
 			$form->reset();
 
-		} catch (\Exception $e) {
+		} catch (Throwable $e) {
 			$message = match ($e->getCode()) {
 				1062 => 'This role already exists.',
 				default => 'Unknown status code.',
