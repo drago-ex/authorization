@@ -9,15 +9,7 @@ declare(strict_types=1);
 
 namespace Drago\Authorization;
 
-
-class Exception extends \Exception
-{
-}
-
-
-class NotAllowedChange extends Exception
-{
-}
+use Exception;
 
 
 class FileNotFoundException extends Exception

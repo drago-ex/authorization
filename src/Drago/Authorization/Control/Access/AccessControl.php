@@ -283,7 +283,7 @@ class AccessControl extends Component implements Base
 
 			$form->reset();
 
-		} catch (Throwable $e) {
+		} catch (\Exception $e) {
 			$message = match ($e->getCode()) {
 				1062 => 'The user already has this role assigned.',
 				default => 'Unknown status code.',

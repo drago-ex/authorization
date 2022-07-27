@@ -163,7 +163,7 @@ class PrivilegesControl extends Component implements Base
 					}
 				}
 
-			} catch (Throwable $e) {
+			} catch (\Exception $e) {
 				$message = match ($e->getCode()) {
 					1001 => 'The privilege is not allowed to be deleted.',
 					1451 => 'The privilege can not be deleted, you must first delete the records that are associated with it.',
@@ -233,7 +233,7 @@ class PrivilegesControl extends Component implements Base
 
 			$form->reset();
 
-		} catch (Throwable $e) {
+		} catch (\Exception $e) {
 			$message = match ($e->getCode()) {
 				1062 => 'This privilege already exists.',
 				default => 'Unknown status code.',

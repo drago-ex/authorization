@@ -145,7 +145,7 @@ class ResourcesControl extends Component implements Base
 					}
 				}
 
-			} catch (Throwable $e) {
+			} catch (\Exception $e) {
 				if ($e->getCode() === 1451) {
 					$this->getPresenter()->flashMessage(
 						'The resource can not be deleted, you must first delete the records that are associated with it.',
@@ -212,7 +212,7 @@ class ResourcesControl extends Component implements Base
 
 			$form->reset();
 
-		} catch (Throwable $e) {
+		} catch (\Exception $e) {
 			$message = match ($e->getCode()) {
 				1062 => 'This resource already exists.',
 				default => 'Unknown status code.',
