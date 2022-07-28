@@ -140,8 +140,8 @@ class PrivilegesControl extends Component implements Base
 		$privilege = $this->privilegesRepository->getOne($id);
 		$privilege ?: $this->error();
 
-		if ($confirm === 1) {
-			try {
+		try {
+			if ($confirm === 1) {
 				if ($this->privilegesRepository->isAllowed($privilege->name)) {
 					$this->privilegesRepository->remove($id);
 					$this->cache->remove(Conf::CACHE);
@@ -156,6 +156,7 @@ class PrivilegesControl extends Component implements Base
 						$this->snippetMessage,
 						$this->snippetPermissions,
 					];
+
 					if ($this->isAjax()) {
 						foreach ($snippets as $snippet) {
 							$this->getPresenter()->redrawControl($snippet);
@@ -163,26 +164,26 @@ class PrivilegesControl extends Component implements Base
 					}
 				}
 
-			} catch (Throwable $e) {
-				$message = match ($e->getCode()) {
-					1001 => 'The privilege is not allowed to be deleted.',
-					1451 => 'The privilege can not be deleted, you must first delete the records that are associated with it.',
-					default => 'Unknown status code.',
-				};
-
-				$this->getPresenter()
-					->flashMessage($message, Alert::WARNING);
-
+			} else {
 				if ($this->isAjax()) {
 					$this->getPresenter()
-						->redrawControl($this->snippetMessage);
+						->redrawControl($this->snippetItems);
 				}
 			}
 
-		} else {
+		} catch (Throwable $e) {
+			$message = match ($e->getCode()) {
+				1001 => 'The privilege is not allowed to be deleted.',
+				1451 => 'The privilege can not be deleted, you must first delete the records that are associated with it.',
+				default => 'Unknown status code.',
+			};
+
+			$this->getPresenter()
+				->flashMessage($message, Alert::WARNING);
+
 			if ($this->isAjax()) {
 				$this->getPresenter()
-					->redrawControl($this->snippetItems);
+					->redrawControl($this->snippetMessage);
 			}
 		}
 	}

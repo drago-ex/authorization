@@ -141,19 +141,21 @@ class RolesControl extends Component implements Base
 		$role = $this->rolesRepository->getOne($id);
 		$role ?: $this->error();
 
-		if ($confirm === 1) {
-			try {
+		try {
+			if ($confirm === 1) {
 				$parent = $this->rolesRepository->findParent($id);
 				if (!$parent && $this->rolesRepository->isAllowed($role->name)) {
 					$this->rolesRepository->remove($id);
 					$this->cache->remove(Conf::CACHE);
 					$this->getPresenter()->flashMessage('Role deleted.', Alert::DANGER);
+
 					$snippets = [
 						$this->snippetFactory,
 						$this->snippetItems,
 						$this->snippetMessage,
 						$this->snippetPermissions,
 					];
+
 					if ($this->isAjax()) {
 						foreach ($snippets as $snippet) {
 							$this->getPresenter()->redrawControl($snippet);
@@ -161,23 +163,25 @@ class RolesControl extends Component implements Base
 					}
 				}
 
-			} catch (Throwable $e) {
-				$message = match ($e->getCode()) {
-					1001 => 'The role is not allowed to be deleted.',
-					1002 => 'The role cannot be deleted because it is bound to another role.',
-					default => 'Unknown status code.',
-				};
-
-				$this->getPresenter()->flashMessage($message, Alert::WARNING);
+			} else {
 				if ($this->isAjax()) {
-					$this->getPresenter()->redrawControl($this->snippetMessage);
+					$this->getPresenter()
+						->redrawControl($this->snippetItems);
 				}
 			}
 
-		} else {
+		} catch (Throwable $e) {
+			$message = match ($e->getCode()) {
+				1001 => 'The role is not allowed to be deleted.',
+				1002 => 'The role cannot be deleted because it is bound to another role.',
+				default => 'Unknown status code.',
+			};
+
+			$this->getPresenter()
+				->flashMessage($message, Alert::WARNING);
+
 			if ($this->isAjax()) {
-				$this->getPresenter()
-					->redrawControl($this->snippetItems);
+				$this->getPresenter()->redrawControl($this->snippetMessage);
 			}
 		}
 	}
