@@ -78,6 +78,7 @@ class AccessControl extends Component implements Base
 
 		$template = $this->template;
 		$template->setFile($this->templateItems ?: __DIR__ . '/AccessItems.latte');
+		$template->setTranslator($this->translator);
 		$template->deleteId = $this->deleteId;
 		$template->usersRoles = $usersRoleList;
 		$template->render();
