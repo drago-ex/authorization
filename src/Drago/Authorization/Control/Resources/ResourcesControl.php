@@ -124,8 +124,8 @@ class ResourcesControl extends Component implements Base
 		$resource = $this->resourcesRepository->getOne($id);
 		$resource ?: $this->error();
 
-		if ($confirm === 1) {
-			try {
+		try {
+			if ($confirm === 1) {
 				$this->resourcesRepository->remove($id);
 				$this->cache->remove(Conf::CACHE);
 				$this->getPresenter()->flashMessage(
@@ -138,30 +138,31 @@ class ResourcesControl extends Component implements Base
 					$this->snippetItems,
 					$this->snippetMessage,
 					$this->snippetPermissions,
-				];
+					];
+
 				if ($this->isAjax()) {
 					foreach ($snippets as $snippet) {
 						$this->getPresenter()->redrawControl($snippet);
 					}
 				}
 
-			} catch (Throwable $e) {
-				if ($e->getCode() === 1451) {
-					$this->getPresenter()->flashMessage(
-						'The resource can not be deleted, you must first delete the records that are associated with it.',
-						Alert::WARNING,
-					);
-					if ($this->isAjax()) {
-						$this->getPresenter()
-							->redrawControl($this->snippetMessage);
-					}
+			} else {
+				if ($this->isAjax()) {
+					$this->getPresenter()
+						->redrawControl($this->snippetItems);
 				}
 			}
 
-		} else {
-			if ($this->isAjax()) {
-				$this->getPresenter()
-					->redrawControl($this->snippetItems);
+		} catch (Throwable $e) {
+			if ($e->getCode() === 1451) {
+				$this->getPresenter()->flashMessage(
+					'The resource can not be deleted, you must first delete the records that are associated with it.',
+					Alert::WARNING,
+				);
+				if ($this->isAjax()) {
+					$this->getPresenter()
+						->redrawControl($this->snippetMessage);
+				}
 			}
 		}
 	}
