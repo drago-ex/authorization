@@ -5,6 +5,7 @@ Simple dynamic access control list management.
 [![PHP version](https://badge.fury.io/ph/drago-ex%2Fauthorization.svg)](https://badge.fury.io/ph/drago-ex%2Fauthorization)
 [![Tests](https://github.com/drago-ex/authorization/actions/workflows/tests.yml/badge.svg)](https://github.com/drago-ex/authorization/actions/workflows/tests.yml)
 [![Coding Style](https://github.com/drago-ex/authorization/actions/workflows/coding-style.yml/badge.svg)](https://github.com/drago-ex/authorization/actions/workflows/coding-style.yml)
+[![CodeFactor](https://www.codefactor.io/repository/github/drago-ex/authorization/badge)](https://www.codefactor.io/repository/github/drago-ex/authorization)
 [![Coverage Status](https://coveralls.io/repos/github/drago-ex/authorization/badge.svg?branch=master)](https://coveralls.io/github/drago-ex/authorization?branch=master)
 
 ## Technology
