@@ -228,7 +228,6 @@ class AccessControl extends Component implements Base
 					$entity->role_id = $item;
 					$this->usersRolesRepository->insert($entity);
 				}
-
 			} else {
 				$allUserRoles = $this->usersRolesRepository->getAllUserRoles();
 				$roleList = [];
@@ -237,7 +236,6 @@ class AccessControl extends Component implements Base
 						$roleList[] = $arr->role_id;
 					}
 				}
-
 				$insertRoles = array_diff($data->role_id, $roleList);
 				$deleteRoles = array_diff($roleList, $data->role_id);
 				if (count($insertRoles)) {
