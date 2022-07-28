@@ -138,7 +138,7 @@ class ResourcesControl extends Component implements Base
 					$this->snippetItems,
 					$this->snippetMessage,
 					$this->snippetPermissions,
-					];
+				];
 
 				if ($this->isAjax()) {
 					foreach ($snippets as $snippet) {
