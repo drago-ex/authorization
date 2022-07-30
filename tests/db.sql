@@ -25,7 +25,6 @@ CREATE TABLE `permissions` (
     CONSTRAINT `permissions_ibfk_3` FOREIGN KEY (`privilege_id`) REFERENCES `privileges` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 -- ---- insert values to table:
 INSERT INTO `permissions` (`id`, `role_id`, `resource_id`, `privilege_id`, `allowed`) VALUES
 (1,	1,	1,	1,	1),
