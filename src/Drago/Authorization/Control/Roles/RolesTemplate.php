@@ -17,5 +17,5 @@ class RolesTemplate extends ExtraTemplate
 {
 	public IComponent $form;
 	public array $roles;
-	public int $deleteId;
+	public ?int $deleteId;
 }
