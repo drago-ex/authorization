@@ -17,5 +17,5 @@ class ResourcesTemplate extends ExtraTemplate
 {
 	public IComponent $form;
 	public array $resources;
-	public int $deleteId;
+	public ?int $deleteId;
 }
