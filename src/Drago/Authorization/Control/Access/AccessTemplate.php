@@ -17,5 +17,5 @@ class AccessTemplate extends ExtraTemplate
 {
 	public IComponent $form;
 	public array $usersRoles;
-	public int $deleteId;
+	public ?int $deleteId;
 }
