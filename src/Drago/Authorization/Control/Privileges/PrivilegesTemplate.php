@@ -17,5 +17,5 @@ class PrivilegesTemplate extends ExtraTemplate
 {
 	public IComponent $form;
 	public array $privileges;
-	public int $deleteId;
+	public ?int $deleteId;
 }
