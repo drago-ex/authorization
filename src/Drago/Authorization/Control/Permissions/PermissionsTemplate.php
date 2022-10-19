@@ -18,5 +18,5 @@ class PermissionsTemplate extends ExtraTemplate
 	public IComponent $form;
 	public array $roles;
 	public array $permissions;
-	public int $deleteId;
+	public ?int $deleteId;
 }
