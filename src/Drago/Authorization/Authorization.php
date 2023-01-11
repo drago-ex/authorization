@@ -22,10 +22,10 @@ trait Authorization
 	{
 		$presenter->onStartup[] = function () use ($presenter, $user) {
 			$signal = $presenter->getSignal();
-			if ($signal === null){
+			if ($signal === null) {
 				$signal = $presenter->getAction();
 
-			} elseif (!empty($signal[0])){
+			} elseif (!empty($signal[0])) {
 				$signal = "$signal[0]-$signal[1]";
 
 			} else {
