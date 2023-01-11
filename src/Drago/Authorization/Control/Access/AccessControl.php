@@ -66,8 +66,8 @@ class AccessControl extends Component implements Base
 			$usersRoleList[$user->user_id] = $user;
 		}
 
-		$roleList = [];
 		foreach ($usersRoleList as $user) {
+			$roleList = [];
 			foreach ($users as $role) {
 				if ($user->user_id === $role->user_id) {
 					$roleList[] = $role->role;
