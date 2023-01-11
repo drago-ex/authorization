@@ -26,7 +26,7 @@ trait Authorization
 				$signal = $presenter->getAction();
 
 			} elseif (!empty($signal[0])){
-				$signal = "{$signal[0]}-{$signal[1]}";
+				$signal = "$signal[0]-$signal[1]";
 
 			} else {
 				$signal = $signal[1];
