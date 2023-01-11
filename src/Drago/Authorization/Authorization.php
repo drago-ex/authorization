@@ -22,14 +22,19 @@ trait Authorization
 	{
 		$presenter->onStartup[] = function () use ($presenter, $user) {
 			$signal = $presenter->getSignal();
-			if ((!empty($signal[0])) && isset($signal[1])) {
-				if (!$user->isAllowed($presenter->getName(), $signal[0])) {
-					$presenter->error('Forbidden', 403);
-				}
+			if ($signal === null){
+				$signal = $presenter->getAction();
+
+			} elseif (!empty($signal[0])){
+				$signal = "{$signal[0]}-{$signal[1]}";
+
 			} else {
-				if (!$user->isAllowed($presenter->getName(), $signal[1] ?? $presenter->getAction())) {
-					$presenter->error('Forbidden', 403);
-				}
+				$signal = $signal[1];
+			}
+
+			if (!$user->isAllowed($presenter->getName(), $signal)) {
+				$presenter->error('Forbidden', 403);
+
 			}
 		};
 	}
