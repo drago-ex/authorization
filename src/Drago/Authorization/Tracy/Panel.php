@@ -23,7 +23,6 @@ class Panel implements IBarPanel
 {
 	use SmartObject;
 
-
 	public function __construct(
 		private User $user,
 		private Permission $permission,
