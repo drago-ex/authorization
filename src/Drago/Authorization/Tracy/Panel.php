@@ -28,7 +28,6 @@ class Panel implements IBarPanel
 		private Permission $permission,
 		private Request $request,
 		private Application $application,
-		private PanelSession $panelSession,
 	) {
 		if (Debugger::$productionMode === false) {
 			if ($this->request->getQuery('roleSwitchForm') === '1') {
