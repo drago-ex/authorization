@@ -75,7 +75,7 @@ class RolesRepository
 	 */
 	public function getRoles(): array
 	{
-		return $this->all()
+		return $this->all()->where(RolesEntity::NAME, ' != ?', Conf::ROLE_ADMIN)
 			->fetchPairs(RolesEntity::PRIMARY, RolesEntity::NAME);
 	}
 
