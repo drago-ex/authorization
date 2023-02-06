@@ -84,7 +84,6 @@ class AccessControl extends Component implements Base
 			}
 			return true;
 		}, ARRAY_FILTER_USE_BOTH);
-
 		$template = $this->template;
 		$template->setFile($this->templateItems ?: __DIR__ . '/AccessItems.latte');
 		$template->setTranslator($this->translator);
