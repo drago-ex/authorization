@@ -75,6 +75,15 @@ class AccessControl extends Component implements Base
 			}
 			$user->role = $roleList;
 		}
+		
+		$usersRoleList = array_filter($usersRoleList, function($u, $uid) {
+			foreach ($u->role as $role) {
+				if ($role === Conf::ROLE_ADMIN) {
+					return false;
+				}
+			}
+			return true;
+		}, ARRAY_FILTER_USE_BOTH);
 
 		$template = $this->template;
 		$template->setFile($this->templateItems ?: __DIR__ . '/AccessItems.latte');
@@ -198,8 +207,15 @@ class AccessControl extends Component implements Base
 	protected function createComponentFactory(): Form
 	{
 		$form = $this->create();
-
-		$users = $this->usersRepository->getAllUsers();
+		$usersRoles = $this->usersRolesViewRepository->getAllUsersRoles();
+		$users = array_filter($users, function($u, $uid) use ($usersRoles) {
+			foreach($usersRoles as $ua) {
+				if ($ua->user_id === $uid && $ua->role === Conf::ROLE_ADMIN) {
+					return false;
+				}
+			}
+			return true;
+		}, ARRAY_FILTER_USE_BOTH);
 		$form->addSelect(UsersRolesData::USER_ID, 'User', $users)
 			->setPrompt('Select user')
 			->setRequired();
