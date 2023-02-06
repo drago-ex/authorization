@@ -13,6 +13,7 @@ use Dibi\Connection;
 use Dibi\Exception;
 use Drago\Attr\AttributeDetectionException;
 use Drago\Attr\Table;
+use Drago\Authorization\Conf;
 use Drago\Database\Repository;
 use Nette\SmartObject;
 
@@ -37,6 +38,7 @@ class UsersRolesViewRepository
 	public function getAllUsersRoles(): array
 	{
 		return $this->all()
+			->where(UsersRolesViewEntity::ROLE, '!= ?', Conf::ROLE_ADMIN)
 			->orderBy(UsersRolesViewEntity::USER_ID, 'asc')
 			->execute()->setRowClass(UsersRolesViewEntity::class)
 			->fetchAll();
