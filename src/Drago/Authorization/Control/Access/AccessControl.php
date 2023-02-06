@@ -207,9 +207,10 @@ class AccessControl extends Component implements Base
 	protected function createComponentFactory(): Form
 	{
 		$form = $this->create();
+		$users = $this->usersRepository->getAllUsers();
 		$usersRoles = $this->usersRolesViewRepository->getAllUsersRoles();
-		$users = array_filter($users, function($u, $uid) use ($usersRoles) {
-			foreach($usersRoles as $ua) {
+		$users = array_filter($users, function ($u, $uid) use ($usersRoles) {
+			foreach ($usersRoles as $ua) {
 				if ($ua->user_id === $uid && $ua->role === Conf::ROLE_ADMIN) {
 					return false;
 				}
