@@ -75,8 +75,8 @@ class AccessControl extends Component implements Base
 			}
 			$user->role = $roleList;
 		}
-		
-		$usersRoleList = array_filter($usersRoleList, function($u, $uid) {
+
+		$usersRoleList = array_filter($usersRoleList, function ($u, $uid) {
 			foreach ($u->role as $role) {
 				if ($role === Conf::ROLE_ADMIN) {
 					return false;
