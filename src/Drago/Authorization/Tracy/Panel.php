@@ -28,13 +28,14 @@ class Panel implements IBarPanel
 		private Permission $permission,
 		private Request $request,
 		private Application $application,
+		private PanelCookie $panelCookie,
 	) {
 		if (Debugger::$productionMode === false) {
 			if ($this->request->getQuery('roleSwitchForm') === '1') {
 				$identity = $user->getIdentity();
 				if ($identity instanceof SimpleIdentity) {
 					$roles = $this->request->getQuery('rolesList');
-					$this->panelSession->save($roles);
+					$this->panelCookie->save($roles);
 					$identity->setRoles($roles ?: []);
 				}
 
