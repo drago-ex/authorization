@@ -40,8 +40,7 @@ class RolesRepository
 	public function getAll(): Fluent
 	{
 		return $this->all()
-			->orderBy(RolesEntity::PRIMARY)
-			->where(RolesEntity::NAME, '!= ?', Conf::ROLE_ADMIN);
+			->orderBy(RolesEntity::PRIMARY);
 	}
 
 
