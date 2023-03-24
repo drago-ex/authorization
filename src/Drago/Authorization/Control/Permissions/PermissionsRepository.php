@@ -34,18 +34,6 @@ class PermissionsRepository
 	 * @throws Exception
 	 * @throws AttributeDetectionException
 	 */
-	public function getRecord(int $id): array|PermissionsEntity|null
-	{
-		return $this->get($id)->execute()
-			->setRowClass(PermissionsEntity::class)
-			->fetch();
-	}
-
-
-	/**
-	 * @throws Exception
-	 * @throws AttributeDetectionException
-	 */
 	public function getOne(int $id): array|PermissionsEntity|null
 	{
 		return $this->get($id)->execute()

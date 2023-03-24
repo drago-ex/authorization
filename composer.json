@@ -18,7 +18,8 @@
 		"latte/latte": "^3.0",
 		"drago-ex/database": "^1.0",
 		"drago-ex/application": "^1.0",
-		"drago-ex/utils": "^1.0"
+		"drago-ex/utils": "^1.0",
+	  	"ublaboo/datagrid": "dev-next"
 	},
 	"require-dev": {
 		"nette/tester": "^2.3",

@@ -9,7 +9,9 @@ declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Roles;
 
+use App\Authorization\Control\ComponentTemplate;
 use Dibi\Exception;
+use Dibi\Row;
 use Drago\Application\UI\Alert;
 use Drago\Attr\AttributeDetectionException;
 use Drago\Authorization\Conf;
@@ -17,17 +19,20 @@ use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
 use Drago\Authorization\Control\Factory;
 use Drago\Authorization\NotAllowedChange;
+use Nette\Application\AbortException;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
-use Nette\Forms\Controls\BaseControl;
 use Nette\Forms\Controls\SelectBox;
 use Nette\SmartObject;
 use Throwable;
+use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
+use Ublaboo\DataGrid\DataGrid;
+use Ublaboo\DataGrid\Exception\DataGridException;
 
 
 /**
- * @property-read RolesTemplate $template
+ * @property-read ComponentTemplate $template
  */
 class RolesControl extends Component implements Base
 {
@@ -35,7 +40,6 @@ class RolesControl extends Component implements Base
 	use Factory;
 
 	public string $snippetFactory = 'roles';
-	public string $snippetItems = 'rolesItems';
 
 
 	public function __construct(
@@ -48,141 +52,31 @@ class RolesControl extends Component implements Base
 	public function render(): void
 	{
 		$template = $this->template;
-		$template->setFile($this->templateFactory ?: __DIR__ . '/Roles.latte');
+		$template->setFile($this->templateControl ?: __DIR__ . '/Roles.latte');
 		$template->setTranslator($this->translator);
-		$template->form = $this['factory'];
+		$template->uniqueComponentId = $this->getUniqueComponent($this->openComponentType);
 		$template->render();
 	}
 
 
-	/**
-	 * @throws Exception
-	 * @throws AttributeDetectionException
-	 */
-	public function renderItems(): void
+	public function getUniqueComponent(string $type): string
 	{
-		$template = $this->template;
-		$template->setFile($this->templateItems ?: __DIR__ . '/RolesItems.latte');
-		$template->setTranslator($this->translator);
-		$template->roles = $this->getRecords();
-		$template->deleteId = $this->deleteId;
-		$template->render();
+		return $this->getUniqueIdComponent($type);
 	}
 
 
 	/**
-	 * @throws Exception
-	 * @throws BadRequestException
-	 * @throws AttributeDetectionException
+	 * @throws AbortException
 	 */
-	public function handleEdit(int $id): void
+	public function handleClickOpenComponent(): void
 	{
-		$role = $this->rolesRepository->getOne($id);
-		$role ?: $this->error();
-
-		try {
-			if ($this->rolesRepository->isAllowed($role->name) && $this->getSignal()) {
-				$form = $this['factory'];
-				if ($form instanceof Form) {
-					$form->setDefaults($role);
-				}
-
-				$buttonSend = $form['send'];
-				if ($buttonSend instanceof BaseControl) {
-					$buttonSend->setCaption('Edit');
-				}
-
-				if ($this->isAjax()) {
-					$this->getPresenter()->payload->{$this->snippetFactory} = $this->snippetFactory;
-					$this->getPresenter()->redrawControl($this->snippetFactory);
-				}
-			}
-
-		} catch (NotAllowedChange $e) {
-			if ($e->getCode() === 1001) {
-				$this->getPresenter()->flashMessage(
-					'The role is not allowed to be updated.',
-					Alert::WARNING,
-				);
-
-				if ($this->isAjax()) {
-					$this->getPresenter()
-						->redrawControl($this->snippetMessage);
-				}
-			}
-		}
-	}
-
-
-	/**
-	 * @throws BadRequestException
-	 * @throws Exception
-	 * @throws AttributeDetectionException
-	 */
-	public function handleDelete(int $id): void
-	{
-		$role = $this->rolesRepository->getOne($id);
-		$role ?: $this->error();
-		$this->deleteId = $role->id;
 		if ($this->isAjax()) {
-			$this->getPresenter()
-				->redrawControl($this->snippetItems);
-		}
-	}
+			$component = $this->getUniqueComponent($this->openComponentType);
+			$this->getPresenter()->payload->{$this->openComponentType} = $component;
+			$this->redrawControl($this->snippetFactory);
 
-
-	/**
-	 * @throws AttributeDetectionException
-	 * @throws BadRequestException
-	 * @throws Exception
-	 */
-	public function handleDeleteConfirm(int $confirm, int $id): void
-	{
-		$role = $this->rolesRepository->getOne($id);
-		$role ?: $this->error();
-
-		try {
-			if ($confirm === 1) {
-				$parent = $this->rolesRepository->findParent($id);
-				if (!$parent && $this->rolesRepository->isAllowed($role->name)) {
-					$this->rolesRepository->remove($id);
-					$this->cache->remove(Conf::CACHE);
-					$this->getPresenter()->flashMessage('Role deleted.', Alert::DANGER);
-
-					$snippets = [
-						$this->snippetFactory,
-						$this->snippetItems,
-						$this->snippetMessage,
-						$this->snippetPermissions,
-					];
-
-					if ($this->isAjax()) {
-						foreach ($snippets as $snippet) {
-							$this->getPresenter()->redrawControl($snippet);
-						}
-					}
-				}
-
-			} else {
-				if ($this->isAjax()) {
-					$this->getPresenter()
-						->redrawControl($this->snippetItems);
-				}
-			}
-
-		} catch (Throwable $e) {
-			$message = match ($e->getCode()) {
-				1001 => 'The role is not allowed to be deleted.',
-				1002 => 'The role cannot be deleted because it is bound to another role.',
-				default => 'Unknown status code.',
-			};
-
-			$this->getPresenter()
-				->flashMessage($message, Alert::WARNING);
-
-			if ($this->isAjax()) {
-				$this->getPresenter()->redrawControl($this->snippetMessage);
-			}
+		} else {
+			$this->redirect('this');
 		}
 	}
 
@@ -195,7 +89,7 @@ class RolesControl extends Component implements Base
 		$form = $this->create();
 		$form->addText(RolesData::NAME, 'Role')
 			->setHtmlAttribute('placeholder', 'Role name')
-			->setHtmlAttribute('autocomplete', 'nope')
+			->setHtmlAttribute('autocomplete', 'off')
 			->setRequired();
 
 		if ($this->getSignal()) {
@@ -221,6 +115,9 @@ class RolesControl extends Component implements Base
 	}
 
 
+	/**
+	 * @throws AbortException
+	 */
 	public function success(Form $form, RolesData $data): void
 	{
 		try {
@@ -240,18 +137,14 @@ class RolesControl extends Component implements Base
 					$this->getPresenter()->payload->close = 'close';
 				}
 
-				$snippets = [
-					$this->snippetFactory,
-					$this->snippetItems,
-					$this->snippetMessage,
-					$this->snippetPermissions,
-				];
-				foreach ($snippets as $snippet) {
-					$this->getPresenter()->redrawControl($snippet);
-				}
-			}
+				$this->getPresenter()->redrawControl($this->snippetMessage);
+				$this->redrawControl($this->snippetFactory);
+				$this['grid']->reload();
+				$form->reset();
 
-			$form->reset();
+			} else {
+				$this->redirect('this');
+			}
 
 		} catch (Throwable $e) {
 			$message = match ($e->getCode()) {
@@ -260,35 +153,136 @@ class RolesControl extends Component implements Base
 			};
 
 			$form->addError($message);
-			if ($this->isAjax()) {
-				$this->getPresenter()->redrawControl($this->snippetFactory);
-			}
+			$this->isAjax()
+				? $this->redrawControl($this->snippetFactory)
+				: $this->redirect('this');
 		}
 	}
 
 
 	/**
-	 * @return RolesEntity[]
+	 * @throws AbortException
 	 * @throws AttributeDetectionException
+	 * @throws BadRequestException
 	 * @throws Exception
 	 */
-	public function getRecords(): array
+	public function handleEdit(int $id): void
 	{
-		$roles = [];
-		foreach ($this->rolesRepository->getAll() as $role) {
-			$parent = $this->rolesRepository->findByParent($role->parent);
-			$role->parent = $parent->name ?? 'none';
-			$roles[] = $role;
+		$items = $this->rolesRepository->getOne($id);
+		$items ?: $this->error();
+
+		try {
+			if ($this->rolesRepository->isAllowed($items->name)) {
+				$form = $this['factory'];
+				$form->setDefaults($items);
+
+				$buttonSend = $this->getFormComponent($form, 'send');
+				$buttonSend->setCaption('Edit');
+
+				if ($this->isAjax()) {
+					$component = $this->getUniqueComponent($this->openComponentType);
+					$this->getPresenter()->payload->{$this->openComponentType} = $component;
+					$this->redrawControl($this->snippetFactory);
+
+				} else {
+					$this->redirect('this');
+				}
+			}
+
+		} catch (NotAllowedChange $e) {
+			$message = match ($e->getCode()) {
+				1001 => 'The role is not allowed to be updated.',
+				default => 'Unknown status code.',
+			};
+
+			$this->getPresenter()
+				->flashMessage($message, Alert::WARNING);
+
+			$this->isAjax()
+				? $this->getPresenter()->redrawControl($this->snippetMessage)
+				: $this->redirect('this');
 		}
-		return $roles;
 	}
 
 
-	public function handleClickOpen()
+	/**
+	 * @throws AbortException
+	 * @throws AttributeDetectionException
+	 * @throws BadRequestException
+	 * @throws Exception
+	 */
+	public function handleDelete(int $id): void
 	{
-		if ($this->isAjax()) {
-			$this->getPresenter()->payload->{$this->snippetFactory} = $this->snippetFactory;
-			$this->getPresenter()->redrawControl($this->snippetFactory);
+		$items = $this->rolesRepository->getOne($id);
+		$items ?: $this->error();
+
+		try {
+			$parent = $this->rolesRepository->findParent($items->id);
+			if (!$parent && $this->rolesRepository->isAllowed($items->name)) {
+				$this->rolesRepository->remove($id);
+				$this->cache->remove(Conf::CACHE);
+				$this->getPresenter()->flashMessage('Role deleted.', Alert::DANGER);
+
+				if ($this->isAjax()) {
+					$this->getPresenter()->redrawControl($this->snippetMessage);
+					$this['grid']->reload();
+
+				} else {
+					$this->redirect('this');
+				}
+			}
+
+		} catch (Throwable $e) {
+			$message = match ($e->getCode()) {
+				1001 => 'The role is not allowed to be deleted.',
+				1002 => 'The role cannot be deleted because it is bound to another role.',
+				default => 'Unknown status code.',
+			};
+
+			$this->getPresenter()
+				->flashMessage($message, Alert::WARNING);
+
+			$this->isAjax()
+				? $this->getPresenter()->redrawControl($this->snippetMessage)
+				: $this->redirect('this');
 		}
+	}
+
+
+	/**
+	 * @throws AttributeDetectionException
+	 * @throws DataGridException
+	 */
+	protected function createComponentGrid($name): DataGrid
+	{
+		$grid = new DataGrid($this, $name);
+		$grid->setDataSource($this->rolesRepository->getAll());
+
+		if ($this->translator) {
+			$grid->setTranslator($this->translator);
+		}
+
+		if ($this->templateGrid) {
+			$grid->setTemplateFile($this->templateGrid);
+		}
+
+		$grid->addColumnText('name', 'Name')
+			->setFilterText();
+
+		$grid->addColumnText('parent', 'Parent')
+			->setRenderer(fn(RolesEntity|Row $item) => $this->rolesRepository->findByParent($item->parent)->name ?? null)->setFilterText();
+
+		$grid->addAction('edit', 'Edit')
+			->setClass('btn btn-xs btn-primary text-white ajax');
+
+		$confirm = 'Are you sure you want to delete the selected item?';
+		if ($this->translator) {
+			$confirm = $this->translator->translate($confirm);
+		}
+		$grid->addAction('delete', 'Delete')
+			->setClass('btn btn-xs btn-danger ajax')
+			->setConfirmation(new StringConfirmation($confirm));
+
+		return $grid;
 	}
 }

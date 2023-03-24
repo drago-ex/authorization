@@ -1,11 +1,28 @@
-{embed '../../UI/@heading.latte'}
-	{block title}Edit or add roles{/block}
-{/embed}
+<h5 class="border-bottom pb-2">
+	{_'Edit or add roles'}
+</h5>
 
-{embed '../../UI/@form.latte', name: 'factory'}
-	{block inputs}
-		{include input-text, name: 'name', columns: 6}
-		{include input-select, name: 'parent', columns: 6}
-		{include input-submit, name: 'send', columns: 12}
-	{/block}
-{/embed}
+{snippet roles}
+	<form n:name="factory" class="row g-3 ajax" data-naja-history="off">
+		<ul n:if="$form->hasErrors()" class="errors">
+			<li n:foreach="$form->errors as $error">{_$error}</li>
+		</ul>
+		<div class="col-md-6">
+			<label n:name="name" class="form-label" />
+			<input n:name="name" class="form-control">
+		</div>
+		<div class="col-md-6">
+			<label n:name="parent" class="form-label" />
+			<select n:name="parent" class="form-control"></select>
+		</div>
+		<div class="col-md-12">
+			<input n:name="send" class="btn btn-block btn-primary text-white" data-btn-submit>
+		</div>
+	</form>
+{/snippet}
+
+<h5 class="border-bottom pb-2">
+	{_'Roles'}
+</h5>
+
+{control grid}

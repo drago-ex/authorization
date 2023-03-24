@@ -31,7 +31,8 @@ trait AuthorizationControl
 		PrivilegesControl $privilegesControl,
 		PermissionsControl $permissionsControl,
 		AccessControl $accessControl,
-	) {
+	): void
+	{
 		$this->rolesControl = $rolesControl;
 		$this->resourcesControl = $resourcesControl;
 		$this->privilegesControl = $privilegesControl;

@@ -16,16 +16,13 @@ use Nette\SmartObject;
 /**
  * Base control.
  * @property string $snippetFactory
- * @property string $snippetItems
  */
 abstract class Component extends UI\ExtraControl
 {
 	use SmartObject;
 
-	public ?string $templateFactory = null;
-	public ?string $templateItems = null;
-	public ?int $deleteId = null;
-
+	public string $openComponentType = 'offcanvas';
+	public ?string $templateControl = null;
+	public ?string $templateGrid = null;
 	protected string $snippetMessage = 'message';
-	protected string $snippetPermissions = 'permissions';
 }

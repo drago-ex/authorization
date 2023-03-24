@@ -11,6 +11,7 @@ namespace Drago\Authorization\Control\Resources;
 
 use Dibi\Connection;
 use Dibi\Exception;
+use Dibi\Fluent;
 use Dibi\Result;
 use Drago\Attr\AttributeDetectionException;
 use Drago\Attr\Table;
@@ -29,16 +30,12 @@ class ResourcesRepository
 
 
 	/**
-	 * @return ResourcesEntity[]
-	 * @throws Exception
 	 * @throws AttributeDetectionException
 	 */
-	public function getAll(): array
+	public function getAll(): Fluent
 	{
 		return $this->all()
-			->orderBy(ResourcesEntity::NAME, 'asc')
-			->execute()->setRowClass(ResourcesEntity::class)
-			->fetchAll();
+			->orderBy(ResourcesEntity::NAME, 'asc');
 	}
 
 

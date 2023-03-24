@@ -11,8 +11,10 @@ namespace Drago\Authorization\Control\Access;
 
 use Dibi\Connection;
 use Dibi\Exception;
+use Dibi\Fluent;
 use Drago\Attr\AttributeDetectionException;
 use Drago\Attr\Table;
+use Drago\Authorization\Conf;
 use Drago\Database\Repository;
 use Nette\SmartObject;
 
@@ -26,6 +28,19 @@ class UsersRolesViewRepository
 	public function __construct(
 		protected Connection $db,
 	) {
+	}
+
+
+	/**
+	 * @throws AttributeDetectionException
+	 */
+	public function getAllUsers(): Fluent
+	{
+		return $this->db
+			->select('user_id, username, group_concat(role separator ", ") role')
+			->from($this->getTable())->groupBy('user_id, username')
+			->having('SUM(CASE WHEN role = ? THEN 1 ELSE 0 END) = ?', Conf::ROLE_ADMIN, 0)
+			->orderBy(UsersRolesViewEntity::USER_ID, 'asc');
 	}
 
 

@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Privileges;
 
+use App\Authorization\Control\ComponentTemplate;
 use Dibi\Exception;
 use Drago\Application\UI\Alert;
 use Drago\Attr\AttributeDetectionException;
@@ -17,16 +18,19 @@ use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
 use Drago\Authorization\Control\Factory;
 use Drago\Authorization\NotAllowedChange;
+use Nette\Application\AbortException;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
-use Nette\Forms\Controls\BaseControl;
 use Nette\SmartObject;
 use Throwable;
+use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
+use Ublaboo\DataGrid\DataGrid;
+use Ublaboo\DataGrid\Exception\DataGridException;
 
 
 /**
- * @property-read PrivilegesTemplate $template
+ * @property-read ComponentTemplate $template
  */
 class PrivilegesControl extends Component implements Base
 {
@@ -34,7 +38,6 @@ class PrivilegesControl extends Component implements Base
 	use Factory;
 
 	public string $snippetFactory = 'privileges';
-	public string $snippetItems = 'privilegesItems';
 
 
 	public function __construct(
@@ -47,149 +50,36 @@ class PrivilegesControl extends Component implements Base
 	public function render(): void
 	{
 		$template = $this->template;
-		$template->setFile($this->templateFactory ?: __DIR__ . '/Privileges.latte');
+		$template->setFile($this->templateControl ?: __DIR__ . '/Privileges.latte');
 		$template->setTranslator($this->translator);
-		$template->form = $this['factory'];
+		$template->uniqueComponentId = $this->getUniqueComponent($this->openComponentType);
 		$template->render();
 	}
 
 
-	/**
-	 * @throws AttributeDetectionException
-	 * @throws Exception
-	 */
-	public function renderItems(): void
+	public function getUniqueComponent(string $type): string
 	{
-		$template = $this->template;
-		$template->setFile($this->templateItems ?: __DIR__ . '/PrivilegesItems.latte');
-		$template->setTranslator($this->translator);
-		$template->privileges = $this->privilegesRepository->getAll();
-		$template->deleteId = $this->deleteId;
-		$template->render();
+		return $this->getUniqueIdComponent($type);
 	}
 
 
 	/**
-	 * @throws BadRequestException
-	 * @throws Exception
-	 * @throws AttributeDetectionException
+	 * @throws AbortException
 	 */
-	public function handleEdit(int $id): void
+	public function handleClickOpenComponent(): void
 	{
-		$privilege = $this->privilegesRepository->getOne($id);
-		$privilege ?: $this->error();
-
-		try {
-			if ($this->privilegesRepository->isAllowed($privilege->name) && $this->getSignal()) {
-				$form = $this['factory'];
-				if ($form instanceof Form) {
-					$form->setDefaults($privilege);
-				}
-
-				$buttonSend = $form['send'];
-				if ($buttonSend instanceof BaseControl) {
-					$buttonSend->setCaption('Edit');
-				}
-
-				if ($this->isAjax()) {
-					$this->getPresenter()->payload->{$this->snippetFactory} = $this->snippetFactory;
-					$this->getPresenter()->redrawControl($this->snippetFactory);
-				}
-			}
-
-		} catch (NotAllowedChange $e) {
-			if ($e->getCode() === 1001) {
-				$this->getPresenter()->flashMessage(
-					'The privilege is not allowed to be updated.',
-					Alert::WARNING,
-				);
-
-				if ($this->isAjax()) {
-					$this->getPresenter()
-						->redrawControl($this->snippetMessage);
-				}
-			}
-		}
-	}
-
-
-	/**
-	 * @throws BadRequestException
-	 * @throws Exception
-	 * @throws AttributeDetectionException
-	 */
-	public function handleDelete(int $id): void
-	{
-		$privilege = $this->privilegesRepository->getOne($id);
-		$privilege ?: $this->error();
-		$this->deleteId = $privilege->id;
 		if ($this->isAjax()) {
-			$this->getPresenter()
-				->redrawControl($this->snippetItems);
+			$component = $this->getUniqueComponent($this->openComponentType);
+			$this->getPresenter()->payload->{$this->openComponentType} = $component;
+			$this->redrawControl($this->snippetFactory);
+
+		} else {
+			$this->redirect('this');
 		}
 	}
 
 
-	/**
-	 * @throws BadRequestException
-	 * @throws Exception
-	 * @throws AttributeDetectionException
-	 */
-	public function handleDeleteConfirm(int $confirm, int $id): void
-	{
-		$privilege = $this->privilegesRepository->getOne($id);
-		$privilege ?: $this->error();
-
-		try {
-			if ($confirm === 1) {
-				if ($this->privilegesRepository->isAllowed($privilege->name)) {
-					$this->privilegesRepository->remove($id);
-					$this->cache->remove(Conf::CACHE);
-					$this->getPresenter()->flashMessage(
-						'Privilege deleted.',
-						Alert::DANGER,
-					);
-
-					$snippets = [
-						$this->snippetFactory,
-						$this->snippetItems,
-						$this->snippetMessage,
-						$this->snippetPermissions,
-					];
-
-					if ($this->isAjax()) {
-						foreach ($snippets as $snippet) {
-							$this->getPresenter()->redrawControl($snippet);
-						}
-					}
-				}
-
-			} else {
-				if ($this->isAjax()) {
-					$this->getPresenter()
-						->redrawControl($this->snippetItems);
-				}
-			}
-
-		} catch (Throwable $e) {
-			$message = match ($e->getCode()) {
-				1001 => 'The privilege is not allowed to be deleted.',
-				1451 => 'The privilege can not be deleted, you must first delete the records that are associated with it.',
-				default => 'Unknown status code.',
-			};
-
-			$this->getPresenter()
-				->flashMessage($message, Alert::WARNING);
-
-			if ($this->isAjax()) {
-				$this->getPresenter()
-					->redrawControl($this->snippetMessage);
-			}
-		}
-	}
-
-
-	public function createComponentFactory(): Form
+	protected function createComponentFactory(): Form
 	{
 		$form = $this->create();
 		$form->addText(PrivilegesData::NAME, 'Action or signal')
@@ -207,6 +97,9 @@ class PrivilegesControl extends Component implements Base
 	}
 
 
+	/**
+	 * @throws AbortException
+	 */
 	public function success(Form $form, PrivilegesData $data): void
 	{
 		try {
@@ -214,25 +107,20 @@ class PrivilegesControl extends Component implements Base
 			$this->cache->remove(Conf::CACHE);
 
 			$message = $data->id ? 'Privilege updated.' : 'Privilege inserted.';
-			$this->getPresenter()->flashMessage($message);
+			$this->getPresenter()->flashMessage($message, Alert::INFO);
 
 			if ($this->isAjax()) {
 				if ($data->id) {
 					$this->getPresenter()->payload->close = 'close';
 				}
+				$this->getPresenter()->redrawControl($this->snippetMessage);
+				$this->redrawControl($this->snippetFactory);
+				$this['grid']->reload();
+				$form->reset();
 
-				$snippets = [
-					$this->snippetFactory,
-					$this->snippetItems,
-					$this->snippetMessage,
-					$this->snippetPermissions,
-				];
-				foreach ($snippets as $snippet) {
-					$this->getPresenter()->redrawControl($snippet);
-				}
+			} else {
+				$this->redirect('this');
 			}
-
-			$form->reset();
 
 		} catch (Throwable $e) {
 			$message = match ($e->getCode()) {
@@ -241,18 +129,135 @@ class PrivilegesControl extends Component implements Base
 			};
 
 			$form->addError($message);
-			if ($this->isAjax()) {
-				$this->getPresenter()->redrawControl($this->snippetFactory);
-			}
+			$this->isAjax()
+				? $this->redrawControl($this->snippetFactory)
+				: $this->redirect('this');
 		}
 	}
 
 
-	public function handleClickOpen()
+	/**
+	 * @throws AbortException
+	 * @throws AttributeDetectionException
+	 * @throws BadRequestException
+	 * @throws Exception
+	 */
+	public function handleEdit(int $id): void
 	{
-		if ($this->isAjax()) {
-			$this->getPresenter()->payload->{$this->snippetFactory} = $this->snippetFactory;
-			$this->getPresenter()->redrawControl($this->snippetFactory);
+		$items = $this->privilegesRepository->getOne($id);
+		$items ?: $this->error();
+
+		try {
+			if ($this->privilegesRepository->isAllowed($items->name)) {
+				$form = $this['factory'];
+				$form->setDefaults($items);
+
+				$buttonSend = $this->getFormComponent($form, 'send');
+				$buttonSend->setCaption('Edit');
+
+				if ($this->isAjax()) {
+					$component = $this->getUniqueComponent($this->openComponentType);
+					$this->getPresenter()->payload->{$this->openComponentType} = $component;
+					$this->redrawControl($this->snippetFactory);
+
+				} else {
+					$this->redirect('this');
+				}
+			}
+
+		} catch (NotAllowedChange $e) {
+			$message = match ($e->getCode()) {
+				1001 => 'The privilege is not allowed to be updated.',
+				default => 'Unknown status code.',
+			};
+
+			$this->getPresenter()
+				->flashMessage($message, Alert::WARNING);
+
+			$this->isAjax()
+				? $this->getPresenter()->redrawControl($this->snippetMessage)
+				: $this->redirect('this');
 		}
+	}
+
+
+	/**
+	 * @throws AbortException
+	 * @throws AttributeDetectionException
+	 * @throws BadRequestException
+	 * @throws Exception
+	 */
+	public function handleDelete(int $id): void
+	{
+		$items = $this->privilegesRepository->getOne($id);
+		$items ?: $this->error();
+
+		try {
+			if ($this->privilegesRepository->isAllowed($items->name)) {
+				$this->privilegesRepository->remove($items->id);
+				$this->cache->remove(Conf::CACHE);
+				$this->getPresenter()->flashMessage(
+					'Privilege deleted.',
+					Alert::DANGER,
+				);
+
+				if ($this->isAjax()) {
+					$this->getPresenter()->redrawControl($this->snippetMessage);
+					$this['grid']->reload();
+
+				} else {
+					$this->redirect('this');
+				}
+			}
+
+		} catch (Throwable $e) {
+			$message = match ($e->getCode()) {
+				1001 => 'The privilege is not allowed to be deleted.',
+				1451 => 'The privilege can not be deleted, you must first delete the records that are associated with it.',
+				default => 'Unknown status code.',
+			};
+
+			$this->getPresenter()
+				->flashMessage($message, Alert::WARNING);
+
+			$this->isAjax()
+				? $this->getPresenter()->redrawControl($this->snippetMessage)
+				: $this->redirect('this');
+		}
+	}
+
+
+	/**
+	 * @throws AttributeDetectionException
+	 * @throws DataGridException
+	 */
+	protected function createComponentGrid($name): DataGrid
+	{
+		$grid = new DataGrid($this, $name);
+		$grid->setDataSource($this->privilegesRepository->getAll());
+
+		if ($this->translator) {
+			$grid->setTranslator($this->translator);
+		}
+
+		if ($this->templateGrid) {
+			$grid->setTemplateFile($this->templateGrid);
+		}
+
+		$grid->addColumnText('name', 'Name')
+			->setFilterText();
+
+		$grid->addAction('edit', 'Edit')
+			->setClass('btn btn-xs btn-primary text-white ajax');
+
+		$confirm = 'Are you sure you want to delete the selected item?';
+		if ($this->translator) {
+			$confirm = $this->translator->translate($confirm);
+		}
+		$grid->addAction('delete', 'Delete')
+			->setClass('btn btn-xs btn-danger ajax')
+			->setConfirmation(new StringConfirmation($confirm));
+
+		return $grid;
 	}
 }

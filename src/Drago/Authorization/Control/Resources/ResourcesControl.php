@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Resources;
 
+use App\Authorization\Control\ComponentTemplate;
 use Dibi\Exception;
 use Drago\Application\UI\Alert;
 use Drago\Attr\AttributeDetectionException;
@@ -16,16 +17,19 @@ use Drago\Authorization\Conf;
 use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
 use Drago\Authorization\Control\Factory;
+use Nette\Application\AbortException;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
-use Nette\Forms\Controls\BaseControl;
 use Nette\SmartObject;
 use Throwable;
+use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
+use Ublaboo\DataGrid\DataGrid;
+use Ublaboo\DataGrid\Exception\DataGridException;
 
 
 /**
- * @property-read ResourcesTemplate $template
+ * @property-read ComponentTemplate $template
  */
 class ResourcesControl extends Component implements Base
 {
@@ -33,7 +37,6 @@ class ResourcesControl extends Component implements Base
 	use Factory;
 
 	public string $snippetFactory = 'resources';
-	public string $snippetItems = 'resourcesItems';
 
 
 	public function __construct(
@@ -46,129 +49,36 @@ class ResourcesControl extends Component implements Base
 	public function render(): void
 	{
 		$template = $this->template;
-		$template->setFile($this->templateFactory ?: __DIR__ . '/Resources.latte');
+		$template->setFile($this->templateControl ?: __DIR__ . '/Resources.latte');
 		$template->setTranslator($this->translator);
-		$template->form = $this['factory'];
+		$template->uniqueComponentId = $this->getUniqueComponent($this->openComponentType);
 		$template->render();
 	}
 
 
-	/**
-	 * @throws Exception
-	 * @throws AttributeDetectionException
-	 */
-	public function renderItems(): void
+	public function getUniqueComponent(string $type): string
 	{
-		$template = $this->template;
-		$template->setFile($this->templateItems ?: __DIR__ . '/ResourcesItems.latte');
-		$template->setTranslator($this->translator);
-		$template->resources = $this->resourcesRepository->getAll();
-		$template->deleteId = $this->deleteId;
-		$template->render();
+		return $this->getUniqueIdComponent($type);
 	}
 
 
 	/**
-	 * @throws BadRequestException
-	 * @throws AttributeDetectionException
-	 * @throws Exception
+	 * @throws AbortException
 	 */
-	public function handleEdit(int $id): void
+	public function handleClickOpenComponent(): void
 	{
-		$resource = $this->resourcesRepository->getOne($id);
-		$resource ?: $this->error();
-
-		if ($this->getSignal()) {
-			$form = $this['factory'];
-			if ($form instanceof Form) {
-				$form->setDefaults($resource);
-			}
-
-			$buttonSend = $form['send'];
-			if ($buttonSend instanceof BaseControl) {
-				$buttonSend->setCaption('Edit');
-			}
-
-			if ($this->isAjax()) {
-				$this->getPresenter()->payload->{$this->snippetFactory} = $this->snippetFactory;
-				$this->getPresenter()->redrawControl($this->snippetFactory);
-			}
-		}
-	}
-
-
-	/**
-	 * @throws BadRequestException
-	 * @throws Exception
-	 * @throws AttributeDetectionException
-	 */
-	public function handleDelete(int $id): void
-	{
-		$resource = $this->resourcesRepository->getOne($id);
-		$resource ?: $this->error();
-		$this->deleteId = $resource->id;
 		if ($this->isAjax()) {
-			$this->getPresenter()
-				->redrawControl($this->snippetItems);
+			$component = $this->getUniqueComponent($this->openComponentType);
+			$this->getPresenter()->payload->{$this->openComponentType} = $component;
+			$this->redrawControl($this->snippetFactory);
+
+		} else {
+			$this->redirect('this');
 		}
 	}
 
 
-	/**
-	 * @throws BadRequestException
-	 * @throws AttributeDetectionException
-	 * @throws Exception
-	 */
-	public function handleDeleteConfirm(int $confirm, int $id): void
-	{
-		$resource = $this->resourcesRepository->getOne($id);
-		$resource ?: $this->error();
-
-		try {
-			if ($confirm === 1) {
-				$this->resourcesRepository->remove($id);
-				$this->cache->remove(Conf::CACHE);
-				$this->getPresenter()->flashMessage(
-					'Resource deleted.',
-					Alert::DANGER,
-				);
-
-				$snippets = [
-					$this->snippetFactory,
-					$this->snippetItems,
-					$this->snippetMessage,
-					$this->snippetPermissions,
-				];
-
-				if ($this->isAjax()) {
-					foreach ($snippets as $snippet) {
-						$this->getPresenter()->redrawControl($snippet);
-					}
-				}
-
-			} else {
-				if ($this->isAjax()) {
-					$this->getPresenter()
-						->redrawControl($this->snippetItems);
-				}
-			}
-
-		} catch (Throwable $e) {
-			if ($e->getCode() === 1451) {
-				$this->getPresenter()->flashMessage(
-					'The resource can not be deleted, you must first delete the records that are associated with it.',
-					Alert::WARNING,
-				);
-				if ($this->isAjax()) {
-					$this->getPresenter()
-						->redrawControl($this->snippetMessage);
-				}
-			}
-		}
-	}
-
-
-	public function createComponentFactory(): Form
+	protected function createComponentFactory(): Form
 	{
 		$form = $this->create();
 		$form->addText(ResourcesData::NAME, 'Source')
@@ -186,6 +96,9 @@ class ResourcesControl extends Component implements Base
 	}
 
 
+	/**
+	 * @throws AbortException
+	 */
 	public function success(Form $form, ResourcesData $data): void
 	{
 		try {
@@ -199,19 +112,14 @@ class ResourcesControl extends Component implements Base
 				if ($data->id) {
 					$this->getPresenter()->payload->close = 'close';
 				}
+				$this->getPresenter()->redrawControl($this->snippetMessage);
+				$this->redrawControl($this->snippetFactory);
+				$this['grid']->reload();
+				$form->reset();
 
-				$snippets = [
-					$this->snippetFactory,
-					$this->snippetItems,
-					$this->snippetMessage,
-					$this->snippetPermissions,
-				];
-				foreach ($snippets as $snippet) {
-					$this->getPresenter()->redrawControl($snippet);
-				}
+			} else {
+				$this->redirect('this');
 			}
-
-			$form->reset();
 
 		} catch (Throwable $e) {
 			$message = match ($e->getCode()) {
@@ -220,18 +128,115 @@ class ResourcesControl extends Component implements Base
 			};
 
 			$form->addError($message);
-			if ($this->isAjax()) {
-				$this->getPresenter()->redrawControl($this->snippetFactory);
-			}
+			$this->isAjax()
+				? $this->redrawControl($this->snippetFactory)
+				: $this->redirect('this');
 		}
 	}
 
 
-	public function handleClickOpen()
+	/**
+	 * @throws AbortException
+	 * @throws AttributeDetectionException
+	 * @throws BadRequestException
+	 * @throws Exception
+	 */
+	public function handleEdit(int $id): void
 	{
+		$items = $this->resourcesRepository->getOne($id);
+		$items ?: $this->error();
+
+		$form = $this['factory'];
+		$form->setDefaults($items);
+
+		$buttonSend = $this->getFormComponent($form, 'send');
+		$buttonSend->setCaption('Edit');
+
 		if ($this->isAjax()) {
-			$this->getPresenter()->payload->{$this->snippetFactory} = $this->snippetFactory;
-			$this->getPresenter()->redrawControl($this->snippetFactory);
+			$component = $this->getUniqueComponent($this->openComponentType);
+			$this->getPresenter()->payload->{$this->openComponentType} = $component;
+			$this->redrawControl($this->snippetFactory);
+
+		} else {
+			$this->redirect('this');
 		}
+	}
+
+
+	/**
+	 * @throws AbortException
+	 * @throws AttributeDetectionException
+	 * @throws BadRequestException
+	 * @throws Exception
+	 */
+	public function handleDelete(int $id): void
+	{
+		$items = $this->resourcesRepository->getOne($id);
+		$items ?: $this->error();
+
+		try {
+			$this->resourcesRepository->remove($items->id);
+			$this->cache->remove(Conf::CACHE);
+			$this->getPresenter()->flashMessage(
+				'Resource deleted.',
+				Alert::DANGER,
+			);
+
+			if ($this->isAjax()) {
+				$this->getPresenter()->redrawControl($this->snippetMessage);
+				$this['grid']->reload();
+
+			} else {
+				$this->redirect('this');
+			}
+
+		} catch (Throwable $e) {
+			$message = match ($e->getCode()) {
+				1451 => 'The resource can not be deleted, you must first delete the records that are associated with it',
+				default => 'Unknown status code.',
+			};
+
+			$this->getPresenter()
+				->flashMessage($message, Alert::WARNING);
+
+			$this->isAjax()
+				? $this->getPresenter()->redrawControl($this->snippetMessage)
+				: $this->redirect('this');
+		}
+	}
+
+
+	/**
+	 * @throws AttributeDetectionException
+	 * @throws DataGridException
+	 */
+	protected function createComponentGrid($name): DataGrid
+	{
+		$grid = new DataGrid($this, $name);
+		$grid->setDataSource($this->resourcesRepository->getAll());
+
+		if ($this->translator) {
+			$grid->setTranslator($this->translator);
+		}
+
+		if ($this->templateGrid) {
+			$grid->setTemplateFile($this->templateGrid);
+		}
+
+		$grid->addColumnText('name', 'Name')
+			->setFilterText();
+
+		$grid->addAction('edit', 'Edit')
+			->setClass('btn btn-xs btn-primary text-white ajax');
+
+		$confirm = 'Are you sure you want to delete the selected item?';
+		if ($this->translator) {
+			$confirm = $this->translator->translate($confirm);
+		}
+		$grid->addAction('delete', 'Delete')
+			->setClass('btn btn-xs btn-danger ajax')
+			->setConfirmation(new StringConfirmation($confirm));
+
+		return $grid;
 	}
 }

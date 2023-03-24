@@ -11,6 +11,7 @@ namespace Drago\Authorization\Control\Roles;
 
 use Dibi\Connection;
 use Dibi\Exception;
+use Dibi\Fluent;
 use Dibi\Result;
 use Dibi\Row;
 use Drago\Attr\AttributeDetectionException;
@@ -34,15 +35,13 @@ class RolesRepository
 
 
 	/**
-	 * @return RolesEntity[]
-	 * @throws Exception
 	 * @throws AttributeDetectionException
 	 */
-	public function getAll(): array
+	public function getAll(): Fluent
 	{
-		return $this->all()->orderBy(RolesEntity::PRIMARY)->execute()
-			->setRowClass(RolesEntity::class)
-			->fetchAll();
+		return $this->all()
+			->orderBy(RolesEntity::PRIMARY)
+			->where(RolesEntity::NAME, '!= ?', Conf::ROLE_ADMIN);
 	}
 
 
@@ -78,6 +77,16 @@ class RolesRepository
 		return $this->all()->where(RolesEntity::NAME, ' != ?', Conf::ROLE_ADMIN)
 			->and(RolesEntity::NAME, '!= ?', Conf::ROLE_GUEST)
 			->fetchPairs(RolesEntity::PRIMARY, RolesEntity::NAME);
+	}
+
+
+	/**
+	 * @throws AttributeDetectionException
+	 */
+	public function getRolesPairs(): array
+	{
+		return $this->all()->where(RolesEntity::NAME, ' != ?', Conf::ROLE_ADMIN)
+			->fetchPairs(RolesEntity::NAME, RolesEntity::NAME);
 	}
 
 

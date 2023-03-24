@@ -11,6 +11,7 @@ namespace Drago\Authorization\Control\Privileges;
 
 use Dibi\Connection;
 use Dibi\Exception;
+use Dibi\Fluent;
 use Dibi\Result;
 use Drago\Attr\AttributeDetectionException;
 use Drago\Attr\Table;
@@ -33,16 +34,13 @@ class PrivilegesRepository
 
 
 	/**
-	 * @return PrivilegesEntity[]
 	 * @throws AttributeDetectionException
-	 * @throws Exception
 	 */
-	public function getAll(): array
+	public function getAll(): Fluent
 	{
 		return $this->all()
-			->orderBy(PrivilegesEntity::NAME, 'asc')
-			->execute()->setRowClass(PrivilegesEntity::class)
-			->fetchAll();
+			->where(PrivilegesEntity::NAME, '!= ?', Conf::PRIVILEGE_ALL)
+			->orderBy(PrivilegesEntity::NAME, 'asc');
 	}
 
 

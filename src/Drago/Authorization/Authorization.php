@@ -34,7 +34,6 @@ trait Authorization
 
 			if (!$user->isAllowed($presenter->getName(), $signal)) {
 				$presenter->error('Forbidden', 403);
-
 			}
 		};
 	}

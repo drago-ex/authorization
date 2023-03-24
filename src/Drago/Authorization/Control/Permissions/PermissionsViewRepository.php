@@ -10,9 +10,10 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control\Permissions;
 
 use Dibi\Connection;
-use Dibi\Exception;
+use Dibi\Fluent;
 use Drago\Attr\AttributeDetectionException;
 use Drago\Attr\Table;
+use Drago\Authorization\Conf;
 use Drago\Database\Repository;
 use Nette\SmartObject;
 
@@ -30,14 +31,11 @@ class PermissionsViewRepository
 
 
 	/**
-	 * @return PermissionsViewEntity[]
-	 * @throws Exception
 	 * @throws AttributeDetectionException
 	 */
-	public function getAll(): array
+	public function getAll(): Fluent
 	{
-		return $this->all()->execute()
-			->setRowClass(PermissionsViewEntity::class)
-			->fetchAll();
+		return $this->all()
+			->where(PermissionsViewEntity::ROLE, '!= ?', Conf::ROLE_ADMIN);
 	}
 }

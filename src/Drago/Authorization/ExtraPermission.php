@@ -71,7 +71,7 @@ class ExtraPermission
 			if ($this->cache->load(Conf::CACHE)) {
 				$acl = $this->cache->load(Conf::CACHE);
 			}
-		} catch (DriverException $e) {
+		} catch (DriverException) {
 			// Not implemented.
 		}
 

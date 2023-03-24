@@ -1,13 +1,36 @@
-{embed '../../UI/@heading.latte'}
-	{block title}Edit or add permissions{/block}
-{/embed}
+<h5 class="border-bottom pb-2">
+	{_'Edit or add permissions'}
+</h5>
 
-{embed '../../UI/@form.latte', name: 'factory'}
-	{block inputs}
-		{include input-select, name: 'role_id', columns: 6}
-		{include input-select, name: 'resource_id', columns: 6}
-		{include input-select, name: 'privilege_id', columns: 6}
-		{include input-select, name: 'allowed', columns: 6}
-		{include input-submit, name: 'send', columns: 12}
-	{/block}
-{/embed}
+{snippet permissions}
+	<form n:name="factory" class="row g-3 ajax" data-naja-history="off">
+		<ul n:if="$form->hasErrors()" class="errors">
+			<li n:foreach="$form->errors as $error">{_$error}</li>
+		</ul>
+		<div class="col-md-6">
+			<label n:name="role_id" class="form-label" />
+			<select n:name="role_id" class="form-control"></select>
+		</div>
+		<div class="col-md-6">
+			<label n:name="resource_id" class="form-label" />
+			<select n:name="resource_id" class="form-control"></select>
+		</div>
+		<div class="col-md-6">
+			<label n:name="privilege_id" class="form-label" />
+			<select n:name="privilege_id" class="form-control"></select>
+		</div>
+		<div class="col-md-6">
+			<label n:name="allowed" class="form-label" />
+			<select n:name="allowed" class="form-control"></select>
+		</div>
+		<div class="col-md-12">
+			<input n:name="send" class="btn btn-block btn-primary text-white" data-btn-submit>
+		</div>
+	</form>
+{/snippet}
+
+<h5 class="border-bottom pb-2">
+	{_'Permissions'}
+</h5>
+
+{control grid}
