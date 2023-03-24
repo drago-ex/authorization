@@ -116,7 +116,6 @@ class AccessControl extends Component implements Base
 	 */
 	public function success(Form $form, UsersRolesData $data): void
 	{
-		Debugger::barDump($data);
 		try {
 			if (!$data->id) {
 				$entity = new UsersRolesEntity;
