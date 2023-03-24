@@ -48,8 +48,7 @@ CREATE TABLE `privileges` (
 
 INSERT INTO `privileges` (`id`, `name`) VALUES
 (1,	'*all'),
-(2,	'default'),
-(3,	'submit');
+(2,	'default');
 
 DROP TABLE IF EXISTS `resources`;
 CREATE TABLE `resources` (
