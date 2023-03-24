@@ -77,20 +77,8 @@ $control->translator = $this->getTranslator();
 ## Use components in latte
 ```latte
 {control permissionsControl}
-```
-
-```latte
 {control rolesControl}
-```
-
-```latte
 {control resourcesControl}
-```
-
-```latte
 {control privilegesControl}
-```
-
-```latte
 {control accessControl}
 ```
