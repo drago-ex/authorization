@@ -292,10 +292,10 @@ class PermissionsControl extends Component implements Base
 
 		$expirationCol = $grid->addColumnStatus('allowed', 'Permission');
 		$expirationCol->setCaret(false)
-			->addOption(0, 'Deny')
+			->addOption(0, 'Denied')
 			->setClass('btn-danger')
 			->endOption()
-			->addOption(1, 'Allow')
+			->addOption(1, 'Allowed')
 			->setClass('btn-success')
 			->endOption()
 			->setFilterSelect([
