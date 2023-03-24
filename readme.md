@@ -65,7 +65,7 @@ protected function createComponentAccessControl(): AccessControl
 	return $this->accessControl;
 }
 
-// Configure a custom form template.
+// Configure a custom template.
 $control->templateControl = __DIR__ . '/path/to/file.latte';
 $control->templateGrid = __DIR__ . '/path/to/file.latte';
 
