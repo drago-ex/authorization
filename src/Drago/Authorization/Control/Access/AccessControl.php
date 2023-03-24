@@ -22,7 +22,6 @@ use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\SmartObject;
 use Throwable;
-use Tracy\Debugger;
 use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Exception\DataGridException;
