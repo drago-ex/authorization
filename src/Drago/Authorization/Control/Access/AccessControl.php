@@ -281,7 +281,7 @@ class AccessControl extends Component implements Base
 			$grid->setTemplateFile($this->templateGrid);
 		}
 
-		$grid->addColumnText('username', 'Username')
+		$grid->addColumnText('username', 'Users')
 			->setFilterText();
 
 		$grid->addColumnText('role', 'Roles')
