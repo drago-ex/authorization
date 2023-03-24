@@ -39,6 +39,7 @@ class TestAuthorizationExtension extends TestCase
 				- Nette\Http\Request
 				- Nette\Http\UrlScript
 				- Nette\Application\Application(Nette\Application\IPresenterFactory, Nette\Routing\Router, Nette\Http\IResponse, Nette\Http\IResponse)
+				- Nette\Http\Session
 				dibi.connection:
 					factory: Dibi\Connection([
 						driver: mysqli
