@@ -6,6 +6,7 @@
 
 declare(strict_types=1);
 
+use Drago\Authorization\Conf;
 use Drago\Authorization\DI\AuthorizationExtension;
 use Drago\Authorization\ExtraPermission;
 use Nette\DI\Compiler;
@@ -73,9 +74,8 @@ class TestAuthorizationExtension extends TestCase
 	{
 		$permission = $this->geClassByType()->create();
 		$roles = [
-			'guest',
-			'member',
-			'admin',
+			Conf::ROLE_GUEST,
+			Conf::ROLE_MEMBER,
 		];
 		Assert::equal($roles, $permission->getRoles());
 	}
@@ -97,9 +97,7 @@ class TestAuthorizationExtension extends TestCase
 	public function test4(): void
 	{
 		$permission = $this->geClassByType()->create();
-
-		Assert::equal(['guest'], $permission->getRoleParents('member'));
-		Assert::equal(['member'], $permission->getRoleParents('admin'));
+		Assert::equal([Conf::ROLE_GUEST], $permission->getRoleParents(Conf::ROLE_MEMBER));
 	}
 }
 
