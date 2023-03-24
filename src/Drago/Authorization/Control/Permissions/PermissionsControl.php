@@ -292,16 +292,16 @@ class PermissionsControl extends Component implements Base
 
 		$expirationCol = $grid->addColumnStatus('allowed', 'Permission');
 		$expirationCol->setCaret(false)
-			->addOption(0, 'Deny')
+			->addOption(0, 'Denied')
 			->setClass('btn-danger')
 			->endOption()
-			->addOption(1, 'Allow')
+			->addOption(1, 'Allowed')
 			->setClass('btn-success')
 			->endOption()
 			->setFilterSelect([
 				null => $this->translator ? $this->translate('All') : 'All',
-				0  => $this->translator ? $this->translate('Deny') : 'Deny',
-				1  => $this->translator ? $this->translate('Allow') : 'Allow',
+				0  => $this->translator ? $this->translate('Denied') : 'Denied',
+				1  => $this->translator ? $this->translate('Allowed') : 'Allowed',
 			]);
 		$expirationCol->onChange[] = [$this, 'statusChange'];
 
