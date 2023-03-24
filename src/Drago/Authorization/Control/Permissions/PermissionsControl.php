@@ -300,8 +300,8 @@ class PermissionsControl extends Component implements Base
 			->endOption()
 			->setFilterSelect([
 				null => $this->translator ? $this->translate('All') : 'All',
-				0  => $this->translator ? $this->translate('Denied') : 'Denied',
-				1  => $this->translator ? $this->translate('Allowed') : 'Allowed',
+				0  => $this->translator ? $this->translate('Deny') : 'Deny',
+				1  => $this->translator ? $this->translate('Allow') : 'Allow',
 			]);
 		$expirationCol->onChange[] = [$this, 'statusChange'];
 
