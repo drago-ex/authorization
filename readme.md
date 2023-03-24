@@ -42,26 +42,22 @@ use Drago\Authorization\Control\AuthorizationControl
 // Minimum configuration.
 protected function createComponentPermissionsControl(): PermissionsControl
 {
-	$control = $this->permissionsControl;
-	return $control;
+	return $this->permissionsControl;
 }
 
 protected function createComponentRolesControl(): RolesControl
 {
-	$control = $this->rolesControl;
-	return $control;
+	return $this->rolesControl;
 }
 
 protected function createComponentResourcesControl(): ResourcesControl
 {
-	$control = $this->resourcesControl;
-	return $control;
+	return $this->resourcesControl;
 }
 
 protected function createComponentPrivilegesControl(): PrivilegesControl
 {
-	$control = $this->privilegesControl;
-	return $control;
+	return $this->privilegesControl;
 }
 
 protected function createComponentAccessControl(): AccessControl
@@ -70,10 +66,9 @@ protected function createComponentAccessControl(): AccessControl
 }
 
 // Configure a custom form template.
-$control->templateFactory = __DIR__ . '/path/to/file';
+$control->templateControl = __DIR__ . '/path/to/file.latte';
+$control->templateGrid = __DIR__ . '/path/to/file.latte';
 
-// Configure a custom items template.
-$control->templateItems = __DIR__ . '/path/to/file';
 
 // Inserting a translator.
 $control->translator = $this->getTranslator();
@@ -81,51 +76,21 @@ $control->translator = $this->getTranslator();
 
 ## Use components in latte
 ```latte
-{snippet permissions}
-	{control permissionsControl}
-{/snippet}
-
-{snippet permissionsItems}
-	{control permissionsControl:items}
-{/snippet}
+{control permissionsControl}
 ```
 
 ```latte
-{snippet roles}
-	{control rolesControl}
-{/snippet}
-
-{snippet rolesItems}
-	{control rolesControl:items}
-{/snippet}
+{control rolesControl}
 ```
 
 ```latte
-{snippet resources}
-	{control resourcesControl}
-{/snippet}
-
-{snippet resourcesItems}
-  {control resourcesControl:items}
-{/snippet}
+{control resourcesControl}
 ```
 
 ```latte
-{snippet privileges}
-	{control privilegesControl}
-{/snippet}
-
-{snippet privilegesItems}
-	{control privilegesControl:items}
-{/snippet}
+{control privilegesControl}
 ```
 
 ```latte
-{snippet access}
-	{control accessControl}
-{/snippet}
-
-{snippet accessItems}
-	{control accessControl:items}
-{/snippet}
+{control accessControl}
 ```
