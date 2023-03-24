@@ -74,18 +74,12 @@ class PermissionsControl extends Component implements Base
 	}
 
 
-	/**
-	 * @throws AbortException
-	 */
 	public function handleClickOpenComponent(): void
 	{
 		if ($this->isAjax()) {
 			$component = $this->getUniqueComponent($this->openComponentType);
 			$this->getPresenter()->payload->{$this->openComponentType} = $component;
 			$this->redrawControl($this->snippetFactory);
-
-		} else {
-			$this->redirect('this');
 		}
 	}
 
