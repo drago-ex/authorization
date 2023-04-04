@@ -33,7 +33,11 @@ trait Authorization
 			}
 
 			if (!$user->isAllowed($presenter->getName(), $signal)) {
-				$presenter->error('Forbidden', 403);
+				if (!$user->isLoggedIn()) {
+					$this->redirect($this->module, ['backlink' => $this->storeRequest()]);
+				} else {
+					$presenter->error('Forbidden', 403);
+				}
 			}
 		};
 	}
