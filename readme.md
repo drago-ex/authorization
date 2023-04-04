@@ -22,6 +22,9 @@ composer require drago-ex/authorization
 ```neon
 extensions:
 	- Drago\Authorization\DI\AuthorizationExtension
+	
+// Add molude for redirect to login.
+private string $module = ':Module:Presenter:';
 ```
 
 ## Use trait in base presenter for access control
