@@ -29,10 +29,10 @@ class ExtraPermission
 	use SmartObject;
 
 	public function __construct(
-		private Cache $cache,
-		private RolesRepository $rolesRepository,
-		private ResourcesRepository $resourcesRepository,
-		private PermissionsViewRepository $permissionsViewRepository,
+		private readonly Cache $cache,
+		private readonly RolesRepository $rolesRepository,
+		private readonly ResourcesRepository $resourcesRepository,
+		private readonly PermissionsViewRepository $permissionsViewRepository,
 	) {
 	}
 

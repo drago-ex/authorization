@@ -10,6 +10,9 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control\Privileges;
 
 use App\Authorization\Control\ComponentTemplate;
+use Contributte\DataGrid\Column\Action\Confirmation\StringConfirmation;
+use Contributte\DataGrid\DataGrid;
+use Contributte\DataGrid\Exception\DataGridException;
 use Dibi\Exception;
 use Drago\Application\UI\Alert;
 use Drago\Attr\AttributeDetectionException;
@@ -24,9 +27,6 @@ use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
 use Nette\SmartObject;
 use Throwable;
-use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
-use Ublaboo\DataGrid\DataGrid;
-use Ublaboo\DataGrid\Exception\DataGridException;
 
 
 /**
@@ -41,8 +41,8 @@ class PrivilegesControl extends Component implements Base
 
 
 	public function __construct(
-		private Cache $cache,
-		private PrivilegesRepository $privilegesRepository,
+		private readonly Cache $cache,
+		private readonly PrivilegesRepository $privilegesRepository,
 	) {
 	}
 

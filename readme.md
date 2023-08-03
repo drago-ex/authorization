@@ -29,7 +29,7 @@ extensions:
 ```php
 use Drago\Authorization\Authorization
 
-// Add molude for redirect to login.
+// Add module for redirect to sign in.
 private string $module = ':Module:Presenter:';
 ```
 

@@ -10,6 +10,10 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control\Permissions;
 
 use App\Authorization\Control\ComponentTemplate;
+use Contributte\DataGrid\Column\Action\Confirmation\StringConfirmation;
+use Contributte\DataGrid\DataGrid;
+use Contributte\DataGrid\Exception\DataGridColumnStatusException;
+use Contributte\DataGrid\Exception\DataGridException;
 use Dibi\Exception;
 use Drago\Application\UI\Alert;
 use Drago\Attr\AttributeDetectionException;
@@ -29,10 +33,6 @@ use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
 use Nette\SmartObject;
 use Throwable;
-use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
-use Ublaboo\DataGrid\DataGrid;
-use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
-use Ublaboo\DataGrid\Exception\DataGridException;
 
 
 /**
@@ -47,13 +47,13 @@ class PermissionsControl extends Component implements Base
 
 
 	public function __construct(
-		private Cache $cache,
-		private RolesRepository $rolesRepository,
-		private ResourcesRepository $resourcesRepository,
-		private PrivilegesRepository $privilegesRepository,
-		private PermissionsRepository $permissionsRepository,
-		private PermissionsViewRepository $permissionsViewRepository,
-		private PermissionsRolesViewRepository $permissionsRolesViewRepository,
+		private readonly Cache $cache,
+		private readonly RolesRepository $rolesRepository,
+		private readonly ResourcesRepository $resourcesRepository,
+		private readonly PrivilegesRepository $privilegesRepository,
+		private readonly PermissionsRepository $permissionsRepository,
+		private readonly PermissionsViewRepository $permissionsViewRepository,
+		private readonly PermissionsRolesViewRepository $permissionsRolesViewRepository,
 	) {
 	}
 
@@ -230,7 +230,7 @@ class PermissionsControl extends Component implements Base
 	 * @throws Exception
 	 * @throws AttributeDetectionException
 	 */
-	public function statusChange(string $id, string $value)
+	public function statusChange(string $id, string $value): void
 	{
 		$id = (int) $id;
 		$value = (int) $value;

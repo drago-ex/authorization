@@ -24,11 +24,11 @@ class Panel implements IBarPanel
 	use SmartObject;
 
 	public function __construct(
-		private User $user,
-		private Permission $permission,
-		private Request $request,
-		private Application $application,
-		private PanelCookie $panelCookie,
+		private readonly User $user,
+		private readonly Permission $permission,
+		private readonly Request $request,
+		private readonly Application $application,
+		private readonly PanelCookie $panelCookie,
 	) {
 		if (Debugger::$productionMode === false) {
 			if ($this->request->getQuery('roleSwitchForm') === '1') {

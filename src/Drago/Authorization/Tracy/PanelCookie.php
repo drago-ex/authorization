@@ -15,7 +15,7 @@ class PanelCookie
 
 
 	public function __construct(
-		private Session $session,
+		private readonly Session $session,
 	) {
 		$this->sessionSection = $this->session
 			->getSection(self::class);

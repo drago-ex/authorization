@@ -10,6 +10,9 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control\Roles;
 
 use App\Authorization\Control\ComponentTemplate;
+use Contributte\DataGrid\Column\Action\Confirmation\StringConfirmation;
+use Contributte\DataGrid\DataGrid;
+use Contributte\DataGrid\Exception\DataGridException;
 use Dibi\Exception;
 use Dibi\Row;
 use Drago\Application\UI\Alert;
@@ -26,9 +29,6 @@ use Nette\Caching\Cache;
 use Nette\Forms\Controls\SelectBox;
 use Nette\SmartObject;
 use Throwable;
-use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
-use Ublaboo\DataGrid\DataGrid;
-use Ublaboo\DataGrid\Exception\DataGridException;
 
 
 /**
@@ -43,8 +43,8 @@ class RolesControl extends Component implements Base
 
 
 	public function __construct(
-		private Cache $cache,
-		private RolesRepository $rolesRepository,
+		private readonly Cache $cache,
+		private readonly RolesRepository $rolesRepository,
 	) {
 	}
 
