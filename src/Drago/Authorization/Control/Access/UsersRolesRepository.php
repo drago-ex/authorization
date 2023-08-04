@@ -30,13 +30,13 @@ class UsersRolesRepository
 	}
 
 
-	/**
-	 * @return UsersRolesEntity[]
-	 * @throws Exception
-	 * @throws AttributeDetectionException
-	 */
+    /**
+     * @return array[]|UsersRolesEntity[]
+     * @throws AttributeDetectionException
+     * @throws Exception
+     */
 	public function getAllUserRoles(): array
-	{
+    {
 		return $this->all()->execute()
 			->setRowClass(UsersRolesEntity::class)
 			->fetchAll();
@@ -44,7 +44,7 @@ class UsersRolesRepository
 
 
 	/**
-	 * @return UsersRolesEntity[]
+	 * @return array[]|UsersRolesEntity[]
 	 * @throws Exception
 	 * @throws AttributeDetectionException
 	 */

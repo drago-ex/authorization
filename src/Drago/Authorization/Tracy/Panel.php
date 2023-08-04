@@ -24,10 +24,10 @@ class Panel implements IBarPanel
 	use SmartObject;
 
 	public function __construct(
+        protected Application $application,
 		private readonly User $user,
 		private readonly Permission $permission,
 		private readonly Request $request,
-		private readonly Application $application,
 		private readonly PanelCookie $panelCookie,
 	) {
 		if (Debugger::$productionMode === false) {

@@ -30,7 +30,7 @@ class PermissionsRolesViewRepository
 
 
 	/**
-	 * @return PermissionsRolesViewEntity[]
+	 * @return array[]|PermissionsRolesViewEntity[]
 	 * @throws Exception
 	 * @throws AttributeDetectionException
 	 */

@@ -45,7 +45,7 @@ class UsersRolesViewRepository
 
 
 	/**
-	 * @return UsersRolesViewEntity[]
+	 * @return array[]|UsersRolesViewEntity[]
 	 * @throws Exception
 	 * @throws AttributeDetectionException
 	 */
@@ -59,7 +59,7 @@ class UsersRolesViewRepository
 
 
 	/**
-	 * @return UsersRolesViewEntity[]
+	 * @return array[]|UsersRolesViewEntity[]
 	 * @throws Exception
 	 * @throws AttributeDetectionException
 	 */
