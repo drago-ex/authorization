@@ -36,7 +36,7 @@ class UsersRolesRepository
 	 * @throws Exception
 	 */
 	public function getAllUserRoles(): array
-    {
+	{
 		return $this->all()->execute()
 			->setRowClass(UsersRolesEntity::class)
 			->fetchAll();
