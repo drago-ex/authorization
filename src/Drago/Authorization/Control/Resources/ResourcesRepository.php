@@ -40,6 +40,19 @@ class ResourcesRepository
 
 
 	/**
+	 * @return array[]|ResourcesEntity[]
+	 * @throws AttributeDetectionException
+	 * @throws Exception
+	 */
+	public function getAllResources(): array
+	{
+		return $this->getAll()->execute()
+			->setRowClass(ResourcesEntity::class)
+			->fetchAll();
+	}
+
+
+	/**
 	 * @throws AttributeDetectionException
 	 * @throws Exception
 	 */

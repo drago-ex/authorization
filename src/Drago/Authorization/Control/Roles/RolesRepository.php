@@ -45,6 +45,19 @@ class RolesRepository
 
 
 	/**
+	 * @return array[]|RolesEntity[]
+	 * @throws AttributeDetectionException
+	 * @throws Exception
+	 */
+	public function getAllRoles(): array
+	{
+		return $this->getAll()->execute()
+			->setRowClass(RolesEntity::class)
+			->fetchAll();
+	}
+
+
+	/**
 	 * @throws Exception
 	 * @throws AttributeDetectionException
 	 */
