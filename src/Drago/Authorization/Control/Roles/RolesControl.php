@@ -10,9 +10,9 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control\Roles;
 
 use App\Authorization\Control\ComponentTemplate;
-use Contributte\DataGrid\Column\Action\Confirmation\StringConfirmation;
-use Contributte\DataGrid\DataGrid;
-use Contributte\DataGrid\Exception\DataGridException;
+use Contributte\Datagrid\Column\Action\Confirmation\StringConfirmation;
+use Contributte\Datagrid\Datagrid;
+use Contributte\Datagrid\Exception\DatagridException;
 use Dibi\Exception;
 use Dibi\Row;
 use Drago\Application\UI\Alert;
@@ -264,7 +264,7 @@ class RolesControl extends Component implements Base
 			->setFilterText();
 
 		$grid->addColumnText('parent', 'Parent')
-			->setRenderer(fn(RolesEntity|Row $item) => $this->rolesRepository->findByParent($item->parent)->name ?? null)->setFilterText();
+			->setRenderer(fn(RolesEntity $item) => $this->rolesRepository->findByParent($item->parent)->name ?? null)->setFilterText();
 
 		$grid->addAction('edit', 'Edit')
 			->setClass('btn btn-xs btn-primary text-white ajax');

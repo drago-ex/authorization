@@ -10,9 +10,9 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control\Access;
 
 use App\Authorization\Control\ComponentTemplate;
-use Contributte\DataGrid\Column\Action\Confirmation\StringConfirmation;
-use Contributte\DataGrid\DataGrid;
-use Contributte\DataGrid\Exception\DataGridException;
+use Contributte\Datagrid\Column\Action\Confirmation\StringConfirmation;
+use Contributte\Datagrid\Datagrid;
+use Contributte\Datagrid\Exception\DatagridException;
 use Dibi\Exception;
 use Drago\Application\UI\Alert;
 use Drago\Attr\AttributeDetectionException;
