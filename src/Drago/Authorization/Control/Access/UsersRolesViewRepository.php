@@ -37,7 +37,7 @@ class UsersRolesViewRepository
 	public function getAllUsers(): Fluent
 	{
 		return $this->db
-			->select('user_id, username, group_concat(role separator ", ") role')
+			->select('user_id, username, LISTAGG(role, ", ") role')
 			->from($this->getTable())->groupBy('user_id, username')
 			->having('SUM(CASE WHEN role = ? THEN 1 ELSE 0 END) = ?', Conf::ROLE_ADMIN, 0)
 			->orderBy(UsersRolesViewEntity::USER_ID, 'asc');
