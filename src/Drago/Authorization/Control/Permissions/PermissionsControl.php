@@ -242,7 +242,7 @@ class PermissionsControl extends Component implements Base
 			$entity->id = $id;
 			$entity->allowed = $value;
 
-			$this->permissionsRepository->put($entity->toArray());
+			$this->permissionsRepository->put($entity->toArrayUpper());
 			$message = 'Authorization has been changed.';
 			$this->getPresenter()->flashMessage($message, Alert::INFO);
 
