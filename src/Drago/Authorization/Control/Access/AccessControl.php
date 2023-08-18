@@ -271,7 +271,8 @@ class AccessControl extends Component implements Base
 	protected function createComponentGrid($name): DataGrid
 	{
 		$grid = new DataGrid($this, $name);
-		$data = new FluentWithClassDataSource($this->usersRolesViewRepository->getAllUsers(), 'USER_ID', UsersRolesViewEntity::class);
+		$data = new FluentWithClassDataSource($this->usersRolesViewRepository->getAllUsers(), 'user_id', UsersRolesViewEntity::class);
+		$grid->setPrimaryKey('user_id');
 		$grid->setDataSource($data);
 
 		if ($this->translator) {

@@ -230,7 +230,7 @@ class PrivilegesControl extends Component implements Base
 	protected function createComponentGrid($name): DataGrid
 	{
 		$grid = new DataGrid($this, $name);
-		$data = new FluentWithClassDataSource($this->privilegesRepository->getAll(), 'ID', PrivilegesEntity::class);
+		$data = new FluentWithClassDataSource($this->privilegesRepository->getAll(), 'id', PrivilegesEntity::class);
 		$grid->setDataSource($data);
 
 		if ($this->translator) {

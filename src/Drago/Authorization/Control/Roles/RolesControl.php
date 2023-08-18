@@ -251,7 +251,7 @@ class RolesControl extends Component implements Base
 	protected function createComponentGrid($name): DataGrid
 	{
 		$grid = new DataGrid($this, $name);
-		$data = new FluentWithClassDataSource($this->rolesRepository->getAll(), 'ID', RolesEntity::class);
+		$data = new FluentWithClassDataSource($this->rolesRepository->getAll(), 'id', RolesEntity::class);
 		$grid->setDataSource($data);
 
 		if ($this->translator) {
