@@ -20,6 +20,7 @@ use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
 use Drago\Authorization\Control\Factory;
 use Drago\Authorization\Control\Roles\RolesRepository;
+use Drago\Authorization\FluentWithClassDataSource;
 use Nette\Application\AbortException;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
@@ -270,8 +271,8 @@ class AccessControl extends Component implements Base
 	protected function createComponentGrid($name): DataGrid
 	{
 		$grid = new DataGrid($this, $name);
-		$grid->setPrimaryKey('user_id');
-		$grid->setDataSource($this->usersRolesViewRepository->getAllUsers());
+		$data = new FluentWithClassDataSource($this->usersRolesViewRepository->getAllUsers(), 'USER_ID', UsersRolesViewEntity::class);
+		$grid->setDataSource($data);
 
 		if ($this->translator) {
 			$grid->setTranslator($this->translator);

@@ -18,6 +18,7 @@ use Dibi\Exception;
 use Drago\Application\UI\Alert;
 use Drago\Attr\AttributeDetectionException;
 use Drago\Authorization\Conf;
+use Drago\Authorization\Control\Access\UsersRolesViewEntity;
 use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
 use Drago\Authorization\Control\Factory;
@@ -27,6 +28,7 @@ use Drago\Authorization\Control\Resources\ResourcesEntity;
 use Drago\Authorization\Control\Resources\ResourcesRepository;
 use Drago\Authorization\Control\Roles\RolesEntity;
 use Drago\Authorization\Control\Roles\RolesRepository;
+use Drago\Authorization\FluentWithClassDataSource;
 use Nette\Application\AbortException;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
@@ -260,7 +262,8 @@ class PermissionsControl extends Component implements Base
 	protected function createComponentGrid($name): DataGrid
 	{
 		$grid = new DataGrid($this, $name);
-		$grid->setDataSource($this->permissionsViewRepository->getAll());
+		$data = new FluentWithClassDataSource($this->permissionsViewRepository->getAll(), 'ID', PermissionsViewEntity::class);
+		$grid->setDataSource($data);
 
 		if ($this->translator) {
 			$grid->setTranslator($this->translator);

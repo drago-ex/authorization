@@ -20,6 +20,8 @@ use Drago\Authorization\Conf;
 use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
 use Drago\Authorization\Control\Factory;
+use Drago\Authorization\Control\Permissions\PermissionsViewEntity;
+use Drago\Authorization\FluentWithClassDataSource;
 use Drago\Authorization\NotAllowedChange;
 use Nette\Application\AbortException;
 use Nette\Application\BadRequestException;
@@ -228,7 +230,8 @@ class PrivilegesControl extends Component implements Base
 	protected function createComponentGrid($name): DataGrid
 	{
 		$grid = new DataGrid($this, $name);
-		$grid->setDataSource($this->privilegesRepository->getAll());
+		$data = new FluentWithClassDataSource($this->privilegesRepository->getAll(), 'ID', PrivilegesEntity::class);
+		$grid->setDataSource($data);
 
 		if ($this->translator) {
 			$grid->setTranslator($this->translator);

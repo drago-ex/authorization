@@ -20,6 +20,8 @@ use Drago\Authorization\Conf;
 use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
 use Drago\Authorization\Control\Factory;
+use Drago\Authorization\Control\Privileges\PrivilegesEntity;
+use Drago\Authorization\FluentWithClassDataSource;
 use Nette\Application\AbortException;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
@@ -207,7 +209,8 @@ class ResourcesControl extends Component implements Base
 	protected function createComponentGrid($name): DataGrid
 	{
 		$grid = new DataGrid($this, $name);
-		$grid->setDataSource($this->resourcesRepository->getAll());
+		$data = new FluentWithClassDataSource($this->resourcesRepository->getAll(), 'ID', ResourcesEntity::class);
+		$grid->setDataSource($data);
 
 		if ($this->translator) {
 			$grid->setTranslator($this->translator);
