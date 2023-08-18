@@ -209,7 +209,7 @@ class ResourcesControl extends Component implements Base
 	protected function createComponentGrid($name): DataGrid
 	{
 		$grid = new DataGrid($this, $name);
-		$data = new FluentWithClassDataSource($this->resourcesRepository->getAll(), 'id', ResourcesEntity::class);
+		$data = new FluentWithClassDataSource($this->resourcesRepository->getAll(), 'ID', ResourcesEntity::class);
 		$grid->setDataSource($data);
 
 		if ($this->translator) {
