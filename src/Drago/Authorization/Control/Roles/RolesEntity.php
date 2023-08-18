@@ -16,10 +16,10 @@ class RolesEntity extends Drago\Database\Entity
 {
 	use Nette\SmartObject;
 
-	public const TABLE = 'roles';
-	public const PRIMARY = 'id';
-	public const NAME = 'name';
-	public const PARENT = 'parent';
+	public const TABLE = 'ACL_ROLES';
+	public const PRIMARY = 'ID';
+	public const NAME = 'NAME';
+	public const PARENT = 'PARENT';
 
 	public ?int $id;
 	public string $name;

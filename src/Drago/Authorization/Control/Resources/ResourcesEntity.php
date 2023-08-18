@@ -16,9 +16,9 @@ class ResourcesEntity extends Drago\Database\Entity
 {
 	use Nette\SmartObject;
 
-	public const TABLE = 'resources';
-	public const PRIMARY = 'id';
-	public const NAME = 'name';
+	public const TABLE = 'ACL_RESOURCES';
+	public const PRIMARY = 'ID';
+	public const NAME = 'NAME';
 
 	public ?int $id;
 	public string $name;

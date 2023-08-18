@@ -16,12 +16,12 @@ class PermissionsEntity extends Drago\Database\Entity
 {
 	use Nette\SmartObject;
 
-	public const TABLE = 'permissions';
-	public const PRIMARY = 'id';
-	public const ROLE_ID = 'role_id';
-	public const RESOURCE_ID = 'resource_id';
-	public const PRIVILEGE_ID = 'privilege_id';
-	public const ALLOWED = 'allowed';
+	public const TABLE = 'ACL_PERMISSIONS';
+	public const PRIMARY = 'ID';
+	public const ROLE_ID = 'ROLE_ID';
+	public const RESOURCE_ID = 'RESOURCE_ID';
+	public const PRIVILEGE_ID = 'PRIVILEGE_ID';
+	public const ALLOWED = 'ALLOWED';
 
 	public ?int $id;
 	public int $role_id;

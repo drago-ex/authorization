@@ -156,7 +156,7 @@ class PermissionsControl extends Component implements Base
 
 		} catch (Throwable $e) {
 			$message = match ($e->getCode()) {
-				1062 => 'This permission is already granted.',
+				1 => 'This permission is already granted.',
 				default => 'Unknown status code.',
 			};
 

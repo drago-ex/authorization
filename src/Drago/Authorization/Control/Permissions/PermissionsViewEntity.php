@@ -16,12 +16,12 @@ class PermissionsViewEntity extends Drago\Database\Entity
 {
 	use Nette\SmartObject;
 
-	public const TABLE = 'permissions_view';
-	public const ID = 'id';
-	public const RESOURCE = 'resource';
-	public const PRIVILEGE = 'privilege';
-	public const ROLE = 'role';
-	public const ALLOWED = 'allowed';
+	public const TABLE = 'ACL_PERMISSIONS_VIEW';
+	public const ID = 'ID';
+	public const RESOURCE = 'RESOURCE';
+	public const PRIVILEGE = 'PRIVILEGE';
+	public const ROLE = 'ROLE';
+	public const ALLOWED = 'ALLOWED';
 
 	public int $id;
 	public ?string $resource = null;

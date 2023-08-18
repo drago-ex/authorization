@@ -117,7 +117,7 @@ class ResourcesControl extends Component implements Base
 
 		} catch (Throwable $e) {
 			$message = match ($e->getCode()) {
-				1062 => 'This resource already exists.',
+				1 => 'This resource already exists.',
 				default => 'Unknown status code.',
 			};
 
@@ -186,7 +186,7 @@ class ResourcesControl extends Component implements Base
 
 		} catch (Throwable $e) {
 			$message = match ($e->getCode()) {
-				1451 => 'The resource can not be deleted, you must first delete the records that are associated with it',
+				2292 => 'The resource can not be deleted, you must first delete the records that are associated with it',
 				default => 'Unknown status code.',
 			};
 

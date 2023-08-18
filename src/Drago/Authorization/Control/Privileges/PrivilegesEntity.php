@@ -16,9 +16,9 @@ class PrivilegesEntity extends Drago\Database\Entity
 {
 	use Nette\SmartObject;
 
-	public const TABLE = 'privileges';
-	public const PRIMARY = 'id';
-	public const NAME = 'name';
+	public const TABLE = 'ACL_PRIVILEGES';
+	public const PRIMARY = 'ID';
+	public const NAME = 'NAME';
 
 	public ?int $id;
 	public string $name;
