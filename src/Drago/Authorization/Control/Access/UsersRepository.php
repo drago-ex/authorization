@@ -35,8 +35,8 @@ class UsersRepository
 	 */
 	public function getAllUsers(): array
 	{
-		return $this->db->select('u.id, u.username')->from($this->getTable())->as('u')
-			->leftJoin(UsersRolesViewEntity::TABLE)->as('r')->on('u.id = r.user_id')
+		return $this->db->select('u.id, u.username')->from($this->getTable(), 'u')
+			->leftJoin(UsersRolesViewEntity::TABLE, 'r')->on('u.id = r.user_id')
 			->groupBy('u.id, u.username')
 			->having('SUM(CASE WHEN r.role = ? THEN 1 ELSE 0 END) = ?', Conf::ROLE_ADMIN, 0)
 			->fetchPairs(AccessEntity::PRIMARY, AccessEntity::USERNAME);
