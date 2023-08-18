@@ -12,7 +12,7 @@ use Drago;
 use Nette;
 
 
-class PrivilegesEntity extends Drago\Database\Entity
+class PrivilegesEntity extends Drago\Database\EntityOracle
 {
 	use Nette\SmartObject;
 
