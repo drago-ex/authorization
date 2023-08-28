@@ -19,7 +19,7 @@ interface Base
 	public function getUniqueComponent(string $type): string;
 
 	/** Open modal or offCanvas. */
-	public function handleClickOpenComponent(): void;
+	public function handleClickOpen(): void;
 
 	/** Signal edit. */
 	public function handleEdit(int $id): void;

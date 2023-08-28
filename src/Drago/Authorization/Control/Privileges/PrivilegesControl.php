@@ -65,7 +65,7 @@ class PrivilegesControl extends Component implements Base
 	}
 
 
-	public function handleClickOpenComponent(): void
+	public function handleClickOpen(): void
 	{
 		if ($this->isAjax()) {
 			$component = $this->getUniqueComponent($this->openComponentType);
