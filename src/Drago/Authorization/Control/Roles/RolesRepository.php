@@ -140,6 +140,6 @@ class RolesRepository
 	 */
 	public function save(RolesData $data): Result|int|null
 	{
-		return $this->put($data->toArray());
+		return $this->put($data->toArrayUpper());
 	}
 }
