@@ -74,7 +74,7 @@ class UsersRolesRepository
 	 */
 	public function insert(UsersRolesEntity $entity): Result|int|null
 	{
-		return $this->db->insert(UsersRolesEntity::TABLE, $entity->toArray())
+		return $this->db->insert(UsersRolesEntity::TABLE, $entity->toArrayUpper())
 			->execute();
 	}
 
