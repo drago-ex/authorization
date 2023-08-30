@@ -70,6 +70,6 @@ class ResourcesRepository
 	 */
 	public function save(ResourcesData $data): Result|int|null
 	{
-		return $this->put($data->toArray());
+		return $this->put($data->toArrayUpper());
 	}
 }
