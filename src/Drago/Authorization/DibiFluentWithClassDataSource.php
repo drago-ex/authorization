@@ -7,6 +7,7 @@ namespace Drago\Authorization;
 use Contributte\Datagrid\DataSource\DibiFluentDataSource;
 use Contributte\Datagrid\DataSource\IDataSource;
 use Contributte\Datagrid\Filter\FilterText;
+use Contributte\Datagrid\Utils\Sorting;
 use Dibi\Exception;
 use Dibi\Fluent;
 
@@ -73,5 +74,12 @@ class FluentWithClassDataSource extends DibiFluentDataSource
 		} else {
 			$this->dataSource->where($or);
 		}
+	}
+
+
+	public function sort(Sorting $sorting): IDataSource
+	{
+		$sorting = new Sorting(array_change_key_case($sorting->getSort(), CASE_UPPER), $sorting->getSortCallback());
+		return parent::sort($sorting);
 	}
 }
