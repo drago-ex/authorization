@@ -16,9 +16,11 @@ use Contributte\Datagrid\Exception\DatagridException;
 use Dibi\Exception;
 use Drago\Application\UI\Alert;
 use Drago\Attr\AttributeDetectionException;
+use Drago\Authorization\Conf;
 use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
 use Drago\Authorization\Control\Factory;
+use Drago\Authorization\Control\Roles\RolesEntity;
 use Drago\Authorization\Control\Roles\RolesRepository;
 use Nette\Application\AbortException;
 use Nette\Application\BadRequestException;
@@ -90,7 +92,10 @@ class AccessControl extends Component implements Base
 			->setPrompt('Select user')
 			->setRequired();
 
-		$roles = $this->rolesRepository->getRoles();
+		$roles = $this->rolesRepository->getRolesBuild()
+			->and(RolesEntity::NAME, '!= ?', Conf::ROLE_GUEST)
+			->fetchPairs(RolesEntity::PRIMARY, RolesEntity::NAME);
+
 		$form->addMultiSelect(UsersRolesData::ROLE_ID, 'Select roles', $roles)
 			->setRequired();
 

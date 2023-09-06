@@ -84,9 +84,19 @@ class RolesRepository
 	/**
 	 * @throws AttributeDetectionException
 	 */
+	public function getRolesBuild(): Fluent
+	{
+		return $this->all()
+			->where(RolesEntity::NAME, ' != ?', Conf::ROLE_ADMIN);
+	}
+
+
+	/**
+	 * @throws AttributeDetectionException
+	 */
 	public function getRoles(): array
 	{
-		return $this->all()->where(RolesEntity::NAME, ' != ?', Conf::ROLE_ADMIN)
+		return $this->getRolesBuild()
 			->fetchPairs(RolesEntity::PRIMARY, RolesEntity::NAME);
 	}
 
