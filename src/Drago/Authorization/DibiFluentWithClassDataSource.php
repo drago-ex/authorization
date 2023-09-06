@@ -6,6 +6,7 @@ namespace Drago\Authorization;
 
 use Contributte\Datagrid\DataSource\DibiFluentDataSource;
 use Contributte\Datagrid\DataSource\IDataSource;
+use Contributte\Datagrid\Filter\FilterSelect;
 use Contributte\Datagrid\Filter\FilterText;
 use Contributte\Datagrid\Utils\Sorting;
 use Dibi\Exception;
