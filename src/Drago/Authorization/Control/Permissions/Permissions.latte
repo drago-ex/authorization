@@ -1,8 +1,10 @@
+{varType Drago\Authorization\Control\Permissions\PermissionsControl $control}
+
 <h5 class="border-bottom pb-2">
 	{_'Edit or add permissions'}
 </h5>
 
-{snippet permissions}
+{snippet $control->snippetFactory}
 	<form n:name="factory" class="row g-3 ajax" data-naja-history="off">
 		<ul n:if="$form->hasErrors()" class="errors">
 			<li n:foreach="$form->errors as $error">{_$error}</li>
