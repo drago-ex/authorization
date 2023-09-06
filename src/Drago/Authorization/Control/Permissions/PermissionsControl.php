@@ -272,6 +272,7 @@ class PermissionsControl extends Component implements Base
 
 		$roles = $this->rolesRepository->getRolesPairs();
 		$grid->addColumnText('role', 'Role')
+			->setSortable()
 			->setFilterSelect(array_merge([
 				null => $this->translator
 					? $this->translate('All')
