@@ -279,12 +279,16 @@ class PermissionsControl extends Component implements Base
 			], $roles));
 
 		$grid->addColumnText('resource', 'Resources')
+			->setSortable()
 			->setFilterText();
 
 		$grid->addColumnText('privilege', 'Privileges')
+			->setSortable()
 			->setFilterText();
 
-		$expirationCol = $grid->addColumnStatus('allowed', 'Permission');
+		$expirationCol = $grid->addColumnStatus('allowed', 'Permission')
+			->setSortable();
+
 		$expirationCol->setCaret(false)
 			->addOption(0, 'Denied')
 			->setClass('btn-warning')

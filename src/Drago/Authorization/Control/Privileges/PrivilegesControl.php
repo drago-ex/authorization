@@ -239,6 +239,7 @@ class PrivilegesControl extends Component implements Base
 		}
 
 		$grid->addColumnText('name', 'Name')
+			->setSortable()
 			->setFilterText();
 
 		$grid->addAction('edit', 'Edit')

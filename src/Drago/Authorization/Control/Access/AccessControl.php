@@ -282,9 +282,11 @@ class AccessControl extends Component implements Base
 		}
 
 		$grid->addColumnText('username', 'Users')
+			->setSortable()
 			->setFilterText();
 
 		$grid->addColumnText('role', 'Roles')
+			->setSortable()
 			->setFilterText();
 
 		$grid->addAction('edit', 'Edit', 'edit!', ['id' => 'user_id'])
