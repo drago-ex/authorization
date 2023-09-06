@@ -82,4 +82,10 @@ class FluentWithClassDataSource extends DibiFluentDataSource
 		$sorting = new Sorting(array_change_key_case($sorting->getSort(), CASE_UPPER), $sorting->getSortCallback());
 		return parent::sort($sorting);
 	}
+
+
+	protected function applyFilterSelect(FilterSelect $filter): void
+	{
+		$this->dataSource->where(array_change_key_case($filter->getCondition(), CASE_UPPER));
+	}
 }
