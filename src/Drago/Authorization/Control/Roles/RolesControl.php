@@ -116,7 +116,7 @@ class RolesControl extends Component implements Base
 	{
 		try {
 			$this->rolesRepository->save($data);
-			$this->cache->remove(Conf::CACHE);
+			$this->cache->remove(Conf::cache);
 
 			$parent = $this['factory']['parent'];
 			if ($parent instanceof SelectBox) {
@@ -214,7 +214,7 @@ class RolesControl extends Component implements Base
 			$parent = $this->rolesRepository->findParent($items->id);
 			if (!$parent && $this->rolesRepository->isAllowed($items->name)) {
 				$this->rolesRepository->remove($id);
-				$this->cache->remove(Conf::CACHE);
+				$this->cache->remove(Conf::cache);
 				$this->getPresenter()->flashMessage('Role deleted.', Alert::DANGER);
 
 				if ($this->isAjax()) {

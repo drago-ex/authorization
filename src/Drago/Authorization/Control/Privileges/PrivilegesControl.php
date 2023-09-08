@@ -98,7 +98,7 @@ class PrivilegesControl extends Component implements Base
 	{
 		try {
 			$this->privilegesRepository->save($data);
-			$this->cache->remove(Conf::CACHE);
+			$this->cache->remove(Conf::cache);
 
 			$message = $data->id ? 'Privilege updated.' : 'Privilege inserted.';
 			$this->getPresenter()->flashMessage($message, Alert::INFO);
@@ -189,7 +189,7 @@ class PrivilegesControl extends Component implements Base
 		try {
 			if ($this->privilegesRepository->isAllowed($items->name)) {
 				$this->privilegesRepository->remove($items->id);
-				$this->cache->remove(Conf::CACHE);
+				$this->cache->remove(Conf::cache);
 				$this->getPresenter()->flashMessage(
 					'Privilege deleted.',
 					Alert::DANGER,

@@ -39,7 +39,7 @@ class PrivilegesRepository
 	public function getAll(): Fluent
 	{
 		return $this->all()
-			->where(PrivilegesEntity::name, '!= ?', Conf::PrivilegeAll)
+			->where(PrivilegesEntity::name, '!= ?', Conf::privilegeAll)
 			->orderBy(PrivilegesEntity::name, 'asc');
 	}
 
@@ -61,7 +61,7 @@ class PrivilegesRepository
 	 */
 	public function isAllowed(string $privilege): bool
 	{
-		if ($privilege === Conf::PrivilegeAll) {
+		if ($privilege === Conf::privilegeAll) {
 			throw new NotAllowedChange(
 				'The record is not allowed to be edited or deleted.',
 				1001,

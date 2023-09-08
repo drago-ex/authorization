@@ -91,7 +91,7 @@ class PermissionsControl extends Component implements Base
 	{
 		$form = $this->create();
 		$roles = $this->rolesRepository->all()
-			->where(RolesEntity::name, '!= ?', Conf::RoleAdmin)
+			->where(RolesEntity::name, '!= ?', Conf::roleAdmin)
 			->fetchPairs(RolesEntity::id, RolesEntity::name);
 
 		$form->addSelect(PermissionsEntity::roleId, 'Role', $roles)
@@ -138,7 +138,7 @@ class PermissionsControl extends Component implements Base
 	{
 		try {
 			$this->permissionsRepository->save($data);
-			$this->cache->remove(Conf::CACHE);
+			$this->cache->remove(Conf::cache);
 
 			$message = $data->id ? 'Permission was updated.' : 'Permission added.';
 			$this->getPresenter()->flashMessage($message, Alert::INFO);
@@ -210,7 +210,7 @@ class PermissionsControl extends Component implements Base
 		$items ?: $this->error();
 
 		$this->permissionsRepository->remove($items->id);
-		$this->cache->remove(Conf::CACHE);
+		$this->cache->remove(Conf::cache);
 		$this->getPresenter()->flashMessage(
 			'Permission removed.',
 			Alert::DANGER,

@@ -37,7 +37,7 @@ class PermissionsViewRepository
 	public function getAll(): Fluent
 	{
 		return $this->all()
-			->where(PermissionsViewEntity::role, '!= ?', Conf::RoleAdmin);
+			->where(PermissionsViewEntity::role, '!= ?', Conf::roleAdmin);
 	}
 
 

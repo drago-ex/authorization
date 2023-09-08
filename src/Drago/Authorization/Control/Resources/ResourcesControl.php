@@ -97,7 +97,7 @@ class ResourcesControl extends Component implements Base
 	{
 		try {
 			$this->resourcesRepository->save($data);
-			$this->cache->remove(Conf::CACHE);
+			$this->cache->remove(Conf::cache);
 
 			$message = $data->id ? 'Resource updated.' : 'Resource inserted.';
 			$this->getPresenter()->flashMessage($message, Alert::INFO);
@@ -170,7 +170,7 @@ class ResourcesControl extends Component implements Base
 
 		try {
 			$this->resourcesRepository->remove($items->id);
-			$this->cache->remove(Conf::CACHE);
+			$this->cache->remove(Conf::cache);
 			$this->getPresenter()->flashMessage(
 				'Resource deleted.',
 				Alert::DANGER,

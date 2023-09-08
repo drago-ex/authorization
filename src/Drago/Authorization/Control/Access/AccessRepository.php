@@ -38,7 +38,7 @@ class AccessRepository
 		return $this->db->select('u.id, u.username')->from($this->getTable())->as('u')
 			->leftJoin(AccessRolesViewEntity::table)->as('r')->on('u.id = r.user_id')
 			->groupBy('u.id, u.username')
-			->having('sum(case when r.role = ? then 1 else 0 end) = ?', Conf::RoleAdmin, 0)
+			->having('sum(case when r.role = ? then 1 else 0 end) = ?', Conf::roleAdmin, 0)
 			->fetchPairs(AccessEntity::id, AccessEntity::username);
 	}
 
