@@ -95,10 +95,10 @@ class AccessControl extends Component implements Base
 			->setRequired();
 
 		$roles = $this->rolesRepository->all()
-			->and(RolesEntity::name, '!= ?', Conf::roleGuest);
+			->where(RolesEntity::name, '!= ?', Conf::roleGuest);
 
 		if (!$this->user->isInRole(Conf::roleAdmin)) {
-			$roles->where(RolesEntity::name, '!= ?', Conf::roleAdmin);
+			$roles->and(RolesEntity::name, '!= ?', Conf::roleAdmin);
 		}
 
 		$roles = $roles->fetchPairs(RolesEntity::id, RolesEntity::name);
