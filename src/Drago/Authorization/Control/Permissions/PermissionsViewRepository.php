@@ -19,7 +19,7 @@ use Drago\Database\Repository;
 use Nette\SmartObject;
 
 
-#[Table(PermissionsViewEntity::TABLE)]
+#[Table(PermissionsViewEntity::table)]
 class PermissionsViewRepository
 {
 	use SmartObject;
@@ -37,7 +37,7 @@ class PermissionsViewRepository
 	public function getAll(): Fluent
 	{
 		return $this->all()
-			->where(PermissionsViewEntity::ROLE, '!= ?', Conf::ROLE_ADMIN);
+			->where(PermissionsViewEntity::role, '!= ?', Conf::RoleAdmin);
 	}
 
 

@@ -12,13 +12,11 @@ use Drago;
 use Nette;
 
 
-class UsersRolesData extends Drago\Utils\ExtraArrayHash
+class AccessRolesData extends Drago\Utils\ExtraArrayHash
 {
 	use Nette\SmartObject;
 
-	public const ROLE_ID = 'role_id';
-	public const USER_ID = 'user_id';
-	public const ID = 'id';
+	public const id = 'id';
 
 	public array $role_id;
 	public ?int $user_id;

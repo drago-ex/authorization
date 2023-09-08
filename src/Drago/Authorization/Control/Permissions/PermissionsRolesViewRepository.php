@@ -17,7 +17,7 @@ use Drago\Database\Repository;
 use Nette\SmartObject;
 
 
-#[Table(PermissionsRolesViewEntity::TABLE)]
+#[Table(PermissionsRolesViewEntity::table)]
 class PermissionsRolesViewRepository
 {
 	use SmartObject;

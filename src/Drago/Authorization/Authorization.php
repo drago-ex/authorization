@@ -13,6 +13,9 @@ use Nette\Application\UI\Presenter;
 use Nette\Security\User;
 
 
+/**
+ * @property-read string $loginLink
+ */
 trait Authorization
 {
 	/**
@@ -34,7 +37,7 @@ trait Authorization
 
 			if (!$user->isAllowed($presenter->getName(), $signal)) {
 				if (!$user->isLoggedIn()) {
-					$presenter->redirect($this->module, [
+					$presenter->redirect($this->loginLink, [
 						'backlink' => $presenter->storeRequest(),
 					]);
 				} else {

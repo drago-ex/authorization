@@ -25,6 +25,7 @@ use Drago\Authorization\Control\Roles\RolesRepository;
 use Nette\Application\AbortException;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
+use Nette\Security\User;
 use Nette\SmartObject;
 use Throwable;
 
@@ -41,10 +42,11 @@ class AccessControl extends Component implements Base
 
 
 	public function __construct(
-		private readonly UsersRepository $usersRepository,
-		private readonly UsersRolesRepository $usersRolesRepository,
-		private readonly UsersRolesViewRepository $usersRolesViewRepository,
+		private readonly AccessRepository $usersRepository,
+		private readonly AccessRolesRepository $usersRolesRepository,
+		private readonly AccessRolesViewRepository $usersRolesViewRepository,
 		private readonly RolesRepository $rolesRepository,
+		private readonly User $user,
 	) {
 	}
 
@@ -88,18 +90,22 @@ class AccessControl extends Component implements Base
 			$user = $this->usersRepository->getUserById($id);
 		}
 
-		$form->addSelect(UsersRolesData::USER_ID, 'User', $user ?? $users)
+		$form->addSelect(AccessRolesEntity::userId, 'User', $user ?? $users)
 			->setPrompt('Select user')
 			->setRequired();
 
-		$roles = $this->rolesRepository->getRolesBuild()
-			->and(RolesEntity::NAME, '!= ?', Conf::ROLE_GUEST)
-			->fetchPairs(RolesEntity::PRIMARY, RolesEntity::NAME);
+		$roles = $this->rolesRepository->all()
+			->and(RolesEntity::name, '!= ?', Conf::RoleGuest);
 
-		$form->addMultiSelect(UsersRolesData::ROLE_ID, 'Select roles', $roles)
+		if (!$this->user->isInRole(Conf::RoleAdmin)) {
+			$roles->where(RolesEntity::name, '!= ?', Conf::RoleAdmin);
+		}
+
+		$roles = $roles->fetchPairs(RolesEntity::id, RolesEntity::name);
+		$form->addMultiSelect(AccessRolesEntity::roleId, 'Select roles', $roles)
 			->setRequired();
 
-		$form->addHidden(UsersRolesData::ID)
+		$form->addHidden(AccessRolesData::id)
 			->addRule($form::INTEGER)
 			->setNullable();
 
@@ -112,11 +118,11 @@ class AccessControl extends Component implements Base
 	/**
 	 * @throws AbortException
 	 */
-	public function success(Form $form, UsersRolesData $data): void
+	public function success(Form $form, AccessRolesData $data): void
 	{
 		try {
 			if (!$data->id) {
-				$entity = new UsersRolesEntity;
+				$entity = new AccessRolesEntity;
 				$entity->user_id = $data->user_id;
 				foreach ($data->role_id as $item) {
 					$entity->role_id = $item;
@@ -133,7 +139,7 @@ class AccessControl extends Component implements Base
 				$insertRoles = array_diff($data->role_id, $roleList);
 				$deleteRoles = array_diff($roleList, $data->role_id);
 				if (count($insertRoles)) {
-					$entity = new UsersRolesEntity;
+					$entity = new AccessRolesEntity;
 					$entity->user_id = $data->user_id;
 					foreach ($insertRoles as $role) {
 						$entity->role_id = $role;
@@ -143,7 +149,7 @@ class AccessControl extends Component implements Base
 
 				if (count($deleteRoles)) {
 					$findRoles = $this->usersRolesRepository->getUserRoles($data->id);
-					$entity = new UsersRolesEntity;
+					$entity = new AccessRolesEntity;
 					foreach ($deleteRoles as $roleForDelete) {
 						foreach ($findRoles as $arr) {
 							if ($arr->role_id === $roleForDelete) {
@@ -199,7 +205,7 @@ class AccessControl extends Component implements Base
 
 		$userId = [];
 		foreach ($items as $item) {
-			$userId[UsersRolesData::USER_ID] = $item->user_id;
+			$userId[AccessRolesEntity::userId] = $item->user_id;
 		}
 
 		$roleId = [];
@@ -207,11 +213,11 @@ class AccessControl extends Component implements Base
 			$roleId[$item->role_id] = $item->role_id;
 		}
 
-		$userId = $userId[UsersRolesData::USER_ID];
+		$userId = $userId[AccessRolesEntity::userId];
 		$records = [
-			UsersRolesData::USER_ID => $userId,
-			UsersRolesData::ROLE_ID => $roleId,
-			UsersRolesData::ID => $userId,
+			AccessRolesEntity::userId => $userId,
+			AccessRolesEntity::roleId => $roleId,
+			AccessRolesData::id => $userId,
 		];
 
 		$form = $this['factory'];
@@ -246,7 +252,7 @@ class AccessControl extends Component implements Base
 		$items ?: $this->error();
 
 		$records = $this->usersRolesRepository->getUserRoles($items->user_id);
-		$entity = new UsersRolesEntity;
+		$entity = new AccessRolesEntity;
 		foreach ($records as $record) {
 			$entity->user_id = $record->user_id;
 			$entity->role_id = $record->role_id;

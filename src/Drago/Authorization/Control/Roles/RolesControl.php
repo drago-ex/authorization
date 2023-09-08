@@ -81,7 +81,7 @@ class RolesControl extends Component implements Base
 	public function createComponentFactory(): Form
 	{
 		$form = $this->create();
-		$form->addText(RolesData::NAME, 'Role')
+		$form->addText(RolesEntity::name, 'Role')
 			->setHtmlAttribute('placeholder', 'Role name')
 			->setHtmlAttribute('autocomplete', 'off')
 			->setRequired();
@@ -95,11 +95,11 @@ class RolesControl extends Component implements Base
 			}
 		}
 
-		$form->addSelect(RolesData::PARENT, 'Parent', $roles ?? $this->rolesRepository->getRoles())
+		$form->addSelect(RolesEntity::parent, 'Parent', $roles ?? $this->rolesRepository->getRoles())
 			->setPrompt('Select parent')
 			->setRequired();
 
-		$form->addHidden(RolesData::ID)
+		$form->addHidden(RolesEntity::id)
 			->addRule($form::INTEGER)
 			->setNullable();
 

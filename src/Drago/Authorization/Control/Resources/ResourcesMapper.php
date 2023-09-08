@@ -8,12 +8,9 @@ declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Resources;
 
-use Drago;
-use Nette;
 
-
-class ResourcesData extends Drago\Utils\ExtraArrayHash
+trait ResourcesMapper
 {
-	use Nette\SmartObject;
-	use ResourcesMapper;
+	public ?int $id;
+	public string $name;
 }

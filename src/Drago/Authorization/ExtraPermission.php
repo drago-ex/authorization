@@ -56,7 +56,7 @@ class ExtraPermission
 				}
 
 				foreach ($this->permissionsViewRepository->getAllPermissions() as $row) {
-					$row->privilege = $row->privilege === Conf::PRIVILEGE_ALL
+					$row->privilege = $row->privilege === Conf::PrivilegeAll
 						? Authorizator::ALL
 						: $row->privilege;
 					$acl->{$row->allowed === 1
@@ -64,7 +64,7 @@ class ExtraPermission
 						: 'deny'} ($row->role, $row->resource, $row->privilege);
 				}
 
-				$acl->allow(Conf::ROLE_ADMIN);
+				$acl->allow(Conf::RoleAdmin);
 				$this->cache->save(Conf::CACHE, $acl);
 			}
 

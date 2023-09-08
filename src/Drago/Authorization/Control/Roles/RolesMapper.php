@@ -8,12 +8,10 @@ declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Roles;
 
-use Drago;
-use Nette;
 
-
-class RolesData extends Drago\Utils\ExtraArrayHash
+trait RolesMapper
 {
-	use Nette\SmartObject;
-	use RolesMapper;
+	public ?int $id;
+	public string $name;
+	public string|int $parent;
 }

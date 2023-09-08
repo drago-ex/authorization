@@ -18,8 +18,8 @@ use Drago\Database\Repository;
 use Nette\SmartObject;
 
 
-#[Table(UsersRolesEntity::TABLE)]
-class UsersRolesRepository
+#[Table(AccessRolesEntity::table)]
+class AccessRolesRepository
 {
 	use SmartObject;
 	use Repository;
@@ -31,28 +31,28 @@ class UsersRolesRepository
 
 
 	/**
-	 * @return array[]|UsersRolesEntity[]
+	 * @return array[]|AccessRolesEntity[]
 	 * @throws AttributeDetectionException
 	 * @throws Exception
 	 */
 	public function getAllUserRoles(): array
 	{
 		return $this->all()->execute()
-			->setRowClass(UsersRolesEntity::class)
+			->setRowClass(AccessRolesEntity::class)
 			->fetchAll();
 	}
 
 
 	/**
-	 * @return array[]|UsersRolesEntity[]
+	 * @return array[]|AccessRolesEntity[]
 	 * @throws Exception
 	 * @throws AttributeDetectionException
 	 */
 	public function getUserRoles(int $userId): array
 	{
 		return $this->all()
-			->where(UsersRolesEntity::USER_ID, '= ?', $userId)
-			->execute()->setRowClass(UsersRolesEntity::class)
+			->where(AccessRolesEntity::userId, '= ?', $userId)
+			->execute()->setRowClass(AccessRolesEntity::class)
 			->fetchAll();
 	}
 
@@ -60,11 +60,11 @@ class UsersRolesRepository
 	/**
 	 * @throws Exception
 	 */
-	public function delete(UsersRolesEntity $entity): Result|int|null
+	public function delete(AccessRolesEntity $entity): Result|int|null
 	{
-		return $this->db->delete(UsersRolesEntity::TABLE)
-			->where(UsersRolesEntity::USER_ID, '= ?', $entity->user_id)
-			->and(UsersRolesEntity::ROLE_ID, '= ?', $entity->role_id)
+		return $this->db->delete(AccessRolesEntity::table)
+			->where(AccessRolesEntity::userId, '= ?', $entity->user_id)
+			->and(AccessRolesEntity::roleId, '= ?', $entity->role_id)
 			->execute();
 	}
 
@@ -72,9 +72,9 @@ class UsersRolesRepository
 	/**
 	 * @throws Exception
 	 */
-	public function insert(UsersRolesEntity $entity): Result|int|null
+	public function insert(AccessRolesEntity $entity): Result|int|null
 	{
-		return $this->db->insert(UsersRolesEntity::TABLE, $entity->toArray())
+		return $this->db->insert(AccessRolesEntity::table, $entity->toArray())
 			->execute();
 	}
 
@@ -83,10 +83,10 @@ class UsersRolesRepository
 	 * @throws Exception
 	 * @throws AttributeDetectionException
 	 */
-	public function getRecord(int $id): array|UsersRolesEntity|null
+	public function getRecord(int $id): array|AccessRolesEntity|null
 	{
-		return $this->discover(UsersRolesEntity::USER_ID, $id)
-			->execute()->setRowClass(UsersRolesEntity::class)
+		return $this->discover(AccessRolesEntity::userId, $id)
+			->execute()->setRowClass(AccessRolesEntity::class)
 			->fetch();
 	}
 }

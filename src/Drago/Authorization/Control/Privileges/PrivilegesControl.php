@@ -76,12 +76,12 @@ class PrivilegesControl extends Component implements Base
 	protected function createComponentFactory(): Form
 	{
 		$form = $this->create();
-		$form->addText(PrivilegesData::NAME, 'Action or signal')
+		$form->addText(PrivilegesEntity::name, 'Action or signal')
 			->setHtmlAttribute('placeholder', 'Name action or signal')
 			->setHtmlAttribute('autocomplete', 'off')
 			->setRequired();
 
-		$form->addHidden(PrivilegesData::ID)
+		$form->addHidden(PrivilegesEntity::id)
 			->addRule($form::INTEGER)
 			->setNullable();
 

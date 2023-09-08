@@ -91,24 +91,24 @@ class PermissionsControl extends Component implements Base
 	{
 		$form = $this->create();
 		$roles = $this->rolesRepository->all()
-			->where(RolesEntity::NAME, '!= ?', Conf::ROLE_ADMIN)
-			->fetchPairs(RolesEntity::PRIMARY, RolesEntity::NAME);
+			->where(RolesEntity::name, '!= ?', Conf::RoleAdmin)
+			->fetchPairs(RolesEntity::id, RolesEntity::name);
 
-		$form->addSelect(PermissionsData::ROLE_ID, 'Role', $roles)
+		$form->addSelect(PermissionsEntity::roleId, 'Role', $roles)
 			->setPrompt('Select role')
 			->setRequired();
 
 		$resources = $this->resourcesRepository->all()
-			->fetchPairs(ResourcesEntity::PRIMARY, ResourcesEntity::NAME);
+			->fetchPairs(ResourcesEntity::id, ResourcesEntity::name);
 
-		$form->addSelect(PermissionsData::RESOURCE_ID, 'Resource', $resources)
+		$form->addSelect(PermissionsEntity::resourceId, 'Resource', $resources)
 			->setPrompt('Select resource')
 			->setRequired();
 
 		$privileges = $this->privilegesRepository->all()
-			->fetchPairs(PrivilegesEntity::PRIMARY, PrivilegesEntity::NAME);
+			->fetchPairs(PrivilegesEntity::id, PrivilegesEntity::name);
 
-		$form->addSelect(PermissionsData::PRIVILEGE_ID, 'Actions and signals', $privileges)
+		$form->addSelect(PermissionsEntity::privilegeId, 'Actions and signals', $privileges)
 			->setPrompt('Select privilege')
 			->setRequired();
 
@@ -117,11 +117,11 @@ class PermissionsControl extends Component implements Base
 			'Allow',
 		];
 
-		$form->addSelect(PermissionsData::ALLOWED, 'Permission', $permission)
+		$form->addSelect(PermissionsEntity::allowed, 'Permission', $permission)
 			->setPrompt('Select permission')
 			->setRequired();
 
-		$form->addHidden(PermissionsData::ID)
+		$form->addHidden(PermissionsEntity::id)
 			->addRule($form::INTEGER)
 			->setNullable();
 

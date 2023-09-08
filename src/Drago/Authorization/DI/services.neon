@@ -19,7 +19,7 @@ services:
 	- Drago\Authorization\Control\Permissions\PermissionsRepository
 	- Drago\Authorization\Control\Permissions\PermissionsViewRepository
 	- Drago\Authorization\Control\Permissions\PermissionsRolesViewRepository
-	- Drago\Authorization\Control\Access\UsersRepository
-	- Drago\Authorization\Control\Access\UsersRolesRepository
-	- Drago\Authorization\Control\Access\UsersRolesViewRepository
+	- Drago\Authorization\Control\Access\AccessRepository
+	- Drago\Authorization\Control\Access\AccessRolesRepository
+	- Drago\Authorization\Control\Access\AccessRolesViewRepository
 	- Drago\Authorization\Tracy\PanelCookie

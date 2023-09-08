@@ -15,17 +15,12 @@ use Nette;
 class PermissionsEntity extends Drago\Database\Entity
 {
 	use Nette\SmartObject;
+	use PermissionsMapper;
 
-	public const TABLE = 'permissions';
-	public const PRIMARY = 'id';
-	public const ROLE_ID = 'role_id';
-	public const RESOURCE_ID = 'resource_id';
-	public const PRIVILEGE_ID = 'privilege_id';
-	public const ALLOWED = 'allowed';
-
-	public ?int $id;
-	public int $role_id;
-	public int $resource_id;
-	public int $privilege_id;
-	public int $allowed;
+	public const table = 'permissions';
+	public const id = 'id';
+	public const roleId = 'role_id';
+	public const resourceId = 'resource_id';
+	public const privilegeId = 'privilege_id';
+	public const allowed = 'allowed';
 }

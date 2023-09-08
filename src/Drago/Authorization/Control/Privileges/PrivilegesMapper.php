@@ -8,12 +8,9 @@ declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Privileges;
 
-use Drago;
-use Nette;
 
-
-class PrivilegesData extends Drago\Utils\ExtraArrayHash
+trait PrivilegesMapper
 {
-	use Nette\SmartObject;
-	use PrivilegesMapper;
+	public ?int $id;
+	public string $name;
 }

@@ -15,11 +15,9 @@ use Nette;
 class PrivilegesEntity extends Drago\Database\Entity
 {
 	use Nette\SmartObject;
+	use PrivilegesMapper;
 
-	public const TABLE = 'privileges';
-	public const PRIMARY = 'id';
-	public const NAME = 'name';
-
-	public ?int $id;
-	public string $name;
+	public const table = 'privileges';
+	public const id = 'id';
+	public const name = 'name';
 }

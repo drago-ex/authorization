@@ -12,14 +12,14 @@ use Drago;
 use Nette;
 
 
-class UsersRolesViewEntity extends Drago\Database\Entity
+class AccessRolesViewEntity extends Drago\Database\Entity
 {
 	use Nette\SmartObject;
 
-	public const TABLE = 'users_roles_view';
-	public const USER_ID = 'user_id';
-	public const USERNAME = 'username';
-	public const ROLE = 'role';
+	public const table = 'users_roles_view';
+	public const userId = 'user_id';
+	public const username = 'username';
+	public const role = 'role';
 
 	public ?int $user_id = null;
 	public ?string $username = null;

@@ -16,14 +16,10 @@ class AccessEntity extends Drago\Database\Entity
 {
 	use Nette\SmartObject;
 
-	public const TABLE = 'users';
-	public const PRIMARY = 'id';
-	public const USERNAME = 'username';
-	public const EMAIL = 'email';
-	public const PASSWORD = 'password';
+	public const table = 'users';
+	public const id = 'id';
+	public const username = 'username';
 
 	public ?int $id;
 	public string $username;
-	public string $email;
-	public string $password;
 }

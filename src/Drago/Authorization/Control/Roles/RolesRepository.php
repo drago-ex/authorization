@@ -22,7 +22,7 @@ use Drago\Database\Repository;
 use Nette\SmartObject;
 
 
-#[Table(RolesEntity::TABLE, RolesEntity::PRIMARY)]
+#[Table(RolesEntity::table, RolesEntity::id)]
 class RolesRepository
 {
 	use SmartObject;
@@ -40,7 +40,7 @@ class RolesRepository
 	public function getAll(): Fluent
 	{
 		return $this->all()
-			->orderBy(RolesEntity::PRIMARY);
+			->orderBy(RolesEntity::id);
 	}
 
 
@@ -63,7 +63,7 @@ class RolesRepository
 	 */
 	public function findByParent(int $parent): array|RolesEntity|null
 	{
-		return $this->discover(RolesEntity::PRIMARY, $parent)
+		return $this->discover(RolesEntity::id, $parent)
 			->execute()->setRowClass(RolesEntity::class)
 			->fetch();
 	}
@@ -84,20 +84,11 @@ class RolesRepository
 	/**
 	 * @throws AttributeDetectionException
 	 */
-	public function getRolesBuild(): Fluent
-	{
-		return $this->all()
-			->where(RolesEntity::NAME, ' != ?', Conf::ROLE_ADMIN);
-	}
-
-
-	/**
-	 * @throws AttributeDetectionException
-	 */
 	public function getRoles(): array
 	{
-		return $this->getRolesBuild()
-			->fetchPairs(RolesEntity::PRIMARY, RolesEntity::NAME);
+		return $this->all()
+			->where(RolesEntity::name, '!= ?', Conf::RoleAdmin)
+			->fetchPairs(RolesEntity::id, RolesEntity::name);
 	}
 
 
@@ -106,8 +97,8 @@ class RolesRepository
 	 */
 	public function getRolesPairs(): array
 	{
-		return $this->all()->where(RolesEntity::NAME, ' != ?', Conf::ROLE_ADMIN)
-			->fetchPairs(RolesEntity::NAME, RolesEntity::NAME);
+		return $this->all()->where(RolesEntity::name, '!= ?', Conf::RoleAdmin)
+			->fetchPairs(RolesEntity::name, RolesEntity::name);
 	}
 
 
@@ -117,7 +108,7 @@ class RolesRepository
 	 */
 	public function findParent(int $id): array|RolesEntity|Row|null
 	{
-		$row = $this->discover(RolesEntity::PARENT, $id)->fetch();
+		$row = $this->discover(RolesEntity::parent, $id)->fetch();
 		if ($row) {
 			throw new NotAllowedChange(
 				'The record can not be deleted, you must first delete the records that are associated with it.',

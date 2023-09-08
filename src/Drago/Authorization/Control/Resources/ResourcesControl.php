@@ -75,12 +75,12 @@ class ResourcesControl extends Component implements Base
 	protected function createComponentFactory(): Form
 	{
 		$form = $this->create();
-		$form->addText(ResourcesData::NAME, 'Source')
+		$form->addText(ResourcesEntity::name, 'Source')
 			->setHtmlAttribute('placeholder', 'Source name')
 			->setHtmlAttribute('autocomplete', 'off')
 			->setRequired();
 
-		$form->addHidden(ResourcesData::ID)
+		$form->addHidden(ResourcesEntity::id)
 			->addRule($form::INTEGER)
 			->setNullable();
 

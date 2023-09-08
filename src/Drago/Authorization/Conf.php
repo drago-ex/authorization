@@ -10,25 +10,23 @@ declare(strict_types=1);
 
 namespace Drago\Authorization;
 
-use Exception;
-
 
 /**
  * Default setting for ACL.
  */
-class Conf
+final class Conf
 {
 	/**
 	 * Default role.
 	 */
-	public const ROLE_GUEST = 'guest';
-	public const ROLE_MEMBER = 'member';
-	public const ROLE_ADMIN = 'admin';
+	public const RoleGuest = 'guest';
+	public const RoleMember = 'member';
+	public const RoleAdmin = 'admin';
 
 	/**
 	 * Option to specify privileges for all actions and signals.
 	 */
-	public const PRIVILEGE_ALL = '*all';
+	public const PrivilegeAll = '*all';
 
 	/**
 	 * Acl cache.
@@ -38,17 +36,8 @@ class Conf
 
 	/** @var array|string[] */
 	public static array $roles = [
-		self::ROLE_GUEST => self::ROLE_GUEST,
-		self::ROLE_MEMBER => self::ROLE_MEMBER,
-		self::ROLE_ADMIN => self::ROLE_ADMIN,
+		self::RoleGuest => self::RoleGuest,
+		self::RoleMember => self::RoleMember,
+		self::RoleAdmin => self::RoleAdmin,
 	];
-
-
-	/**
-	 * @throws Exception
-	 */
-	final public function __construct()
-	{
-		throw new Exception('Cannot instantiate static class ' . self::class);
-	}
 }
