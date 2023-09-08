@@ -91,24 +91,24 @@ class PermissionsControl extends Component implements Base
 	{
 		$form = $this->create();
 		$roles = $this->rolesRepository->all()
-			->where(RolesEntity::name, '!= ?', Conf::roleAdmin)
-			->fetchPairs(RolesEntity::id, RolesEntity::name);
+			->where(RolesEntity::Name, '!= ?', Conf::RoleAdmin)
+			->fetchPairs(RolesEntity::Id, RolesEntity::Name);
 
-		$form->addSelect(PermissionsEntity::roleId, 'Role', $roles)
+		$form->addSelect(PermissionsEntity::RoleId, 'Role', $roles)
 			->setPrompt('Select role')
 			->setRequired();
 
 		$resources = $this->resourcesRepository->all()
-			->fetchPairs(ResourcesEntity::id, ResourcesEntity::name);
+			->fetchPairs(ResourcesEntity::Id, ResourcesEntity::Name);
 
-		$form->addSelect(PermissionsEntity::resourceId, 'Resource', $resources)
+		$form->addSelect(PermissionsEntity::ResourceId, 'Resource', $resources)
 			->setPrompt('Select resource')
 			->setRequired();
 
 		$privileges = $this->privilegesRepository->all()
-			->fetchPairs(PrivilegesEntity::id, PrivilegesEntity::name);
+			->fetchPairs(PrivilegesEntity::Id, PrivilegesEntity::Name);
 
-		$form->addSelect(PermissionsEntity::privilegeId, 'Actions and signals', $privileges)
+		$form->addSelect(PermissionsEntity::PrivilegeId, 'Actions and signals', $privileges)
 			->setPrompt('Select privilege')
 			->setRequired();
 
@@ -117,11 +117,11 @@ class PermissionsControl extends Component implements Base
 			'Allow',
 		];
 
-		$form->addSelect(PermissionsEntity::allowed, 'Permission', $permission)
+		$form->addSelect(PermissionsEntity::Allowed, 'Permission', $permission)
 			->setPrompt('Select permission')
 			->setRequired();
 
-		$form->addHidden(PermissionsEntity::id)
+		$form->addHidden(PermissionsEntity::Id)
 			->addRule($form::INTEGER)
 			->setNullable();
 
@@ -138,10 +138,10 @@ class PermissionsControl extends Component implements Base
 	{
 		try {
 			$this->permissionsRepository->save($data);
-			$this->cache->remove(Conf::cache);
+			$this->cache->remove(Conf::Cache);
 
 			$message = $data->id ? 'Permission was updated.' : 'Permission added.';
-			$this->getPresenter()->flashMessage($message, Alert::INFO);
+			$this->getPresenter()->flashMessage($message, Alert::Info);
 
 			if ($this->isAjax()) {
 				if ($data->id) {
@@ -210,10 +210,10 @@ class PermissionsControl extends Component implements Base
 		$items ?: $this->error();
 
 		$this->permissionsRepository->remove($items->id);
-		$this->cache->remove(Conf::cache);
+		$this->cache->remove(Conf::Cache);
 		$this->getPresenter()->flashMessage(
 			'Permission removed.',
-			Alert::DANGER,
+			Alert::Danger,
 		);
 
 		if ($this->isAjax()) {
@@ -242,7 +242,7 @@ class PermissionsControl extends Component implements Base
 
 			$this->permissionsRepository->put($entity->toArray());
 			$message = 'Authorization has been changed.';
-			$this->getPresenter()->flashMessage($message, Alert::INFO);
+			$this->getPresenter()->flashMessage($message, Alert::Info);
 
 			if ($this->isAjax()) {
 				$this->getPresenter()->redrawControl($this->snippetMessage);

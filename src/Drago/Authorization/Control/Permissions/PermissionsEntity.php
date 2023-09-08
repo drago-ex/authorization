@@ -17,10 +17,10 @@ class PermissionsEntity extends Drago\Database\Entity
 	use Nette\SmartObject;
 	use PermissionsMapper;
 
-	public const table = 'permissions';
-	public const id = 'id';
-	public const roleId = 'role_id';
-	public const resourceId = 'resource_id';
-	public const privilegeId = 'privilege_id';
-	public const allowed = 'allowed';
+	public const Table = 'permissions';
+	public const Id = 'id';
+	public const RoleId = 'role_id';
+	public const ResourceId = 'resource_id';
+	public const PrivilegeId = 'privilege_id';
+	public const Allowed = 'allowed';
 }

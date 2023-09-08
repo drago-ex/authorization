@@ -90,22 +90,22 @@ class AccessControl extends Component implements Base
 			$user = $this->usersRepository->getUserById($id);
 		}
 
-		$form->addSelect(AccessRolesEntity::userId, 'User', $user ?? $users)
+		$form->addSelect(AccessRolesEntity::UserId, 'User', $user ?? $users)
 			->setPrompt('Select user')
 			->setRequired();
 
 		$roles = $this->rolesRepository->all()
-			->where(RolesEntity::name, '!= ?', Conf::roleGuest);
+			->where(RolesEntity::Name, '!= ?', Conf::RoleGuest);
 
-		if (!$this->user->isInRole(Conf::roleAdmin)) {
-			$roles->and(RolesEntity::name, '!= ?', Conf::roleAdmin);
+		if (!$this->user->isInRole(Conf::RoleAdmin)) {
+			$roles->and(RolesEntity::Name, '!= ?', Conf::RoleAdmin);
 		}
 
-		$roles = $roles->fetchPairs(RolesEntity::id, RolesEntity::name);
-		$form->addMultiSelect(AccessRolesEntity::roleId, 'Select roles', $roles)
+		$roles = $roles->fetchPairs(RolesEntity::Id, RolesEntity::Name);
+		$form->addMultiSelect(AccessRolesEntity::RoleId, 'Select roles', $roles)
 			->setRequired();
 
-		$form->addHidden(AccessRolesData::id)
+		$form->addHidden(AccessRolesData::Id)
 			->addRule($form::INTEGER)
 			->setNullable();
 
@@ -163,7 +163,7 @@ class AccessControl extends Component implements Base
 			}
 
 			$message = $data->id ? 'Roles have been updated.' : 'Role assigned.';
-			$this->getPresenter()->flashMessage($message, Alert::INFO);
+			$this->getPresenter()->flashMessage($message, Alert::Info);
 
 			if ($this->isAjax()) {
 				if ($data->user_id) {
@@ -205,7 +205,7 @@ class AccessControl extends Component implements Base
 
 		$userId = [];
 		foreach ($items as $item) {
-			$userId[AccessRolesEntity::userId] = $item->user_id;
+			$userId[AccessRolesEntity::UserId] = $item->user_id;
 		}
 
 		$roleId = [];
@@ -213,11 +213,11 @@ class AccessControl extends Component implements Base
 			$roleId[$item->role_id] = $item->role_id;
 		}
 
-		$userId = $userId[AccessRolesEntity::userId];
+		$userId = $userId[AccessRolesEntity::UserId];
 		$records = [
-			AccessRolesEntity::userId => $userId,
-			AccessRolesEntity::roleId => $roleId,
-			AccessRolesData::id => $userId,
+			AccessRolesEntity::UserId => $userId,
+			AccessRolesEntity::RoleId => $roleId,
+			AccessRolesData::Id => $userId,
 		];
 
 		$form = $this['factory'];
@@ -261,7 +261,7 @@ class AccessControl extends Component implements Base
 
 		$this->getPresenter()->flashMessage(
 			'Role removed.',
-			Alert::DANGER,
+			Alert::Danger,
 		);
 
 		if ($this->isAjax()) {

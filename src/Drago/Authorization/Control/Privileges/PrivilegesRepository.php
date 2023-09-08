@@ -21,7 +21,7 @@ use Drago\Database\Repository;
 use Nette\SmartObject;
 
 
-#[Table(PrivilegesEntity::table, PrivilegesEntity::id)]
+#[Table(PrivilegesEntity::Table, PrivilegesEntity::Id)]
 class PrivilegesRepository
 {
 	use SmartObject;
@@ -39,8 +39,8 @@ class PrivilegesRepository
 	public function getAll(): Fluent
 	{
 		return $this->all()
-			->where(PrivilegesEntity::name, '!= ?', Conf::privilegeAll)
-			->orderBy(PrivilegesEntity::name, 'asc');
+			->where(PrivilegesEntity::Name, '!= ?', Conf::PrivilegeAll)
+			->orderBy(PrivilegesEntity::Name, 'asc');
 	}
 
 
@@ -61,7 +61,7 @@ class PrivilegesRepository
 	 */
 	public function isAllowed(string $privilege): bool
 	{
-		if ($privilege === Conf::privilegeAll) {
+		if ($privilege === Conf::PrivilegeAll) {
 			throw new NotAllowedChange(
 				'The record is not allowed to be edited or deleted.',
 				1001,

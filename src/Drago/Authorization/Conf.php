@@ -19,25 +19,25 @@ final class Conf
 	/**
 	 * Default role.
 	 */
-	public const roleGuest = 'guest';
-	public const roleMember = 'member';
-	public const roleAdmin = 'admin';
+	public const RoleGuest = 'guest';
+	public const RoleMember = 'member';
+	public const RoleAdmin = 'admin';
 
 	/**
 	 * Option to specify privileges for all actions and signals.
 	 */
-	public const privilegeAll = '*all';
+	public const PrivilegeAll = '*all';
 
 	/**
 	 * Acl cache.
 	 */
-	public const cache = 'drago.aclCache';
+	public const Cache = 'drago.aclCache';
 
 
 	/** @var array|string[] */
 	public static array $roles = [
-		self::roleGuest => self::roleGuest,
-		self::roleMember => self::roleMember,
-		self::roleAdmin => self::roleAdmin,
+		self::RoleGuest => self::RoleGuest,
+		self::RoleMember => self::RoleMember,
+		self::RoleAdmin => self::RoleAdmin,
 	];
 }

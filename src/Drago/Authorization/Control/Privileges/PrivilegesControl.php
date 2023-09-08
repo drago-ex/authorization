@@ -76,12 +76,12 @@ class PrivilegesControl extends Component implements Base
 	protected function createComponentFactory(): Form
 	{
 		$form = $this->create();
-		$form->addText(PrivilegesEntity::name, 'Action or signal')
+		$form->addText(PrivilegesEntity::Name, 'Action or signal')
 			->setHtmlAttribute('placeholder', 'Name action or signal')
 			->setHtmlAttribute('autocomplete', 'off')
 			->setRequired();
 
-		$form->addHidden(PrivilegesEntity::id)
+		$form->addHidden(PrivilegesEntity::Id)
 			->addRule($form::INTEGER)
 			->setNullable();
 
@@ -98,10 +98,10 @@ class PrivilegesControl extends Component implements Base
 	{
 		try {
 			$this->privilegesRepository->save($data);
-			$this->cache->remove(Conf::cache);
+			$this->cache->remove(Conf::Cache);
 
 			$message = $data->id ? 'Privilege updated.' : 'Privilege inserted.';
-			$this->getPresenter()->flashMessage($message, Alert::INFO);
+			$this->getPresenter()->flashMessage($message, Alert::Info);
 
 			if ($this->isAjax()) {
 				if ($data->id) {
@@ -166,7 +166,7 @@ class PrivilegesControl extends Component implements Base
 			};
 
 			$this->getPresenter()
-				->flashMessage($message, Alert::WARNING);
+				->flashMessage($message, Alert::Warning);
 
 			$this->isAjax()
 				? $this->getPresenter()->redrawControl($this->snippetMessage)
@@ -189,10 +189,10 @@ class PrivilegesControl extends Component implements Base
 		try {
 			if ($this->privilegesRepository->isAllowed($items->name)) {
 				$this->privilegesRepository->remove($items->id);
-				$this->cache->remove(Conf::cache);
+				$this->cache->remove(Conf::Cache);
 				$this->getPresenter()->flashMessage(
 					'Privilege deleted.',
-					Alert::DANGER,
+					Alert::Danger,
 				);
 
 				if ($this->isAjax()) {
@@ -212,7 +212,7 @@ class PrivilegesControl extends Component implements Base
 			};
 
 			$this->getPresenter()
-				->flashMessage($message, Alert::WARNING);
+				->flashMessage($message, Alert::Warning);
 
 			$this->isAjax()
 				? $this->getPresenter()->redrawControl($this->snippetMessage)

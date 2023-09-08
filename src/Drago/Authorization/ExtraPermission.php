@@ -45,7 +45,7 @@ class ExtraPermission
 	{
 		$acl = new Permission;
 		try {
-			if (!$this->cache->load(Conf::cache)) {
+			if (!$this->cache->load(Conf::Cache)) {
 				foreach ($this->rolesRepository->getAllRoles() as $role) {
 					$parent = $this->rolesRepository->findByParent($role->parent);
 					$acl->addRole($role->name, $parent->name ?? null);
@@ -56,7 +56,7 @@ class ExtraPermission
 				}
 
 				foreach ($this->permissionsViewRepository->getAllPermissions() as $row) {
-					$row->privilege = $row->privilege === Conf::privilegeAll
+					$row->privilege = $row->privilege === Conf::PrivilegeAll
 						? Authorizator::ALL
 						: $row->privilege;
 					$acl->{$row->allowed === 1
@@ -64,12 +64,12 @@ class ExtraPermission
 						: 'deny'} ($row->role, $row->resource, $row->privilege);
 				}
 
-				$acl->allow(Conf::roleAdmin);
-				$this->cache->save(Conf::cache, $acl);
+				$acl->allow(Conf::RoleAdmin);
+				$this->cache->save(Conf::Cache, $acl);
 			}
 
-			if ($this->cache->load(Conf::cache)) {
-				$acl = $this->cache->load(Conf::cache);
+			if ($this->cache->load(Conf::Cache)) {
+				$acl = $this->cache->load(Conf::Cache);
 			}
 		} catch (DriverException) {
 			// Not implemented.

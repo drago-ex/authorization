@@ -81,7 +81,7 @@ class RolesControl extends Component implements Base
 	public function createComponentFactory(): Form
 	{
 		$form = $this->create();
-		$form->addText(RolesEntity::name, 'Role')
+		$form->addText(RolesEntity::Name, 'Role')
 			->setHtmlAttribute('placeholder', 'Role name')
 			->setHtmlAttribute('autocomplete', 'off')
 			->setRequired();
@@ -95,11 +95,11 @@ class RolesControl extends Component implements Base
 			}
 		}
 
-		$form->addSelect(RolesEntity::parent, 'Parent', $roles ?? $this->rolesRepository->getRoles())
+		$form->addSelect(RolesEntity::Parent, 'Parent', $roles ?? $this->rolesRepository->getRoles())
 			->setPrompt('Select parent')
 			->setRequired();
 
-		$form->addHidden(RolesEntity::id)
+		$form->addHidden(RolesEntity::Id)
 			->addRule($form::INTEGER)
 			->setNullable();
 
@@ -116,7 +116,7 @@ class RolesControl extends Component implements Base
 	{
 		try {
 			$this->rolesRepository->save($data);
-			$this->cache->remove(Conf::cache);
+			$this->cache->remove(Conf::Cache);
 
 			$parent = $this['factory']['parent'];
 			if ($parent instanceof SelectBox) {
@@ -124,7 +124,7 @@ class RolesControl extends Component implements Base
 			}
 
 			$message = $data->id ? 'Role updated.' : 'The role was inserted.';
-			$this->getPresenter()->flashMessage($message, Alert::INFO);
+			$this->getPresenter()->flashMessage($message, Alert::Info);
 
 			if ($this->isAjax()) {
 				if ($data->id) {
@@ -190,7 +190,7 @@ class RolesControl extends Component implements Base
 			};
 
 			$this->getPresenter()
-				->flashMessage($message, Alert::WARNING);
+				->flashMessage($message, Alert::Warning);
 
 			$this->isAjax()
 				? $this->getPresenter()->redrawControl($this->snippetMessage)
@@ -214,8 +214,8 @@ class RolesControl extends Component implements Base
 			$parent = $this->rolesRepository->findParent($items->id);
 			if (!$parent && $this->rolesRepository->isAllowed($items->name)) {
 				$this->rolesRepository->remove($id);
-				$this->cache->remove(Conf::cache);
-				$this->getPresenter()->flashMessage('Role deleted.', Alert::DANGER);
+				$this->cache->remove(Conf::Cache);
+				$this->getPresenter()->flashMessage('Role deleted.', Alert::Danger);
 
 				if ($this->isAjax()) {
 					$this->getPresenter()->redrawControl($this->snippetMessage);
@@ -234,7 +234,7 @@ class RolesControl extends Component implements Base
 			};
 
 			$this->getPresenter()
-				->flashMessage($message, Alert::WARNING);
+				->flashMessage($message, Alert::Warning);
 
 			$this->isAjax()
 				? $this->getPresenter()->redrawControl($this->snippetMessage)

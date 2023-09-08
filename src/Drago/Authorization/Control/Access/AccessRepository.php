@@ -18,7 +18,7 @@ use Drago\Database\Repository;
 use Nette\SmartObject;
 
 
-#[Table(AccessEntity::table, AccessEntity::id)]
+#[Table(AccessEntity::Table, AccessEntity::Id)]
 class AccessRepository
 {
 	use SmartObject;
@@ -36,10 +36,10 @@ class AccessRepository
 	public function getAllUsers(): array
 	{
 		return $this->db->select('u.id, u.username')->from($this->getTable())->as('u')
-			->leftJoin(AccessRolesViewEntity::table)->as('r')->on('u.id = r.user_id')
+			->leftJoin(AccessRolesViewEntity::Table)->as('r')->on('u.id = r.user_id')
 			->groupBy('u.id, u.username')
-			->having('sum(case when r.role = ? then 1 else 0 end) = ?', Conf::roleAdmin, 0)
-			->fetchPairs(AccessEntity::id, AccessEntity::username);
+			->having('sum(case when r.role = ? then 1 else 0 end) = ?', Conf::RoleAdmin, 0)
+			->fetchPairs(AccessEntity::Id, AccessEntity::Username);
 	}
 
 
@@ -49,6 +49,6 @@ class AccessRepository
 	public function getUserById(int $id): array|Row|null
 	{
 		return $this->get($id)
-			->fetchPairs(AccessEntity::id, AccessEntity::username);
+			->fetchPairs(AccessEntity::Id, AccessEntity::Username);
 	}
 }

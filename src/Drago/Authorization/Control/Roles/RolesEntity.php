@@ -17,8 +17,8 @@ class RolesEntity extends Drago\Database\Entity
 	use Nette\SmartObject;
 	use RolesMapper;
 
-	public const table = 'roles';
-	public const id = 'id';
-	public const name = 'name';
-	public const parent = 'parent';
+	public const Table = 'roles';
+	public const Id = 'id';
+	public const Name = 'name';
+	public const Parent = 'parent';
 }

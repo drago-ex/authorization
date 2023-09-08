@@ -18,7 +18,7 @@ use Drago\Database\Repository;
 use Nette\SmartObject;
 
 
-#[Table(AccessRolesViewEntity::table)]
+#[Table(AccessRolesViewEntity::Table)]
 class AccessRolesViewRepository
 {
 	use SmartObject;
@@ -38,7 +38,7 @@ class AccessRolesViewRepository
 		return $this->db
 			->select('user_id, username, group_concat(role separator ", ") role')
 			->from($this->getTable())->groupBy('user_id, username')
-			->having('sum(case when role = ? then 1 else 0 end) = ?', Conf::roleAdmin, 0)
-			->orderBy(AccessRolesViewEntity::userId, 'asc');
+			->having('sum(case when role = ? then 1 else 0 end) = ?', Conf::RoleAdmin, 0)
+			->orderBy(AccessRolesViewEntity::UserId, 'asc');
 	}
 }

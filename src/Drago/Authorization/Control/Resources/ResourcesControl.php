@@ -75,12 +75,12 @@ class ResourcesControl extends Component implements Base
 	protected function createComponentFactory(): Form
 	{
 		$form = $this->create();
-		$form->addText(ResourcesEntity::name, 'Source')
+		$form->addText(ResourcesEntity::Name, 'Source')
 			->setHtmlAttribute('placeholder', 'Source name')
 			->setHtmlAttribute('autocomplete', 'off')
 			->setRequired();
 
-		$form->addHidden(ResourcesEntity::id)
+		$form->addHidden(ResourcesEntity::Id)
 			->addRule($form::INTEGER)
 			->setNullable();
 
@@ -97,10 +97,10 @@ class ResourcesControl extends Component implements Base
 	{
 		try {
 			$this->resourcesRepository->save($data);
-			$this->cache->remove(Conf::cache);
+			$this->cache->remove(Conf::Cache);
 
 			$message = $data->id ? 'Resource updated.' : 'Resource inserted.';
-			$this->getPresenter()->flashMessage($message, Alert::INFO);
+			$this->getPresenter()->flashMessage($message, Alert::Info);
 
 			if ($this->isAjax()) {
 				if ($data->id) {
@@ -170,10 +170,10 @@ class ResourcesControl extends Component implements Base
 
 		try {
 			$this->resourcesRepository->remove($items->id);
-			$this->cache->remove(Conf::cache);
+			$this->cache->remove(Conf::Cache);
 			$this->getPresenter()->flashMessage(
 				'Resource deleted.',
-				Alert::DANGER,
+				Alert::Danger,
 			);
 
 			if ($this->isAjax()) {
@@ -191,7 +191,7 @@ class ResourcesControl extends Component implements Base
 			};
 
 			$this->getPresenter()
-				->flashMessage($message, Alert::WARNING);
+				->flashMessage($message, Alert::Warning);
 
 			$this->isAjax()
 				? $this->getPresenter()->redrawControl($this->snippetMessage)
