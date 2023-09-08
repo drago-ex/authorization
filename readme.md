@@ -30,7 +30,7 @@ extensions:
 use Drago\Authorization\Authorization
 
 // Add module for redirect to sign in.
-private string $module = ':Module:Presenter:';
+private string $loginLink = ':Module:Presenter:';
 ```
 
 ## Use trait in presenter for settings access control
