@@ -74,9 +74,9 @@ class TestAuthorizationExtension extends TestCase
 	{
 		$permission = $this->geClassByType()->create();
 		$roles = [
-			Conf::roleGuest,
-			Conf::roleMember,
-			Conf::roleAdmin,
+			Conf::RoleGuest,
+			Conf::RoleMember,
+			Conf::RoleAdmin,
 		];
 		Assert::equal($roles, $permission->getRoles());
 	}
@@ -98,8 +98,8 @@ class TestAuthorizationExtension extends TestCase
 	public function test4(): void
 	{
 		$permission = $this->geClassByType()->create();
-		Assert::equal([Conf::roleGuest], $permission->getRoleParents(Conf::roleMember));
-		Assert::equal([Conf::roleMember], $permission->getRoleParents(Conf::roleAdmin));
+		Assert::equal([Conf::RoleGuest], $permission->getRoleParents(Conf::RoleMember));
+		Assert::equal([Conf::RoleMember], $permission->getRoleParents(Conf::RoleAdmin));
 	}
 }
 
