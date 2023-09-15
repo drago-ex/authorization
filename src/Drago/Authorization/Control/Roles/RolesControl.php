@@ -231,6 +231,7 @@ class RolesControl extends Component implements Base
 			$message = match ($e->getCode()) {
 				1001 => 'The role is not allowed to be deleted.',
 				1002 => 'The role cannot be deleted because it is bound to another role.',
+				2292 => 'The role cannot be deleted, first delete the permissions that are bound to this role.',
 				default => 'Unknown status code.',
 			};
 
