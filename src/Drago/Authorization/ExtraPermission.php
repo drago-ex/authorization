@@ -46,9 +46,13 @@ class ExtraPermission
 		$acl = new Permission;
 		try {
 			if (!$this->cache->load(Conf::CACHE)) {
-				foreach ($this->rolesRepository->getAllRoles() as $role) {
+				$rolesQueue = $this->rolesRepository->getAllRoles();
+				while (count($rolesQueue) > 0) {
+					$role = array_shift($rolesQueue);
 					$parent = $this->rolesRepository->findByParent($role->parent);
-					$acl->addRole($role->name, $parent->name ?? null);
+					$parent === null || in_array($parent->name, $acl->getRoles(), true)
+						? $acl->addRole($role->name, $parent->name ?? null)
+						: array_push($rolesQueue, $role);
 				}
 
 				foreach ($this->resourcesRepository->getAllResources() as $resource) {
