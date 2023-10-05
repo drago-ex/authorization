@@ -115,6 +115,10 @@ class RolesControl extends Component implements Base
 	public function success(Form $form, RolesData $data): void
 	{
 		try {
+			if ($data->id !== null && $data->id < $data->parent) {
+				throw new \Exception('It is not allowed to select a higher parent.', 1);
+			}
+
 			$this->rolesRepository->save($data);
 			$this->cache->remove(Conf::Cache);
 
@@ -142,6 +146,7 @@ class RolesControl extends Component implements Base
 
 		} catch (Throwable $e) {
 			$message = match ($e->getCode()) {
+				1 => $e->getMessage(),
 				1062 => 'This role already exists.',
 				default => 'Unknown status code.',
 			};
