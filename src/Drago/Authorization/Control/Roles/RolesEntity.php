@@ -20,8 +20,10 @@ class RolesEntity extends Drago\Database\EntityOracle
 	public const PRIMARY = 'ID';
 	public const NAME = 'NAME';
 	public const PARENT = 'PARENT';
+	public const DESCRIPTION = 'DESCRIPTION';
 
 	public ?int $id;
 	public string $name;
 	public string|int $parent;
+	public ?string $description;
 }
