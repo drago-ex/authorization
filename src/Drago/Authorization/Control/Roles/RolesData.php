@@ -19,8 +19,10 @@ class RolesData extends Drago\Utils\ExtraArrayHash
 	public const ID = 'id';
 	public const NAME = 'name';
 	public const PARENT = 'parent';
+	public const DESCRIPTION = 'description';
 
 	public ?int $id;
 	public string $name;
 	public string|int $parent;
+	public ?string $description;
 }
