@@ -87,6 +87,11 @@ class RolesControl extends Component implements Base
 			->setHtmlAttribute('autocomplete', 'off')
 			->setRequired();
 
+		$form->addText(RolesData::DESCRIPTION, 'Description')
+			->setHtmlAttribute('placeholder', 'Description')
+			->setHtmlAttribute('autocomplete', 'off')
+			->setRequired();
+
 		if ($this->getSignal()) {
 			$id = (int) $this->getParameter('id');
 			foreach ($this->rolesRepository->getRoles() as $key => $item) {
@@ -268,6 +273,9 @@ class RolesControl extends Component implements Base
 
 		$grid->addColumnText('parent', 'Parent')
 			->setRenderer(fn(RolesEntity $item) => $this->rolesRepository->findByParent($item->parent)->name ?? null)->setFilterText();
+
+		$grid->addColumnText('description', 'Description')
+			->setFilterText();
 
 		$grid->addAction('edit', 'Edit')
 			->setClass('btn btn-xs btn-primary text-white ajax');
