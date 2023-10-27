@@ -93,6 +93,19 @@ class RolesRepository
 
 
 	/**
+	 * @return array[]|RolesEntity[]
+	 * @throws AttributeDetectionException
+	 * @throws Exception
+	 */
+	public function getRolesAll(): array|RolesEntity
+	{
+		return $this->all()->where(RolesEntity::NAME, ' != ?', Conf::ROLE_ADMIN)
+			->and(RolesEntity::NAME, '!= ?', Conf::ROLE_GUEST)
+			->execute()->setRowClass(RolesEntity::class)->fetchAll();
+	}
+
+
+	/**
 	 * @throws AttributeDetectionException
 	 */
 	public function getRolesPairs(): array
