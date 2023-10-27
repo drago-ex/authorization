@@ -15,6 +15,7 @@ use Contributte\Datagrid\Datagrid;
 use Contributte\Datagrid\Exception\DatagridColumnStatusException;
 use Contributte\Datagrid\Exception\DatagridException;
 use Dibi\Exception;
+use Dibi\Row;
 use Drago\Application\UI\Alert;
 use Drago\Attr\AttributeDetectionException;
 use Drago\Authorization\Conf;
@@ -35,6 +36,7 @@ use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
 use Nette\SmartObject;
 use Throwable;
+use Tracy\Debugger;
 
 
 /**
@@ -92,9 +94,21 @@ class PermissionsControl extends Component implements Base
 	protected function createComponentFactory(): Form
 	{
 		$form = $this->create();
-		$roles = $this->rolesRepository->all()
+		$role = $this->rolesRepository->all()
 			->where(RolesEntity::NAME, '!= ?', Conf::ROLE_ADMIN)
-			->fetchPairs(RolesEntity::PRIMARY, RolesEntity::NAME);
+			->execute()->setRowClass(RolesEntity::class)->fetchAll();
+
+		$roles = [];
+
+		/**
+		 * @var RolesEntity  $item
+		 */
+		foreach ($role as $item) {
+			$roles[$item->id] = $item->name;
+			if ($item->description) {
+				$roles[$item->id] .= ' (' . $item->description . ')';
+			}
+		}
 
 		$form->addSelect(PermissionsData::ROLE_ID, 'Role', $roles)
 			->setPrompt('Select role')
