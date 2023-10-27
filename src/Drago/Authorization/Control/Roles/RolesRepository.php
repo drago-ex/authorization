@@ -97,7 +97,7 @@ class RolesRepository
 	 * @throws AttributeDetectionException
 	 * @throws Exception
 	 */
-	public function getRolesAll(): array|RolesEntity
+	public function getRolesAll(): array
 	{
 		return $this->all()->where(RolesEntity::NAME, ' != ?', Conf::ROLE_ADMIN)
 			->and(RolesEntity::NAME, '!= ?', Conf::ROLE_GUEST)
