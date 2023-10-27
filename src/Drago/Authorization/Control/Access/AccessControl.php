@@ -91,7 +91,15 @@ class AccessControl extends Component implements Base
 			->setPrompt('Select user')
 			->setRequired();
 
-		$roles = $this->rolesRepository->getRoles();
+		$role = $this->rolesRepository->getRolesAll();
+		$roles = [];
+		foreach ($role as $item) {
+			$roles[$item->id] = $item->name;
+			if ($item->description) {
+				$roles[$item->id] .= ' (' . $item->description . ')';
+			}
+		}
+
 		$form->addMultiSelect(UsersRolesData::ROLE_ID, 'Select roles', $roles)
 			->setRequired();
 
