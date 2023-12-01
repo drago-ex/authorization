@@ -9,7 +9,7 @@ Simple dynamic access control list management.
 [![Coverage Status](https://coveralls.io/repos/github/drago-ex/authorization/badge.svg?branch=master)](https://coveralls.io/github/drago-ex/authorization?branch=master)
 
 ## Technology
-- PHP 8.0 or higher
+- PHP 8.1 or higher
 - Bootstrap
 - composer
 
