@@ -14,8 +14,6 @@ use Nette;
 
 class AccessEntity extends Drago\Database\Entity
 {
-	use Nette\SmartObject;
-
 	public const Table = 'users';
 	public const Id = 'id';
 	public const Username = 'username';

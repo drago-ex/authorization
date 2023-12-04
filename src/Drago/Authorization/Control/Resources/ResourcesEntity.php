@@ -14,7 +14,6 @@ use Nette;
 
 class ResourcesEntity extends Drago\Database\Entity
 {
-	use Nette\SmartObject;
 	use ResourcesMapper;
 
 	public const Table = 'resources';

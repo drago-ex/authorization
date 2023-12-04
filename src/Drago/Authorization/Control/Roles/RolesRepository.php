@@ -25,7 +25,6 @@ use Nette\SmartObject;
 #[Table(RolesEntity::Table, RolesEntity::Id)]
 class RolesRepository
 {
-	use SmartObject;
 	use Repository;
 
 	public function __construct(

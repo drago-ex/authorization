@@ -33,7 +33,6 @@ use Throwable;
  */
 class ResourcesControl extends Component implements Base
 {
-	use SmartObject;
 	use Factory;
 
 	public string $snippetFactory = 'resources';

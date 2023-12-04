@@ -14,7 +14,6 @@ use Nette;
 
 class RolesEntity extends Drago\Database\Entity
 {
-	use Nette\SmartObject;
 	use RolesMapper;
 
 	public const Table = 'roles';

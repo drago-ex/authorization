@@ -21,7 +21,6 @@ use Nette\SmartObject;
 #[Table(AccessEntity::Table, AccessEntity::Id)]
 class AccessRepository
 {
-	use SmartObject;
 	use Repository;
 
 	public function __construct(

@@ -14,7 +14,6 @@ use Nette;
 
 class PermissionsEntity extends Drago\Database\Entity
 {
-	use Nette\SmartObject;
 	use PermissionsMapper;
 
 	public const Table = 'permissions';

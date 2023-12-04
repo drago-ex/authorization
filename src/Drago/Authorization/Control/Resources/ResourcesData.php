@@ -14,6 +14,5 @@ use Nette;
 
 class ResourcesData extends Drago\Utils\ExtraArrayHash
 {
-	use Nette\SmartObject;
 	use ResourcesMapper;
 }

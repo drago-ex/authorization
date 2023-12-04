@@ -14,6 +14,5 @@ use Nette;
 
 class RolesData extends Drago\Utils\ExtraArrayHash
 {
-	use Nette\SmartObject;
 	use RolesMapper;
 }

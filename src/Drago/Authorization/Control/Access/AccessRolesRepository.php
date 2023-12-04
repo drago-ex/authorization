@@ -21,7 +21,6 @@ use Nette\SmartObject;
 #[Table(AccessRolesEntity::Table)]
 class AccessRolesRepository
 {
-	use SmartObject;
 	use Repository;
 
 	public function __construct(

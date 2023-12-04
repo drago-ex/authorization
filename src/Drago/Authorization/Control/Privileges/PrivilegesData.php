@@ -14,6 +14,5 @@ use Nette;
 
 class PrivilegesData extends Drago\Utils\ExtraArrayHash
 {
-	use Nette\SmartObject;
 	use PrivilegesMapper;
 }

@@ -14,8 +14,6 @@ use Nette;
 
 class AccessRolesEntity extends Drago\Database\Entity
 {
-	use Nette\SmartObject;
-
 	public const Table = 'users_roles';
 	public const RoleId = 'role_id';
 	public const UserId = 'user_id';

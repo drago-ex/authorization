@@ -14,8 +14,6 @@ use Nette;
 
 class AccessRolesData extends Drago\Utils\ExtraArrayHash
 {
-	use Nette\SmartObject;
-
 	public const Id = 'id';
 
 	public array $role_id;

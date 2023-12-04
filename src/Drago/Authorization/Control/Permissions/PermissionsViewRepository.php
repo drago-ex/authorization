@@ -22,7 +22,6 @@ use Nette\SmartObject;
 #[Table(PermissionsViewEntity::Table)]
 class PermissionsViewRepository
 {
-	use SmartObject;
 	use Repository;
 
 	public function __construct(
