@@ -271,7 +271,7 @@ class RolesControl extends Component implements Base
 
 		$grid->addColumnText('parent', 'Parent')
 			->setSortable()
-			->setRenderer(fn(RolesEntity|Row $item) => $this->rolesRepository->findByParent($item->parent)->name ?? null)->setFilterText();
+			->setRenderer(fn(RolesEntity $item) => $this->rolesRepository->findByParent($item->parent)->name ?? null)->setFilterText();
 
 		$grid->addAction('edit', 'Edit')
 			->setClass('btn btn-xs btn-primary text-white ajax');
