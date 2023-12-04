@@ -9,7 +9,6 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control\Permissions;
 
 use Drago;
-use Nette;
 
 
 class PermissionsRolesViewEntity extends Drago\Database\Entity

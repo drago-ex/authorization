@@ -9,7 +9,6 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control\Privileges;
 
 use Drago;
-use Nette;
 
 
 class PrivilegesEntity extends Drago\Database\Entity

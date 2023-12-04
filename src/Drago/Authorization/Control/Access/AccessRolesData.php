@@ -9,7 +9,6 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control\Access;
 
 use Drago;
-use Nette;
 
 
 class AccessRolesData extends Drago\Utils\ExtraArrayHash
