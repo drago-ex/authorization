@@ -14,6 +14,7 @@ use Contributte\Datagrid\Column\Action\Confirmation\StringConfirmation;
 use Contributte\Datagrid\Datagrid;
 use Contributte\Datagrid\Exception\DatagridException;
 use Dibi\Exception;
+use Dibi\Row;
 use Drago\Application\UI\Alert;
 use Drago\Attr\AttributeDetectionException;
 use Drago\Authorization\Conf;
@@ -270,7 +271,8 @@ class RolesControl extends Component implements Base
 
 		$grid->addColumnText('parent', 'Parent')
 			->setSortable()
-			->setRenderer(fn(RolesEntity $item) => $this->rolesRepository->findByParent($item->parent)->name ?? null)->setFilterText();
+			->setRenderer(fn(Row|RolesEntity $item) => $this->rolesRepository->findByParent($item->parent)->name ?? null)
+			->setFilterText();
 
 		$grid->addAction('edit', 'Edit')
 			->setClass('btn btn-xs btn-primary text-white ajax');

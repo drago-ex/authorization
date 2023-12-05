@@ -13,7 +13,6 @@ use Dibi\Connection;
 use Dibi\Exception;
 use Dibi\Fluent;
 use Dibi\Result;
-use Dibi\Row;
 use Drago\Attr\AttributeDetectionException;
 use Drago\Attr\Table;
 use Drago\Authorization\Conf;
@@ -104,7 +103,7 @@ class RolesRepository
 	 * @throws NotAllowedChange
 	 * @throws AttributeDetectionException
 	 */
-	public function findParent(int $id): array|RolesEntity|Row|null
+	public function findParent(int $id): array|RolesEntity|null
 	{
 		$row = $this->discover(RolesEntity::Parent, $id)->fetch();
 		if ($row) {
