@@ -14,14 +14,13 @@ use Contributte\Datagrid\Column\Action\Confirmation\StringConfirmation;
 use Contributte\Datagrid\Datagrid;
 use Contributte\Datagrid\Exception\DatagridException;
 use Dibi\Exception;
+use Dibi\Row;
 use Drago\Application\UI\Alert;
 use Drago\Attr\AttributeDetectionException;
 use Drago\Authorization\Conf;
 use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
 use Drago\Authorization\Control\Factory;
-use Drago\Authorization\Control\Resources\ResourcesEntity;
-use Drago\Authorization\FluentWithClassDataSource;
 use Drago\Authorization\NotAllowedChange;
 use Nette\Application\AbortException;
 use Nette\Application\BadRequestException;
@@ -66,7 +65,7 @@ class RolesControl extends Component implements Base
 	}
 
 
-	public function handleClickOpen(): void
+	public function handleClickOpenComponent(): void
 	{
 		if ($this->isAjax()) {
 			$component = $this->getUniqueComponent($this->openComponentType);
@@ -82,13 +81,8 @@ class RolesControl extends Component implements Base
 	public function createComponentFactory(): Form
 	{
 		$form = $this->create();
-		$form->addText(RolesData::NAME, 'Role')
+		$form->addText(RolesEntity::Name, 'Role')
 			->setHtmlAttribute('placeholder', 'Role name')
-			->setHtmlAttribute('autocomplete', 'off')
-			->setRequired();
-
-		$form->addText(RolesData::DESCRIPTION, 'Description')
-			->setHtmlAttribute('placeholder', 'Description')
 			->setHtmlAttribute('autocomplete', 'off')
 			->setRequired();
 
@@ -101,11 +95,11 @@ class RolesControl extends Component implements Base
 			}
 		}
 
-		$form->addSelect(RolesData::PARENT, 'Parent', $roles ?? $this->rolesRepository->getRoles())
+		$form->addSelect(RolesEntity::Parent, 'Parent', $roles ?? $this->rolesRepository->getRoles())
 			->setPrompt('Select parent')
 			->setRequired();
 
-		$form->addHidden(RolesData::ID)
+		$form->addHidden(RolesEntity::Id)
 			->addRule($form::INTEGER)
 			->setNullable();
 
@@ -121,8 +115,12 @@ class RolesControl extends Component implements Base
 	public function success(Form $form, RolesData $data): void
 	{
 		try {
+			if ($data->id !== null && $data->id < $data->parent) {
+				throw new \Exception('It is not allowed to select a higher parent.', 1);
+			}
+
 			$this->rolesRepository->save($data);
-			$this->cache->remove(Conf::CACHE);
+			$this->cache->remove(Conf::Cache);
 
 			$parent = $this['factory']['parent'];
 			if ($parent instanceof SelectBox) {
@@ -130,7 +128,7 @@ class RolesControl extends Component implements Base
 			}
 
 			$message = $data->id ? 'Role updated.' : 'The role was inserted.';
-			$this->getPresenter()->flashMessage($message, Alert::INFO);
+			$this->getPresenter()->flashMessage($message, Alert::Info);
 
 			if ($this->isAjax()) {
 				if ($data->id) {
@@ -148,7 +146,8 @@ class RolesControl extends Component implements Base
 
 		} catch (Throwable $e) {
 			$message = match ($e->getCode()) {
-				1 => 'This role already exists.',
+				1 => $e->getMessage(),
+				1062 => 'This role already exists.',
 				default => 'Unknown status code.',
 			};
 
@@ -196,7 +195,7 @@ class RolesControl extends Component implements Base
 			};
 
 			$this->getPresenter()
-				->flashMessage($message, Alert::WARNING);
+				->flashMessage($message, Alert::Warning);
 
 			$this->isAjax()
 				? $this->getPresenter()->redrawControl($this->snippetMessage)
@@ -220,8 +219,8 @@ class RolesControl extends Component implements Base
 			$parent = $this->rolesRepository->findParent($items->id);
 			if (!$parent && $this->rolesRepository->isAllowed($items->name)) {
 				$this->rolesRepository->remove($id);
-				$this->cache->remove(Conf::CACHE);
-				$this->getPresenter()->flashMessage('Role deleted.', Alert::DANGER);
+				$this->cache->remove(Conf::Cache);
+				$this->getPresenter()->flashMessage('Role deleted.', Alert::Danger);
 
 				if ($this->isAjax()) {
 					$this->getPresenter()->redrawControl($this->snippetMessage);
@@ -236,12 +235,11 @@ class RolesControl extends Component implements Base
 			$message = match ($e->getCode()) {
 				1001 => 'The role is not allowed to be deleted.',
 				1002 => 'The role cannot be deleted because it is bound to another role.',
-				2292 => 'The role cannot be deleted, first delete the permissions that are bound to this role.',
 				default => 'Unknown status code.',
 			};
 
 			$this->getPresenter()
-				->flashMessage($message, Alert::WARNING);
+				->flashMessage($message, Alert::Warning);
 
 			$this->isAjax()
 				? $this->getPresenter()->redrawControl($this->snippetMessage)
@@ -257,8 +255,7 @@ class RolesControl extends Component implements Base
 	protected function createComponentGrid($name): DataGrid
 	{
 		$grid = new DataGrid($this, $name);
-		$data = new FluentWithClassDataSource($this->rolesRepository->getAll(), 'ID', RolesEntity::class);
-		$grid->setDataSource($data);
+		$grid->setDataSource($this->rolesRepository->getAll());
 
 		if ($this->translator) {
 			$grid->setTranslator($this->translator);
@@ -269,12 +266,12 @@ class RolesControl extends Component implements Base
 		}
 
 		$grid->addColumnText('name', 'Name')
+			->setSortable()
 			->setFilterText();
 
 		$grid->addColumnText('parent', 'Parent')
-			->setRenderer(fn(RolesEntity $item) => $this->rolesRepository->findByParent($item->parent)->name ?? null)->setFilterText();
-
-		$grid->addColumnText('description', 'Description')
+			->setSortable()
+			->setRenderer(fn(Row|RolesEntity $item) => $this->rolesRepository->findByParent($item->parent)->name ?? null)
 			->setFilterText();
 
 		$grid->addAction('edit', 'Edit')
