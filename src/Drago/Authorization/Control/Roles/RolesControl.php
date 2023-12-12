@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Drago\Authorization\Control\Access;
+namespace Drago\Authorization\Control\Roles;
 
 use App\Authorization\Control\ComponentTemplate;
 use Contributte\Datagrid\Column\Action\Confirmation\StringConfirmation;
@@ -16,14 +16,18 @@ use Contributte\Datagrid\Exception\DatagridException;
 use Dibi\Exception;
 use Drago\Application\UI\Alert;
 use Drago\Attr\AttributeDetectionException;
+use Drago\Authorization\Conf;
 use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
 use Drago\Authorization\Control\Factory;
-use Drago\Authorization\Control\Roles\RolesRepository;
+use Drago\Authorization\Control\Resources\ResourcesEntity;
 use Drago\Authorization\FluentWithClassDataSource;
+use Drago\Authorization\NotAllowedChange;
 use Nette\Application\AbortException;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
+use Nette\Caching\Cache;
+use Nette\Forms\Controls\SelectBox;
 use Nette\SmartObject;
 use Throwable;
 
@@ -31,18 +35,16 @@ use Throwable;
 /**
  * @property-read ComponentTemplate $template
  */
-class AccessControl extends Component implements Base
+class RolesControl extends Component implements Base
 {
 	use SmartObject;
 	use Factory;
 
-	public string $snippetFactory = 'access';
+	public string $snippetFactory = 'roles';
 
 
 	public function __construct(
-		private readonly UsersRepository $usersRepository,
-		private readonly UsersRolesRepository $usersRolesRepository,
-		private readonly UsersRolesViewRepository $usersRolesViewRepository,
+		private readonly Cache $cache,
 		private readonly RolesRepository $rolesRepository,
 	) {
 	}
@@ -51,7 +53,7 @@ class AccessControl extends Component implements Base
 	public function render(): void
 	{
 		$template = $this->template;
-		$template->setFile($this->templateControl ?: __DIR__ . '/Access.latte');
+		$template->setFile($this->templateControl ?: __DIR__ . '/Roles.latte');
 		$template->setTranslator($this->translator);
 		$template->uniqueComponentId = $this->getUniqueComponent($this->openComponentType);
 		$template->render();
@@ -77,33 +79,33 @@ class AccessControl extends Component implements Base
 	/**
 	 * @throws AttributeDetectionException
 	 */
-	protected function createComponentFactory(): Form
+	public function createComponentFactory(): Form
 	{
 		$form = $this->create();
-		$users = $this->usersRepository->getAllUsers();
+		$form->addText(RolesData::NAME, 'Role')
+			->setHtmlAttribute('placeholder', 'Role name')
+			->setHtmlAttribute('autocomplete', 'off')
+			->setRequired();
+
+		$form->addText(RolesData::DESCRIPTION, 'Description')
+			->setHtmlAttribute('placeholder', 'Description')
+			->setHtmlAttribute('autocomplete', 'off')
+			->setRequired();
 
 		if ($this->getSignal()) {
 			$id = (int) $this->getParameter('id');
-			$user = $this->usersRepository->getUserById($id);
-		}
-
-		$form->addSelect(UsersRolesData::USER_ID, 'User', $user ?? $users)
-			->setPrompt('Select user')
-			->setRequired();
-
-		$role = $this->rolesRepository->getRolesAll();
-		$roles = [];
-		foreach ($role as $item) {
-			$roles[$item->id] = $item->name;
-			if ($item->description) {
-				$roles[$item->id] = $item->description;
+			foreach ($this->rolesRepository->getRoles() as $key => $item) {
+				if ($id !== $key) {
+					$roles[$key] = $item;
+				}
 			}
 		}
 
-		$form->addMultiSelect(UsersRolesData::ROLE_ID, 'Select roles', $roles)
+		$form->addSelect(RolesData::PARENT, 'Parent', $roles ?? $this->rolesRepository->getRoles())
+			->setPrompt('Select parent')
 			->setRequired();
 
-		$form->addHidden(UsersRolesData::ID)
+		$form->addHidden(RolesData::ID)
 			->addRule($form::INTEGER)
 			->setNullable();
 
@@ -116,57 +118,25 @@ class AccessControl extends Component implements Base
 	/**
 	 * @throws AbortException
 	 */
-	public function success(Form $form, UsersRolesData $data): void
+	public function success(Form $form, RolesData $data): void
 	{
 		try {
-			if (!$data->id) {
-				$entity = new UsersRolesEntity;
-				$entity->user_id = $data->user_id;
-				foreach ($data->role_id as $item) {
-					$entity->role_id = $item;
-					$this->usersRolesRepository->insert($entity);
-				}
-			} else {
-				$allUserRoles = $this->usersRolesRepository->getAllUserRoles();
-				$roleList = [];
-				foreach ($allUserRoles as $arr) {
-					if ($arr->user_id === $data->id) {
-						$roleList[] = $arr->role_id;
-					}
-				}
-				$insertRoles = array_diff($data->role_id, $roleList);
-				$deleteRoles = array_diff($roleList, $data->role_id);
-				if (count($insertRoles)) {
-					$entity = new UsersRolesEntity;
-					$entity->user_id = $data->user_id;
-					foreach ($insertRoles as $role) {
-						$entity->role_id = $role;
-						$this->usersRolesRepository->insert($entity);
-					}
-				}
+			$this->rolesRepository->save($data);
+			$this->cache->remove(Conf::CACHE);
 
-				if (count($deleteRoles)) {
-					$findRoles = $this->usersRolesRepository->getUserRoles($data->id);
-					$entity = new UsersRolesEntity;
-					foreach ($deleteRoles as $roleForDelete) {
-						foreach ($findRoles as $arr) {
-							if ($arr->role_id === $roleForDelete) {
-								$entity->user_id = $arr->user_id;
-								$entity->role_id = $arr->role_id;
-								$this->usersRolesRepository->delete($entity);
-							}
-						}
-					}
-				}
+			$parent = $this['factory']['parent'];
+			if ($parent instanceof SelectBox) {
+				$parent->setItems($this->rolesRepository->getRoles());
 			}
 
-			$message = $data->id ? 'Roles have been updated.' : 'Role assigned.';
+			$message = $data->id ? 'Role updated.' : 'The role was inserted.';
 			$this->getPresenter()->flashMessage($message, Alert::INFO);
 
 			if ($this->isAjax()) {
-				if ($data->user_id) {
+				if ($data->id) {
 					$this->getPresenter()->payload->close = 'close';
 				}
+
 				$this->getPresenter()->redrawControl($this->snippetMessage);
 				$this->redrawControl($this->snippetFactory);
 				$this['grid']->reload();
@@ -178,7 +148,7 @@ class AccessControl extends Component implements Base
 
 		} catch (Throwable $e) {
 			$message = match ($e->getCode()) {
-				1 => 'The user already has this role assigned.',
+				1 => 'This role already exists.',
 				default => 'Unknown status code.',
 			};
 
@@ -193,47 +163,44 @@ class AccessControl extends Component implements Base
 	/**
 	 * @throws AbortException
 	 * @throws AttributeDetectionException
-	 * @throws Exception
 	 * @throws BadRequestException
+	 * @throws Exception
 	 */
 	public function handleEdit(int $id): void
 	{
-		$items = $this->usersRolesRepository->getUserRoles($id);
+		$items = $this->rolesRepository->getOne($id);
 		$items ?: $this->error();
 
-		$userId = [];
-		foreach ($items as $item) {
-			$userId[UsersRolesData::USER_ID] = $item->user_id;
-		}
+		try {
+			if ($this->rolesRepository->isAllowed($items->name)) {
+				$form = $this['factory'];
+				$form->setDefaults($items);
 
-		$roleId = [];
-		foreach ($items as $item) {
-			$roleId[$item->role_id] = $item->role_id;
-		}
+				$buttonSend = $this->getFormComponent($form, 'send');
+				$buttonSend->setCaption('Edit');
 
-		$userId = $userId[UsersRolesData::USER_ID];
-		$records = [
-			UsersRolesData::USER_ID => $userId,
-			UsersRolesData::ROLE_ID => $roleId,
-			UsersRolesData::ID => $userId,
-		];
+				if ($this->isAjax()) {
+					$component = $this->getUniqueComponent($this->openComponentType);
+					$this->getPresenter()->payload->{$this->openComponentType} = $component;
+					$this->redrawControl($this->snippetFactory);
 
-		$form = $this['factory'];
-		$form->setDefaults($records);
+				} else {
+					$this->redirect('this');
+				}
+			}
 
-		$buttonSend = $this->getFormComponent($form, 'send');
-		$buttonSend->setCaption('Edit');
+		} catch (NotAllowedChange $e) {
+			$message = match ($e->getCode()) {
+				1001 => 'The role is not allowed to be updated.',
+				default => 'Unknown status code.',
+			};
 
-		$formUserId = $this->getFormComponent($form, 'user_id');
-		$formUserId->setHtmlAttribute('data-locked');
+			$this->getPresenter()
+				->flashMessage($message, Alert::WARNING);
 
-		if ($this->isAjax()) {
-			$component = $this->getUniqueComponent($this->openComponentType);
-			$this->getPresenter()->payload->{$this->openComponentType} = $component;
-			$this->redrawControl($this->snippetFactory);
-
-		} else {
-			$this->redirect('this');
+			$this->isAjax()
+				? $this->getPresenter()->redrawControl($this->snippetMessage)
+				: $this->redirect('this');
 		}
 	}
 
@@ -246,28 +213,39 @@ class AccessControl extends Component implements Base
 	 */
 	public function handleDelete(int $id): void
 	{
-		$items = $this->usersRolesRepository->getRecord($id);
+		$items = $this->rolesRepository->getOne($id);
 		$items ?: $this->error();
 
-		$records = $this->usersRolesRepository->getUserRoles($items->user_id);
-		$entity = new UsersRolesEntity;
-		foreach ($records as $record) {
-			$entity->user_id = $record->user_id;
-			$entity->role_id = $record->role_id;
-			$this->usersRolesRepository->delete($entity);
-		}
+		try {
+			$parent = $this->rolesRepository->findParent($items->id);
+			if (!$parent && $this->rolesRepository->isAllowed($items->name)) {
+				$this->rolesRepository->remove($id);
+				$this->cache->remove(Conf::CACHE);
+				$this->getPresenter()->flashMessage('Role deleted.', Alert::DANGER);
 
-		$this->getPresenter()->flashMessage(
-			'Role removed.',
-			Alert::DANGER,
-		);
+				if ($this->isAjax()) {
+					$this->getPresenter()->redrawControl($this->snippetMessage);
+					$this['grid']->reload();
 
-		if ($this->isAjax()) {
-			$this->getPresenter()->redrawControl($this->snippetMessage);
-			$this['grid']->reload();
+				} else {
+					$this->redirect('this');
+				}
+			}
 
-		} else {
-			$this->redirect('this');
+		} catch (Throwable $e) {
+			$message = match ($e->getCode()) {
+				1001 => 'The role is not allowed to be deleted.',
+				1002 => 'The role cannot be deleted because it is bound to another role.',
+				2292 => 'The role cannot be deleted, first delete the permissions that are bound to this role.',
+				default => 'Unknown status code.',
+			};
+
+			$this->getPresenter()
+				->flashMessage($message, Alert::WARNING);
+
+			$this->isAjax()
+				? $this->getPresenter()->redrawControl($this->snippetMessage)
+				: $this->redirect('this');
 		}
 	}
 
@@ -279,8 +257,7 @@ class AccessControl extends Component implements Base
 	protected function createComponentGrid($name): DataGrid
 	{
 		$grid = new DataGrid($this, $name);
-		$data = new FluentWithClassDataSource($this->usersRolesViewRepository->getAllUsers(), 'USER_ID', UsersRolesViewEntity::class);
-		$grid->setPrimaryKey('user_id');
+		$data = new FluentWithClassDataSource($this->rolesRepository->getAll(), 'ID', RolesEntity::class);
 		$grid->setDataSource($data);
 
 		if ($this->translator) {
@@ -291,20 +268,23 @@ class AccessControl extends Component implements Base
 			$grid->setTemplateFile($this->templateGrid);
 		}
 
-		$grid->addColumnText('username', 'Users')
+		$grid->addColumnText('name', 'Name')
 			->setFilterText();
 
-		$grid->addColumnText('role', 'Roles')
+		$grid->addColumnText('parent', 'Parent')
+			->setRenderer(fn(RolesEntity $item) => $this->rolesRepository->findByParent($item->parent)->name ?? null)->setFilterText();
+
+		$grid->addColumnText('description', 'Description')
 			->setFilterText();
 
-		$grid->addAction('edit', 'Edit', 'edit!', ['id' => 'user_id'])
+		$grid->addAction('edit', 'Edit')
 			->setClass('btn btn-xs btn-primary text-white ajax');
 
 		$confirm = 'Are you sure you want to delete the selected item?';
 		if ($this->translator) {
 			$confirm = $this->translator->translate($confirm);
 		}
-		$grid->addAction('delete', 'Delete', 'delete!', ['id' => 'user_id'])
+		$grid->addAction('delete', 'Delete')
 			->setClass('btn btn-xs btn-danger ajax')
 			->setConfirmation(new StringConfirmation($confirm));
 
