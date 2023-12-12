@@ -11,7 +11,6 @@ namespace Drago\Authorization;
 
 use Nette\Application\UI\Presenter;
 use Nette\Security\User;
-use Tracy\Debugger;
 
 
 trait Authorization
