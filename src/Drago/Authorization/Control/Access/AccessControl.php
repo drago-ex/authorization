@@ -96,7 +96,7 @@ class AccessControl extends Component implements Base
 		foreach ($role as $item) {
 			$roles[$item->id] = $item->name;
 			if ($item->description) {
-				$roles[$item->id] .= ' (' . $item->description . ')';
+				$roles[$item->id] = $item->description;
 			}
 		}
 
