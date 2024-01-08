@@ -278,6 +278,7 @@ class PermissionsControl extends Component implements Base
 		$grid = new DataGrid($this, $name);
 		$data = new FluentWithClassDataSource($this->permissionsViewRepository->getAll(), 'ID', PermissionsViewEntity::class);
 		$grid->setDataSource($data);
+		$grid->setAutoSubmit(false);
 
 		if ($this->translator) {
 			$grid->setTranslator($this->translator);

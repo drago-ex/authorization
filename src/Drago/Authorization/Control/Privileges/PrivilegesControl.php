@@ -232,6 +232,7 @@ class PrivilegesControl extends Component implements Base
 		$grid = new DataGrid($this, $name);
 		$data = new FluentWithClassDataSource($this->privilegesRepository->getAll(), 'ID', PrivilegesEntity::class);
 		$grid->setDataSource($data);
+		$grid->setAutoSubmit(false);
 
 		if ($this->translator) {
 			$grid->setTranslator($this->translator);
