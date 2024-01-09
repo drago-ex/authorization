@@ -212,6 +212,7 @@ class ResourcesControl extends Component implements Base
 		$data = new FluentWithClassDataSource($this->resourcesRepository->getAll(), 'ID', ResourcesEntity::class);
 		$grid->setDataSource($data);
 		$grid->setAutoSubmit(false);
+		$grid->setStrictSessionFilterValues(false);
 
 		if ($this->translator) {
 			$grid->setTranslator($this->translator);

@@ -283,6 +283,7 @@ class AccessControl extends Component implements Base
 		$grid->setPrimaryKey('user_id');
 		$grid->setDataSource($data);
 		$grid->setAutoSubmit(false);
+		$grid->setStrictSessionFilterValues(false);
 
 		if ($this->translator) {
 			$grid->setTranslator($this->translator);
