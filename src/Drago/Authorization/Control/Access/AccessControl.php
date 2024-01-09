@@ -282,7 +282,7 @@ class AccessControl extends Component implements Base
 		$data = new FluentWithClassDataSource($this->usersRolesViewRepository->getAllUsers(), 'USER_ID', UsersRolesViewEntity::class);
 		$grid->setPrimaryKey('user_id');
 		$grid->setDataSource($data);
-		//$grid->setAutoSubmit(false);
+		$grid->setAutoSubmit(false);
 
 		if ($this->translator) {
 			$grid->setTranslator($this->translator);
