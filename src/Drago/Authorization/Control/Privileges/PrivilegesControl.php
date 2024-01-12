@@ -102,7 +102,7 @@ class PrivilegesControl extends Component implements Base
 			$this->cache->remove(Conf::CACHE);
 
 			$message = $data->id ? 'Privilege updated.' : 'Privilege inserted.';
-			$this->getPresenter()->flashMessage($message, Alert::INFO);
+			$this->getPresenter()->flashMessage($message, Alert::Info);
 
 			if ($this->isAjax()) {
 				if ($data->id) {
@@ -167,7 +167,7 @@ class PrivilegesControl extends Component implements Base
 			};
 
 			$this->getPresenter()
-				->flashMessage($message, Alert::WARNING);
+				->flashMessage($message, Alert::Warning);
 
 			$this->isAjax()
 				? $this->getPresenter()->redrawControl($this->snippetMessage)
@@ -193,7 +193,7 @@ class PrivilegesControl extends Component implements Base
 				$this->cache->remove(Conf::CACHE);
 				$this->getPresenter()->flashMessage(
 					'Privilege deleted.',
-					Alert::DANGER,
+					Alert::Danger,
 				);
 
 				if ($this->isAjax()) {
@@ -213,7 +213,7 @@ class PrivilegesControl extends Component implements Base
 			};
 
 			$this->getPresenter()
-				->flashMessage($message, Alert::WARNING);
+				->flashMessage($message, Alert::Warning);
 
 			$this->isAjax()
 				? $this->getPresenter()->redrawControl($this->snippetMessage)

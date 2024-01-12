@@ -101,7 +101,7 @@ class ResourcesControl extends Component implements Base
 			$this->cache->remove(Conf::CACHE);
 
 			$message = $data->id ? 'Resource updated.' : 'Resource inserted.';
-			$this->getPresenter()->flashMessage($message, Alert::INFO);
+			$this->getPresenter()->flashMessage($message, Alert::Info);
 
 			if ($this->isAjax()) {
 				if ($data->id) {
@@ -174,7 +174,7 @@ class ResourcesControl extends Component implements Base
 			$this->cache->remove(Conf::CACHE);
 			$this->getPresenter()->flashMessage(
 				'Resource deleted.',
-				Alert::DANGER,
+				Alert::Danger,
 			);
 
 			if ($this->isAjax()) {
@@ -192,7 +192,7 @@ class ResourcesControl extends Component implements Base
 			};
 
 			$this->getPresenter()
-				->flashMessage($message, Alert::WARNING);
+				->flashMessage($message, Alert::Warning);
 
 			$this->isAjax()
 				? $this->getPresenter()->redrawControl($this->snippetMessage)

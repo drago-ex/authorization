@@ -129,7 +129,7 @@ class RolesControl extends Component implements Base
 			}
 
 			$message = $data->id ? 'Role updated.' : 'The role was inserted.';
-			$this->getPresenter()->flashMessage($message, Alert::INFO);
+			$this->getPresenter()->flashMessage($message, Alert::Info);
 
 			if ($this->isAjax()) {
 				if ($data->id) {
@@ -195,7 +195,7 @@ class RolesControl extends Component implements Base
 			};
 
 			$this->getPresenter()
-				->flashMessage($message, Alert::WARNING);
+				->flashMessage($message, Alert::Warning);
 
 			$this->isAjax()
 				? $this->getPresenter()->redrawControl($this->snippetMessage)
@@ -220,7 +220,7 @@ class RolesControl extends Component implements Base
 			if (!$parent && $this->rolesRepository->isAllowed($items->name)) {
 				$this->rolesRepository->remove($id);
 				$this->cache->remove(Conf::CACHE);
-				$this->getPresenter()->flashMessage('Role deleted.', Alert::DANGER);
+				$this->getPresenter()->flashMessage('Role deleted.', Alert::Danger);
 
 				if ($this->isAjax()) {
 					$this->getPresenter()->redrawControl($this->snippetMessage);
@@ -240,7 +240,7 @@ class RolesControl extends Component implements Base
 			};
 
 			$this->getPresenter()
-				->flashMessage($message, Alert::WARNING);
+				->flashMessage($message, Alert::Warning);
 
 			$this->isAjax()
 				? $this->getPresenter()->redrawControl($this->snippetMessage)

@@ -154,7 +154,7 @@ class PermissionsControl extends Component implements Base
 			$this->cache->remove(Conf::CACHE);
 
 			$message = $data->id ? 'Permission was updated.' : 'Permission added.';
-			$this->getPresenter()->flashMessage($message, Alert::INFO);
+			$this->getPresenter()->flashMessage($message, Alert::Info);
 
 			if ($this->isAjax()) {
 				if ($data->id) {
@@ -226,7 +226,7 @@ class PermissionsControl extends Component implements Base
 		$this->cache->remove(Conf::CACHE);
 		$this->getPresenter()->flashMessage(
 			'Permission removed.',
-			Alert::DANGER,
+			Alert::Danger,
 		);
 
 		if ($this->isAjax()) {
@@ -255,7 +255,7 @@ class PermissionsControl extends Component implements Base
 
 			$this->permissionsRepository->put($entity->toArrayUpper());
 			$message = 'Authorization has been changed.';
-			$this->getPresenter()->flashMessage($message, Alert::INFO);
+			$this->getPresenter()->flashMessage($message, Alert::Info);
 
 			if ($this->isAjax()) {
 				$this->getPresenter()->redrawControl($this->snippetMessage);
