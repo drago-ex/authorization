@@ -9,13 +9,10 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control\Resources;
 
 use Drago;
-use Nette;
 
 
 class ResourcesData extends Drago\Utils\ExtraArrayHash
 {
-	use Nette\SmartObject;
-
 	public const ID = 'id';
 	public const NAME = 'name';
 

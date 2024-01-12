@@ -18,13 +18,11 @@ use Drago\Attr\Table;
 use Drago\Authorization\Conf;
 use Drago\Authorization\NotAllowedChange;
 use Drago\Database\Repository;
-use Nette\SmartObject;
 
 
 #[Table(PrivilegesEntity::TABLE, PrivilegesEntity::PRIMARY)]
 class PrivilegesRepository
 {
-	use SmartObject;
 	use Repository;
 
 	public function __construct(

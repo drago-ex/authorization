@@ -9,13 +9,10 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control\Privileges;
 
 use Drago;
-use Nette;
 
 
 class PrivilegesEntity extends Drago\Database\EntityOracle
 {
-	use Nette\SmartObject;
-
 	public const TABLE = 'ACL_PRIVILEGES';
 	public const PRIMARY = 'ID';
 	public const NAME = 'NAME';

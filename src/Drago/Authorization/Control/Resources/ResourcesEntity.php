@@ -9,13 +9,10 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control\Resources;
 
 use Drago;
-use Nette;
 
 
 class ResourcesEntity extends Drago\Database\EntityOracle
 {
-	use Nette\SmartObject;
-
 	public const TABLE = 'ACL_RESOURCES';
 	public const PRIMARY = 'ID';
 	public const NAME = 'NAME';

@@ -9,13 +9,10 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control\Access;
 
 use Drago;
-use Nette;
 
 
 class UsersRolesData extends Drago\Utils\ExtraArrayHash
 {
-	use Nette\SmartObject;
-
 	public const ROLE_ID = 'role_id';
 	public const USER_ID = 'user_id';
 	public const ID = 'id';

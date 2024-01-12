@@ -15,13 +15,11 @@ use Dibi\Result;
 use Drago\Attr\AttributeDetectionException;
 use Drago\Attr\Table;
 use Drago\Database\Repository;
-use Nette\SmartObject;
 
 
 #[Table(PermissionsEntity::TABLE, PermissionsEntity::PRIMARY)]
 class PermissionsRepository
 {
-	use SmartObject;
 	use Repository;
 
 	public function __construct(

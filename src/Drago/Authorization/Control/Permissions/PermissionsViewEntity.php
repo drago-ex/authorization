@@ -9,13 +9,10 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control\Permissions;
 
 use Drago;
-use Nette;
 
 
 class PermissionsViewEntity extends Drago\Database\EntityOracle
 {
-	use Nette\SmartObject;
-
 	public const TABLE = 'ACL_PERMISSIONS_VIEW';
 	public const ID = 'ID';
 	public const RESOURCE = 'RESOURCE';

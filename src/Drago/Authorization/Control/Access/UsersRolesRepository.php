@@ -15,13 +15,11 @@ use Dibi\Result;
 use Drago\Attr\AttributeDetectionException;
 use Drago\Attr\Table;
 use Drago\Database\Repository;
-use Nette\SmartObject;
 
 
 #[Table(UsersRolesEntity::TABLE)]
 class UsersRolesRepository
 {
-	use SmartObject;
 	use Repository;
 
 	public function __construct(

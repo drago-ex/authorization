@@ -20,7 +20,6 @@ use Drago\Authorization\Conf;
 use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
 use Drago\Authorization\Control\Factory;
-use Drago\Authorization\Control\Resources\ResourcesEntity;
 use Drago\Authorization\FluentWithClassDataSource;
 use Drago\Authorization\NotAllowedChange;
 use Nette\Application\AbortException;

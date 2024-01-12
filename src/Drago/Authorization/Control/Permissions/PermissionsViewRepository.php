@@ -16,13 +16,11 @@ use Drago\Attr\AttributeDetectionException;
 use Drago\Attr\Table;
 use Drago\Authorization\Conf;
 use Drago\Database\Repository;
-use Nette\SmartObject;
 
 
 #[Table(PermissionsViewEntity::TABLE)]
 class PermissionsViewRepository
 {
-	use SmartObject;
 	use Repository;
 
 	public function __construct(

@@ -9,13 +9,10 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control\Roles;
 
 use Drago;
-use Nette;
 
 
 class RolesEntity extends Drago\Database\EntityOracle
 {
-	use Nette\SmartObject;
-
 	public const TABLE = 'ACL_ROLES';
 	public const PRIMARY = 'ID';
 	public const NAME = 'NAME';

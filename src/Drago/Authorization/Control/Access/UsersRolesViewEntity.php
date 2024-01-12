@@ -9,13 +9,10 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control\Access;
 
 use Drago;
-use Nette;
 
 
 class UsersRolesViewEntity extends Drago\Database\EntityOracle
 {
-	use Nette\SmartObject;
-
 	public const TABLE = 'USERS_ROLES_VIEW';
 	public const USER_ID = 'USER_ID';
 	public const USERNAME = 'USERNAME';

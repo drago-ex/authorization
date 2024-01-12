@@ -15,13 +15,11 @@ use Drago\Attr\AttributeDetectionException;
 use Drago\Attr\Table;
 use Drago\Authorization\Conf;
 use Drago\Database\Repository;
-use Nette\SmartObject;
 
 
 #[Table(AccessEntity::TABLE, AccessEntity::PRIMARY)]
 class UsersRepository
 {
-	use SmartObject;
 	use Repository;
 
 	public function __construct(
