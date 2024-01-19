@@ -7,6 +7,7 @@ services:
 	authorization: Drago\Authorization\ExtraPermission(@authorization.cache)
 	authorization.up: @authorization::create
 
+	- Drago\Authorization\Control\Factory
 	- Drago\Authorization\Control\Roles\RolesControl(@authorization.cache)
 	- Drago\Authorization\Control\Resources\ResourcesControl(@authorization.cache)
 	- Drago\Authorization\Control\Privileges\PrivilegesControl(@authorization.cache)

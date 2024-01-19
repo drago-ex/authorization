@@ -37,7 +37,6 @@ use Throwable;
 class RolesControl extends Component implements Base
 {
 	use SmartObject;
-	use Factory;
 
 	public string $snippetFactory = 'roles';
 
@@ -45,6 +44,7 @@ class RolesControl extends Component implements Base
 	public function __construct(
 		private readonly Cache $cache,
 		private readonly RolesRepository $rolesRepository,
+		private readonly Factory $factory,
 	) {
 	}
 
@@ -80,8 +80,8 @@ class RolesControl extends Component implements Base
 	 */
 	public function createComponentFactory(): Form
 	{
-		$form = $this->create();
-		$form->addText(RolesEntity::Name, 'Role')
+		$form = $this->factory->create();
+		$form->addText(RolesEntity::ColumnName, 'Role')
 			->setHtmlAttribute('placeholder', 'Role name')
 			->setHtmlAttribute('autocomplete', 'off')
 			->setRequired();
@@ -95,11 +95,11 @@ class RolesControl extends Component implements Base
 			}
 		}
 
-		$form->addSelect(RolesEntity::Parent, 'Parent', $roles ?? $this->rolesRepository->getRoles())
+		$form->addSelect(RolesEntity::ColumnParent, 'Parent', $roles ?? $this->rolesRepository->getRoles())
 			->setPrompt('Select parent')
 			->setRequired();
 
-		$form->addHidden(RolesEntity::Id)
+		$form->addHidden(RolesEntity::PrimaryKey)
 			->addRule($form::INTEGER)
 			->setNullable();
 

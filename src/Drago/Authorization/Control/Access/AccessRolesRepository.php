@@ -17,7 +17,7 @@ use Drago\Attr\Table;
 use Drago\Database\Repository;
 
 
-#[Table(AccessRolesEntity::Table)]
+#[Table(AccessRolesEntity::TableName)]
 class AccessRolesRepository
 {
 	use Repository;
@@ -49,7 +49,7 @@ class AccessRolesRepository
 	public function getUserRoles(int $userId): array
 	{
 		return $this->all()
-			->where(AccessRolesEntity::UserId, '= ?', $userId)
+			->where(AccessRolesEntity::ColumnUserId, '= ?', $userId)
 			->execute()->setRowClass(AccessRolesEntity::class)
 			->fetchAll();
 	}
@@ -60,9 +60,9 @@ class AccessRolesRepository
 	 */
 	public function delete(AccessRolesEntity $entity): Result|int|null
 	{
-		return $this->db->delete(AccessRolesEntity::Table)
-			->where(AccessRolesEntity::UserId, '= ?', $entity->user_id)
-			->and(AccessRolesEntity::RoleId, '= ?', $entity->role_id)
+		return $this->db->delete(AccessRolesEntity::TableName)
+			->where(AccessRolesEntity::ColumnUserId, '= ?', $entity->user_id)
+			->and(AccessRolesEntity::ColumnRoleId, '= ?', $entity->role_id)
 			->execute();
 	}
 
@@ -72,7 +72,7 @@ class AccessRolesRepository
 	 */
 	public function insert(AccessRolesEntity $entity): Result|int|null
 	{
-		return $this->db->insert(AccessRolesEntity::Table, $entity->toArray())
+		return $this->db->insert(AccessRolesEntity::TableName, $entity->toArray())
 			->execute();
 	}
 
@@ -83,7 +83,7 @@ class AccessRolesRepository
 	 */
 	public function getRecord(int $id): array|AccessRolesEntity|null
 	{
-		return $this->discover(AccessRolesEntity::UserId, $id)
+		return $this->discover(AccessRolesEntity::ColumnUserId, $id)
 			->execute()->setRowClass(AccessRolesEntity::class)
 			->fetch();
 	}

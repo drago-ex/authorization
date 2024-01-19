@@ -18,7 +18,7 @@ use Drago\Attr\Table;
 use Drago\Database\Repository;
 
 
-#[Table(ResourcesEntity::Table, ResourcesEntity::Id)]
+#[Table(ResourcesEntity::TableName, ResourcesEntity::PrimaryKey)]
 class ResourcesRepository
 {
 	use Repository;
@@ -35,7 +35,7 @@ class ResourcesRepository
 	public function getAll(): Fluent
 	{
 		return $this->all()
-			->orderBy(ResourcesEntity::Name, 'asc');
+			->orderBy(ResourcesEntity::ColumnName, 'asc');
 	}
 
 

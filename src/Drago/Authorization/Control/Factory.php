@@ -10,10 +10,17 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control;
 
 use Nette\Application\UI\Form;
+use Nette\Localization\Translator;
 
 
-trait Factory
+class Factory
 {
+	public function __construct(
+		private readonly Translator $translator,
+	) {
+	}
+
+
 	public function create(): Form
 	{
 		$form = new Form;

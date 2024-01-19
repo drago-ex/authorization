@@ -41,7 +41,6 @@ use Throwable;
 class PermissionsControl extends Component implements Base
 {
 	use SmartObject;
-	use Factory;
 
 	public string $snippetFactory = 'permissions';
 
@@ -54,6 +53,7 @@ class PermissionsControl extends Component implements Base
 		private readonly PermissionsRepository $permissionsRepository,
 		private readonly PermissionsViewRepository $permissionsViewRepository,
 		private readonly PermissionsRolesViewRepository $permissionsRolesViewRepository,
+		private readonly Factory $factory,
 	) {
 	}
 
@@ -89,26 +89,26 @@ class PermissionsControl extends Component implements Base
 	 */
 	protected function createComponentFactory(): Form
 	{
-		$form = $this->create();
+		$form = $this->factory->create();
 		$roles = $this->rolesRepository->all()
-			->where(RolesEntity::Name, '!= ?', Conf::RoleAdmin)
-			->fetchPairs(RolesEntity::Id, RolesEntity::Name);
+			->where(RolesEntity::ColumnName, '!= ?', Conf::RoleAdmin)
+			->fetchPairs(RolesEntity::PrimaryKey, RolesEntity::ColumnName);
 
-		$form->addSelect(PermissionsEntity::RoleId, 'Role', $roles)
+		$form->addSelect(PermissionsEntity::ColumnRoleId, 'Role', $roles)
 			->setPrompt('Select role')
 			->setRequired();
 
 		$resources = $this->resourcesRepository->all()
-			->fetchPairs(ResourcesEntity::Id, ResourcesEntity::Name);
+			->fetchPairs(ResourcesEntity::PrimaryKey, ResourcesEntity::ColumnName);
 
-		$form->addSelect(PermissionsEntity::ResourceId, 'Resource', $resources)
+		$form->addSelect(PermissionsEntity::ColumnResourceId, 'Resource', $resources)
 			->setPrompt('Select resource')
 			->setRequired();
 
 		$privileges = $this->privilegesRepository->all()
-			->fetchPairs(PrivilegesEntity::Id, PrivilegesEntity::Name);
+			->fetchPairs(PrivilegesEntity::PrimaryKey, PrivilegesEntity::ColumnName);
 
-		$form->addSelect(PermissionsEntity::PrivilegeId, 'Actions and signals', $privileges)
+		$form->addSelect(PermissionsEntity::ColumnPrivilegeId, 'Actions and signals', $privileges)
 			->setPrompt('Select privilege')
 			->setRequired();
 
@@ -117,11 +117,11 @@ class PermissionsControl extends Component implements Base
 			'Allow',
 		];
 
-		$form->addSelect(PermissionsEntity::Allowed, 'Permission', $permission)
+		$form->addSelect(PermissionsEntity::ColumnAllowed, 'Permission', $permission)
 			->setPrompt('Select permission')
 			->setRequired();
 
-		$form->addHidden(PermissionsEntity::Id)
+		$form->addHidden(PermissionsEntity::PrimaryKey)
 			->addRule($form::INTEGER)
 			->setNullable();
 

@@ -20,7 +20,7 @@ use Drago\Authorization\NotAllowedChange;
 use Drago\Database\Repository;
 
 
-#[Table(PrivilegesEntity::Table, PrivilegesEntity::Id)]
+#[Table(PrivilegesEntity::TableName, PrivilegesEntity::PrimaryKey)]
 class PrivilegesRepository
 {
 	use Repository;
@@ -37,8 +37,8 @@ class PrivilegesRepository
 	public function getAll(): Fluent
 	{
 		return $this->all()
-			->where(PrivilegesEntity::Name, '!= ?', Conf::PrivilegeAll)
-			->orderBy(PrivilegesEntity::Name, 'asc');
+			->where(PrivilegesEntity::ColumnName, '!= ?', Conf::PrivilegeAll)
+			->orderBy(PrivilegesEntity::ColumnName, 'asc');
 	}
 
 

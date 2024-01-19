@@ -17,7 +17,7 @@ use Drago\Authorization\Conf;
 use Drago\Database\Repository;
 
 
-#[Table(AccessRolesViewEntity::Table)]
+#[Table(AccessRolesViewEntity::TableName)]
 class AccessRolesViewRepository
 {
 	use Repository;
@@ -37,6 +37,6 @@ class AccessRolesViewRepository
 			->select('user_id, username, group_concat(role separator ", ") role')
 			->from($this->getTable())->groupBy('user_id, username')
 			->having('sum(case when role = ? then 1 else 0 end) = ?', Conf::RoleAdmin, 0)
-			->orderBy(AccessRolesViewEntity::UserId, 'asc');
+			->orderBy(AccessRolesViewEntity::ColumnUserId, 'asc');
 	}
 }

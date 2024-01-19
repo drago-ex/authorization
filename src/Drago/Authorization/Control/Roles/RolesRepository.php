@@ -20,7 +20,7 @@ use Drago\Authorization\NotAllowedChange;
 use Drago\Database\Repository;
 
 
-#[Table(RolesEntity::Table, RolesEntity::Id)]
+#[Table(RolesEntity::TableName, RolesEntity::PrimaryKey)]
 class RolesRepository
 {
 	use Repository;
@@ -37,7 +37,7 @@ class RolesRepository
 	public function getAll(): Fluent
 	{
 		return $this->all()
-			->orderBy(RolesEntity::Id);
+			->orderBy(RolesEntity::PrimaryKey);
 	}
 
 
@@ -60,7 +60,7 @@ class RolesRepository
 	 */
 	public function findByParent(int $parent): array|RolesEntity|null
 	{
-		return $this->discover(RolesEntity::Id, $parent)
+		return $this->discover(RolesEntity::PrimaryKey, $parent)
 			->execute()->setRowClass(RolesEntity::class)
 			->fetch();
 	}
@@ -84,8 +84,8 @@ class RolesRepository
 	public function getRoles(): array
 	{
 		return $this->all()
-			->where(RolesEntity::Name, '!= ?', Conf::RoleAdmin)
-			->fetchPairs(RolesEntity::Id, RolesEntity::Name);
+			->where(RolesEntity::ColumnName, '!= ?', Conf::RoleAdmin)
+			->fetchPairs(RolesEntity::PrimaryKey, RolesEntity::ColumnName);
 	}
 
 
@@ -94,8 +94,8 @@ class RolesRepository
 	 */
 	public function getRolesPairs(): array
 	{
-		return $this->all()->where(RolesEntity::Name, '!= ?', Conf::RoleAdmin)
-			->fetchPairs(RolesEntity::Name, RolesEntity::Name);
+		return $this->all()->where(RolesEntity::ColumnName, '!= ?', Conf::RoleAdmin)
+			->fetchPairs(RolesEntity::ColumnName, RolesEntity::ColumnName);
 	}
 
 
@@ -105,7 +105,7 @@ class RolesRepository
 	 */
 	public function findParent(int $id): array|RolesEntity|null
 	{
-		$row = $this->discover(RolesEntity::Parent, $id)->fetch();
+		$row = $this->discover(RolesEntity::ColumnParent, $id)->fetch();
 		if ($row) {
 			throw new NotAllowedChange(
 				'The record can not be deleted, you must first delete the records that are associated with it.',

@@ -13,9 +13,9 @@ use Drago;
 
 class AccessRolesEntity extends Drago\Database\Entity
 {
-	public const Table = 'users_roles';
-	public const RoleId = 'role_id';
-	public const UserId = 'user_id';
+	public const TableName = 'users_roles';
+	public const ColumnRoleId = 'role_id';
+	public const ColumnUserId = 'user_id';
 
 	public int $role_id;
 	public int $user_id;

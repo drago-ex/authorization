@@ -17,7 +17,7 @@ use Drago\Attr\Table;
 use Drago\Database\Repository;
 
 
-#[Table(PermissionsEntity::Table, PermissionsEntity::Id)]
+#[Table(PermissionsEntity::TableName, PermissionsEntity::PrimaryKey)]
 class PermissionsRepository
 {
 	use Repository;

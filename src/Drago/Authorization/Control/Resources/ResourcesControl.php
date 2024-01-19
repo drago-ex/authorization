@@ -32,14 +32,13 @@ use Throwable;
  */
 class ResourcesControl extends Component implements Base
 {
-	use Factory;
-
 	public string $snippetFactory = 'resources';
 
 
 	public function __construct(
 		private readonly Cache $cache,
 		private readonly ResourcesRepository $resourcesRepository,
+		private readonly Factory $factory,
 	) {
 	}
 
@@ -72,13 +71,13 @@ class ResourcesControl extends Component implements Base
 
 	protected function createComponentFactory(): Form
 	{
-		$form = $this->create();
-		$form->addText(ResourcesEntity::Name, 'Source')
+		$form = $this->factory->create();
+		$form->addText(ResourcesEntity::ColumnName, 'Source')
 			->setHtmlAttribute('placeholder', 'Source name')
 			->setHtmlAttribute('autocomplete', 'off')
 			->setRequired();
 
-		$form->addHidden(ResourcesEntity::Id)
+		$form->addHidden(ResourcesEntity::PrimaryKey)
 			->addRule($form::INTEGER)
 			->setNullable();
 

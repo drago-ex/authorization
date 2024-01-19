@@ -17,7 +17,7 @@ use Drago\Authorization\Conf;
 use Drago\Database\Repository;
 
 
-#[Table(AccessEntity::Table, AccessEntity::Id)]
+#[Table(AccessEntity::TableName, AccessEntity::PrimaryKey)]
 class AccessRepository
 {
 	use Repository;
@@ -34,10 +34,10 @@ class AccessRepository
 	public function getAllUsers(): array
 	{
 		return $this->db->select('u.id, u.username')->from($this->getTable())->as('u')
-			->leftJoin(AccessRolesViewEntity::Table)->as('r')->on('u.id = r.user_id')
+			->leftJoin(AccessRolesViewEntity::TableName)->as('r')->on('u.id = r.user_id')
 			->groupBy('u.id, u.username')
 			->having('sum(case when r.role = ? then 1 else 0 end) = ?', Conf::RoleAdmin, 0)
-			->fetchPairs(AccessEntity::Id, AccessEntity::Username);
+			->fetchPairs(AccessEntity::PrimaryKey, AccessEntity::ColumnUsername);
 	}
 
 
@@ -47,6 +47,6 @@ class AccessRepository
 	public function getUserById(int $id): array|Row|null
 	{
 		return $this->get($id)
-			->fetchPairs(AccessEntity::Id, AccessEntity::Username);
+			->fetchPairs(AccessEntity::PrimaryKey, AccessEntity::ColumnUsername);
 	}
 }

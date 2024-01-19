@@ -35,7 +35,6 @@ use Throwable;
 class PrivilegesControl extends Component implements Base
 {
 	use SmartObject;
-	use Factory;
 
 	public string $snippetFactory = 'privileges';
 
@@ -43,6 +42,7 @@ class PrivilegesControl extends Component implements Base
 	public function __construct(
 		private readonly Cache $cache,
 		private readonly PrivilegesRepository $privilegesRepository,
+		private readonly Factory $factory,
 	) {
 	}
 
@@ -75,13 +75,13 @@ class PrivilegesControl extends Component implements Base
 
 	protected function createComponentFactory(): Form
 	{
-		$form = $this->create();
-		$form->addText(PrivilegesEntity::Name, 'Action or signal')
+		$form = $this->factory->create();
+		$form->addText(PrivilegesEntity::ColumnName, 'Action or signal')
 			->setHtmlAttribute('placeholder', 'Name action or signal')
 			->setHtmlAttribute('autocomplete', 'off')
 			->setRequired();
 
-		$form->addHidden(PrivilegesEntity::Id)
+		$form->addHidden(PrivilegesEntity::PrimaryKey)
 			->addRule($form::INTEGER)
 			->setNullable();
 

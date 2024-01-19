@@ -13,9 +13,9 @@ use Drago;
 
 class AccessEntity extends Drago\Database\Entity
 {
-	public const Table = 'users';
-	public const Id = 'id';
-	public const Username = 'username';
+	public const TableName = 'users';
+	public const PrimaryKey = 'id';
+	public const ColumnUsername = 'username';
 
 	public ?int $id;
 	public string $username;

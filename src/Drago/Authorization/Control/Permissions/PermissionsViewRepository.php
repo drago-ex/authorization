@@ -18,7 +18,7 @@ use Drago\Authorization\Conf;
 use Drago\Database\Repository;
 
 
-#[Table(PermissionsViewEntity::Table)]
+#[Table(PermissionsViewEntity::TableName)]
 class PermissionsViewRepository
 {
 	use Repository;
@@ -35,7 +35,7 @@ class PermissionsViewRepository
 	public function getAll(): Fluent
 	{
 		return $this->all()
-			->where(PermissionsViewEntity::Role, '!= ?', Conf::RoleAdmin);
+			->where(PermissionsViewEntity::ColumnRole, '!= ?', Conf::RoleAdmin);
 	}
 
 
