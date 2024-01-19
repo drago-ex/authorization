@@ -16,7 +16,7 @@ use Nette\Localization\Translator;
 class Factory
 {
 	public function __construct(
-		private readonly Translator $translator,
+		private readonly ?Translator $translator = null,
 	) {
 	}
 
