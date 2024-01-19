@@ -13,7 +13,7 @@ use Drago;
 
 class AccessEntity extends Drago\Database\Entity
 {
-	public const TableName = 'users';
+	public const Table = 'users';
 	public const PrimaryKey = 'id';
 	public const ColumnUsername = 'username';
 

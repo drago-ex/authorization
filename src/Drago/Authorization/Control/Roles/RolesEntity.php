@@ -15,7 +15,7 @@ class RolesEntity extends Drago\Database\Entity
 {
 	use RolesMapper;
 
-	public const TableName = 'roles';
+	public const Table = 'roles';
 	public const PrimaryKey = 'id';
 	public const ColumnName = 'name';
 	public const ColumnParent = 'parent';

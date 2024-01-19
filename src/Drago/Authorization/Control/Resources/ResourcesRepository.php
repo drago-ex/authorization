@@ -18,7 +18,7 @@ use Drago\Attr\Table;
 use Drago\Database\Repository;
 
 
-#[Table(ResourcesEntity::TableName, ResourcesEntity::PrimaryKey)]
+#[Table(ResourcesEntity::Table, ResourcesEntity::PrimaryKey)]
 class ResourcesRepository
 {
 	use Repository;

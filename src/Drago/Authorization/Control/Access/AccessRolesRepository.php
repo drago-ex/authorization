@@ -17,7 +17,7 @@ use Drago\Attr\Table;
 use Drago\Database\Repository;
 
 
-#[Table(AccessRolesEntity::TableName)]
+#[Table(AccessRolesEntity::Table)]
 class AccessRolesRepository
 {
 	use Repository;
@@ -60,7 +60,7 @@ class AccessRolesRepository
 	 */
 	public function delete(AccessRolesEntity $entity): Result|int|null
 	{
-		return $this->db->delete(AccessRolesEntity::TableName)
+		return $this->db->delete(AccessRolesEntity::Table)
 			->where(AccessRolesEntity::ColumnUserId, '= ?', $entity->user_id)
 			->and(AccessRolesEntity::ColumnRoleId, '= ?', $entity->role_id)
 			->execute();
@@ -72,7 +72,7 @@ class AccessRolesRepository
 	 */
 	public function insert(AccessRolesEntity $entity): Result|int|null
 	{
-		return $this->db->insert(AccessRolesEntity::TableName, $entity->toArray())
+		return $this->db->insert(AccessRolesEntity::Table, $entity->toArray())
 			->execute();
 	}
 

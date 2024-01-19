@@ -17,7 +17,7 @@ use Drago\Authorization\Conf;
 use Drago\Database\Repository;
 
 
-#[Table(AccessRolesViewEntity::TableName)]
+#[Table(AccessRolesViewEntity::Table)]
 class AccessRolesViewRepository
 {
 	use Repository;

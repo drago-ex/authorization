@@ -15,7 +15,7 @@ class PermissionsEntity extends Drago\Database\Entity
 {
 	use PermissionsMapper;
 
-	public const TableName = 'permissions';
+	public const Table = 'permissions';
 	public const PrimaryKey = 'id';
 	public const ColumnRoleId = 'role_id';
 	public const ColumnResourceId = 'resource_id';

@@ -13,7 +13,7 @@ use Drago;
 
 class PermissionsRolesViewEntity extends Drago\Database\Entity
 {
-	public const TableName = 'permissions_roles_view';
+	public const Table = 'permissions_roles_view';
 	public const PrimaryKey = 'id';
 	public const ColumnName = 'name';
 	public const ColumnParent = 'parent';

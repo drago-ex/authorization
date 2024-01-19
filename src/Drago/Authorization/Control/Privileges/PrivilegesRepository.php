@@ -20,7 +20,7 @@ use Drago\Authorization\NotAllowedChange;
 use Drago\Database\Repository;
 
 
-#[Table(PrivilegesEntity::TableName, PrivilegesEntity::PrimaryKey)]
+#[Table(PrivilegesEntity::Table, PrivilegesEntity::PrimaryKey)]
 class PrivilegesRepository
 {
 	use Repository;
