@@ -34,7 +34,7 @@ class PermissionsRolesViewRepository
 	 */
 	public function getAll(): array
 	{
-		return $this->all()->execute()
+		return $this->query()->execute()
 			->setRowClass(PermissionsRolesViewEntity::class)
 			->fetchAll();
 	}

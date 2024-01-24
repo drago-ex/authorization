@@ -36,7 +36,7 @@ class PrivilegesRepository
 	 */
 	public function getAll(): Fluent
 	{
-		return $this->all()
+		return $this->query()
 			->where(PrivilegesEntity::ColumnName, '!= ?', Conf::PrivilegeAll)
 			->orderBy(PrivilegesEntity::ColumnName, 'asc');
 	}

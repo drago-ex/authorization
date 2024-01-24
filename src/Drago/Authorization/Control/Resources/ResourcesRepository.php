@@ -34,7 +34,7 @@ class ResourcesRepository
 	 */
 	public function getAll(): Fluent
 	{
-		return $this->all()
+		return $this->query()
 			->orderBy(ResourcesEntity::ColumnName, 'asc');
 	}
 

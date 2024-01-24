@@ -35,7 +35,7 @@ class AccessRolesRepository
 	 */
 	public function getAllUserRoles(): array
 	{
-		return $this->all()->execute()
+		return $this->query()->execute()
 			->setRowClass(AccessRolesEntity::class)
 			->fetchAll();
 	}
@@ -48,7 +48,7 @@ class AccessRolesRepository
 	 */
 	public function getUserRoles(int $userId): array
 	{
-		return $this->all()
+		return $this->query()
 			->where(AccessRolesEntity::ColumnUserId, '= ?', $userId)
 			->execute()->setRowClass(AccessRolesEntity::class)
 			->fetchAll();
@@ -83,7 +83,7 @@ class AccessRolesRepository
 	 */
 	public function getRecord(int $id): array|AccessRolesEntity|null
 	{
-		return $this->discover(AccessRolesEntity::ColumnUserId, $id)
+		return $this->query(AccessRolesEntity::ColumnUserId, $id)
 			->execute()->setRowClass(AccessRolesEntity::class)
 			->fetch();
 	}

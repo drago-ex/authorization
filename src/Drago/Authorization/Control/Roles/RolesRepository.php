@@ -36,7 +36,7 @@ class RolesRepository
 	 */
 	public function getAll(): Fluent
 	{
-		return $this->all()
+		return $this->query()
 			->orderBy(RolesEntity::PrimaryKey);
 	}
 
@@ -60,7 +60,7 @@ class RolesRepository
 	 */
 	public function findByParent(int $parent): array|RolesEntity|null
 	{
-		return $this->discover(RolesEntity::PrimaryKey, $parent)
+		return $this->query(RolesEntity::PrimaryKey, $parent)
 			->execute()->setRowClass(RolesEntity::class)
 			->fetch();
 	}
@@ -83,7 +83,7 @@ class RolesRepository
 	 */
 	public function getRoles(): array
 	{
-		return $this->all()
+		return $this->query()
 			->where(RolesEntity::ColumnName, '!= ?', Conf::RoleAdmin)
 			->fetchPairs(RolesEntity::PrimaryKey, RolesEntity::ColumnName);
 	}
@@ -94,7 +94,7 @@ class RolesRepository
 	 */
 	public function getRolesPairs(): array
 	{
-		return $this->all()->where(RolesEntity::ColumnName, '!= ?', Conf::RoleAdmin)
+		return $this->query()->where(RolesEntity::ColumnName, '!= ?', Conf::RoleAdmin)
 			->fetchPairs(RolesEntity::ColumnName, RolesEntity::ColumnName);
 	}
 
@@ -105,7 +105,7 @@ class RolesRepository
 	 */
 	public function findParent(int $id): array|RolesEntity|null
 	{
-		$row = $this->discover(RolesEntity::ColumnParent, $id)->fetch();
+		$row = $this->query(RolesEntity::ColumnParent, $id)->fetch();
 		if ($row) {
 			throw new NotAllowedChange(
 				'The record can not be deleted, you must first delete the records that are associated with it.',

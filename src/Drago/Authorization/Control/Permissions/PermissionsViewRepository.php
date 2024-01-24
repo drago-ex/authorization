@@ -34,7 +34,7 @@ class PermissionsViewRepository
 	 */
 	public function getAll(): Fluent
 	{
-		return $this->all()
+		return $this->query()
 			->where(PermissionsViewEntity::ColumnRole, '!= ?', Conf::RoleAdmin);
 	}
 
