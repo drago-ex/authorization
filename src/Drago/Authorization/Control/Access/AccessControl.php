@@ -45,6 +45,7 @@ class AccessControl extends Component implements Base
 		private readonly UsersRolesViewRepository $usersRolesViewRepository,
 		private readonly RolesRepository $rolesRepository,
 		private readonly DepartmentsRepository $departmentsRepository,
+		private readonly UsersDepartmentsRepository $departmentsRepository,
 	) {
 	}
 
