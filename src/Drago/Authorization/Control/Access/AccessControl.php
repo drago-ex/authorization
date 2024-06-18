@@ -44,6 +44,7 @@ class AccessControl extends Component implements Base
 		private readonly UsersRolesRepository $usersRolesRepository,
 		private readonly UsersRolesViewRepository $usersRolesViewRepository,
 		private readonly RolesRepository $rolesRepository,
+		private readonly DepartmentsRepository $departmentsRepository,
 	) {
 	}
 
@@ -101,6 +102,11 @@ class AccessControl extends Component implements Base
 		}
 
 		$form->addMultiSelect(UsersRolesData::ROLE_ID, 'Select roles', $roles)
+			->setRequired();
+
+
+		$departments = $this->departmentsRepository->getAll();
+		$form->addMultiSelect(UsersRolesData::DEPARTMENT_ID, 'Department', $departments)
 			->setRequired();
 
 		$form->addHidden(UsersRolesData::ID)
