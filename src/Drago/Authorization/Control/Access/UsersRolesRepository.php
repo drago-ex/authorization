@@ -65,6 +65,13 @@ class UsersRolesRepository
 			->and(UsersRolesEntity::ROLE_ID, '= ?', $entity->role_id)
 			->execute();
 	}
+	
+	public function deleteByUserId(int $userId)
+	{
+		return $this->db->delete(UsersRolesEntity::TABLE)
+			->where(UsersRolesEntity::USER_ID, '= ?', $userId)
+			->execute();
+	}
 
 
 	/**
@@ -86,5 +93,11 @@ class UsersRolesRepository
 		return $this->discover(UsersRolesEntity::USER_ID, $id)
 			->execute()->setRowClass(UsersRolesEntity::class)
 			->fetch();
+	}
+
+
+	public function getDb(): Connection
+	{
+		return $this->db;
 	}
 }

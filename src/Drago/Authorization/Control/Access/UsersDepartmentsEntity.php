@@ -15,8 +15,8 @@ class UsersDepartmentsEntity extends Drago\Database\EntityOracle
 {
 	public const TABLE = 'USERS_DEPARTMENTS';
 	public const PRIMARY = 'ID';
-	public const USERNAME = 'USER_ID';
-	public const EMAIL = 'DEPARTMENT_ID';
+	public const USER_ID = 'USER_ID';
+	public const DEPARTMENT_ID = 'DEPARTMENT_ID';
 
 	public ?int $id;
 	public int $user_id;

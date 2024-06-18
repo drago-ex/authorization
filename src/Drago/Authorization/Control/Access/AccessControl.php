@@ -26,6 +26,7 @@ use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\SmartObject;
 use Throwable;
+use Tracy\Debugger;
 
 
 /**
@@ -107,8 +108,7 @@ class AccessControl extends Component implements Base
 
 
 		$departments = $this->departmentsRepository->getAll();
-		$form->addMultiSelect(UsersRolesData::DEPARTMENT_ID, 'Department', $departments)
-			->setRequired();
+		$form->addMultiSelect(UsersRolesData::DEPARTMENT_ID, 'Department', $departments);
 
 		$form->addHidden(UsersRolesData::ID)
 			->addRule($form::INTEGER)
@@ -126,46 +126,31 @@ class AccessControl extends Component implements Base
 	public function success(Form $form, UsersRolesData $data): void
 	{
 		try {
-			if (!$data->id) {
-				$entity = new UsersRolesEntity;
-				$entity->user_id = $data->user_id;
-				foreach ($data->role_id as $item) {
-					$entity->role_id = $item;
-					$this->usersRolesRepository->insert($entity);
-				}
-			} else {
-				$allUserRoles = $this->usersRolesRepository->getAllUserRoles();
-				$roleList = [];
-				foreach ($allUserRoles as $arr) {
-					if ($arr->user_id === $data->id) {
-						$roleList[] = $arr->role_id;
-					}
-				}
-				$insertRoles = array_diff($data->role_id, $roleList);
-				$deleteRoles = array_diff($roleList, $data->role_id);
-				if (count($insertRoles)) {
-					$entity = new UsersRolesEntity;
-					$entity->user_id = $data->user_id;
-					foreach ($insertRoles as $role) {
-						$entity->role_id = $role;
-						$this->usersRolesRepository->insert($entity);
-					}
-				}
+			$entity = new UsersRolesEntity;
+			$userDepartmentEntity = new UsersDepartmentsEntity;
 
-				if (count($deleteRoles)) {
-					$findRoles = $this->usersRolesRepository->getUserRoles($data->id);
-					$entity = new UsersRolesEntity;
-					foreach ($deleteRoles as $roleForDelete) {
-						foreach ($findRoles as $arr) {
-							if ($arr->role_id === $roleForDelete) {
-								$entity->user_id = $arr->user_id;
-								$entity->role_id = $arr->role_id;
-								$this->usersRolesRepository->delete($entity);
-							}
-						}
-					}
-				}
+			$entity->user_id = $data->user_id;
+			$userDepartmentEntity->user_id = $data->user_id;
+
+			$this->usersRolesRepository->getDb()->begin();
+
+			if ($data->id) {
+				$this->usersRolesRepository->deleteByUserId($data->user_id);
+				$this->usersDepartmentsRepository->deleteByUserId($data->user_id);
 			}
+
+			foreach ($data->role_id as $item) {
+				$entity->role_id = $item;
+				$this->usersRolesRepository->insert($entity);
+			}
+
+
+			foreach ($data->department_id as $item) {
+				$userDepartmentEntity->department_id = $item;
+				$this->usersDepartmentsRepository->put($userDepartmentEntity->toArrayUpper());
+			}
+
+			$this->usersRolesRepository->getDb()->commit();
 
 			$message = $data->id ? 'Roles have been updated.' : 'Role assigned.';
 			$this->getPresenter()->flashMessage($message, Alert::Info);
@@ -184,6 +169,8 @@ class AccessControl extends Component implements Base
 			}
 
 		} catch (Throwable $e) {
+			Debugger::barDump($e);
+			$this->usersRolesRepository->getDb()->rollback();
 			$message = match ($e->getCode()) {
 				1 => 'The user already has this role assigned.',
 				default => 'Unknown status code.',
@@ -218,11 +205,19 @@ class AccessControl extends Component implements Base
 			$roleId[$item->role_id] = $item->role_id;
 		}
 
+		$userDepartmentId = $this->usersDepartmentsRepository->findByUserId($id);
+
+		$userDepartments = [];
+		foreach ($userDepartmentId as $item) {
+			$userDepartments[] = $item->department_id;
+		}
+
 		$userId = $userId[UsersRolesData::USER_ID];
 		$records = [
 			UsersRolesData::USER_ID => $userId,
 			UsersRolesData::ROLE_ID => $roleId,
 			UsersRolesData::ID => $userId,
+			UsersRolesData::DEPARTMENT_ID => $userDepartments,
 		];
 
 		$form = $this['factory'];
