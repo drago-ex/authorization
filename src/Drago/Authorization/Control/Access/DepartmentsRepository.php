@@ -32,7 +32,7 @@ class DepartmentsRepository
 	 * @throws AttributeDetectionException
 	 * @throws Exception
 	 */
-	public function getAll(): UsersDepartmentsEntity
+	public function getAll(): array
 	{
 		return $this->all()->execute()
 			->setRowClass(UsersDepartmentsEntity::class)
