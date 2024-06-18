@@ -84,8 +84,7 @@ class RolesRepository
 	 */
 	public function getRoles(): array
 	{
-		return $this->all()->where(RolesEntity::NAME, ' != ?', Conf::ROLE_ADMIN)
-			->and(RolesEntity::NAME, '!= ?', Conf::ROLE_GUEST)
+		return $this->all()->where(RolesEntity::NAME, '!= ?', Conf::ROLE_GUEST)
 			->fetchPairs(RolesEntity::PRIMARY, RolesEntity::NAME);
 	}
 
@@ -97,8 +96,7 @@ class RolesRepository
 	 */
 	public function getRolesAll(): array
 	{
-		return $this->all()->where(RolesEntity::NAME, ' != ?', Conf::ROLE_ADMIN)
-			->and(RolesEntity::NAME, '!= ?', Conf::ROLE_GUEST)
+		return $this->all()->where(RolesEntity::NAME, '!= ?', Conf::ROLE_GUEST)
 			->execute()->setRowClass(RolesEntity::class)->fetchAll();
 	}
 
