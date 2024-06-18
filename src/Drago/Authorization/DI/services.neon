@@ -23,4 +23,5 @@ services:
 	- Drago\Authorization\Control\Access\UsersRolesRepository
 	- Drago\Authorization\Control\Access\UsersRolesViewRepository
 	- Drago\Authorization\Control\Access\DepartmentsRepository
+	- Drago\Authorization\Control\Access\UsersDepartmentsRepository
 	- Drago\Authorization\Tracy\PanelCookie
