@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace App\authorization\src\Drago\Authorization\Grid;
+namespace Drago\Authorization\Datagrid;
 
 use Contributte\Datagrid\Datagrid;
 use Nette\ComponentModel\IContainer;
