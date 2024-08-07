@@ -36,7 +36,7 @@ class TestAuthorizationExtension extends TestCase
 			$compiler->loadConfig(Tester\FileMock::create('
 			services:
 				- Nette\Caching\Storages\FileStorage(../../tmp/cache)
-				- Nette\Security\User
+				- Nette\Security\User(Nette\Security\UserStorage)
 				- Nette\Http\Request
 				- Nette\Http\UrlScript
 				- Nette\Application\Application(Nette\Application\IPresenterFactory, Nette\Routing\Router, Nette\Http\IResponse, Nette\Http\IResponse)
