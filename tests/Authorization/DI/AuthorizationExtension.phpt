@@ -35,7 +35,7 @@ class TestAuthorizationExtension extends TestCase
 		$class = $loader->load(function (Compiler $compiler): void {
 			$compiler->loadConfig(Tester\FileMock::create('
 			services:
-				- Nette\Caching\Storages\FileStorage(__DIR__ . '/tmp/')
+				- Nette\Caching\Storages\FileStorage(__DIR__ . /tmp/)
 				- Nette\Security\User(Nette\Security\UserStorage)
 				- Nette\Http\Request
 				- Nette\Http\UrlScript
