@@ -16,8 +16,10 @@ use Nette\Localization\Translator;
 
 class DatagridComponent extends Datagrid
 {
-	public function __construct(?IContainer $parent = null, ?string $name = null,
-		public ?Translator $translator = null,
+	public function __construct(
+		?IContainer $parent = null, 
+		?string $name = null, 
+		?Translator $translator = null,
 	) {
 		parent::__construct($parent, $name);
 	}
