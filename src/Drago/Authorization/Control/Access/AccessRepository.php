@@ -9,31 +9,24 @@ declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Access;
 
-use Dibi\Connection;
 use Dibi\Row;
 use Drago\Attr\AttributeDetectionException;
-use Drago\Attr\Table;
+use Drago\Attr\From;
 use Drago\Authorization\Conf;
-use Drago\Database\Repository;
+use Drago\Database\Database;
 
 
-#[Table(AccessEntity::Table, AccessEntity::Id)]
-class AccessRepository
+#[From(AccessEntity::Table, AccessEntity::Id)]
+class AccessRepository extends Database
 {
-	use Repository;
-
-	public function __construct(
-		protected Connection $db,
-	) {
-	}
-
-
 	/**
 	 * @throws AttributeDetectionException
 	 */
 	public function getAllUsers(): array
 	{
-		return $this->db->select('u.id, u.username')->from($this->getTable())->as('u')
+		return $this->getConnection()
+			->select('u.id, u.username')
+			->from($this->getTableName())->as('u')
 			->leftJoin(AccessRolesViewEntity::Table)->as('r')->on('u.id = r.user_id')
 			->groupBy('u.id, u.username')
 			->having('sum(case when r.role = ? then 1 else 0 end) = ?', Conf::RoleAdmin, 0)
@@ -46,7 +39,7 @@ class AccessRepository
 	 */
 	public function getUserById(int $id): array|Row|null
 	{
-		return $this->get($id)
+		return $this->find(column: AccessEntity::Id, args: $id)
 			->fetchPairs(AccessEntity::Id, AccessEntity::Username);
 	}
 }

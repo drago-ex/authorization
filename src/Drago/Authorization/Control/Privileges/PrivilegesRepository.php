@@ -9,34 +9,25 @@ declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Privileges;
 
-use Dibi\Connection;
 use Dibi\Exception;
-use Dibi\Fluent;
 use Dibi\Result;
 use Drago\Attr\AttributeDetectionException;
-use Drago\Attr\Table;
+use Drago\Attr\From;
 use Drago\Authorization\Conf;
 use Drago\Authorization\NotAllowedChange;
-use Drago\Database\Repository;
+use Drago\Database\Database;
+use Drago\Database\FluentExtra;
 
 
-#[Table(PrivilegesEntity::Table, PrivilegesEntity::Id)]
-class PrivilegesRepository
+#[From(PrivilegesEntity::Table, PrivilegesEntity::Id, class: PrivilegesEntity::class)]
+class PrivilegesRepository extends Database
 {
-	use Repository;
-
-	public function __construct(
-		protected Connection $db,
-	) {
-	}
-
-
 	/**
 	 * @throws AttributeDetectionException
 	 */
-	public function getAll(): Fluent
+	public function getAll(): FluentExtra
 	{
-		return $this->all()
+		return $this->read()
 			->where(PrivilegesEntity::Name, '!= ?', Conf::PrivilegeAll)
 			->orderBy(PrivilegesEntity::Name, 'asc');
 	}
@@ -46,11 +37,10 @@ class PrivilegesRepository
 	 * @throws Exception
 	 * @throws AttributeDetectionException
 	 */
-	public function getOne(int $id): array|PrivilegesEntity|null
+	public function getOne(int $id): PrivilegesEntity|null
 	{
-		return $this->get($id)->execute()
-			->setRowClass(PrivilegesEntity::class)
-			->fetch();
+		return $this->find(PrivilegesEntity::Id, $id)
+			->record();
 	}
 
 
@@ -66,15 +56,5 @@ class PrivilegesRepository
 			);
 		}
 		return true;
-	}
-
-
-	/**
-	 * @throws Exception
-	 * @throws AttributeDetectionException
-	 */
-	public function save(PrivilegesData $data): Result|int|null
-	{
-		return $this->put($data->toArray());
 	}
 }

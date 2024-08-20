@@ -90,7 +90,7 @@ class PermissionsControl extends Component implements Base
 	protected function createComponentFactory(): Form
 	{
 		$form = $this->create();
-		$roles = $this->rolesRepository->all()
+		$roles = $this->rolesRepository->read()
 			->where(RolesEntity::Name, '!= ?', Conf::RoleAdmin)
 			->fetchPairs(RolesEntity::Id, RolesEntity::Name);
 
@@ -122,7 +122,7 @@ class PermissionsControl extends Component implements Base
 			->setRequired();
 
 		$form->addHidden(PermissionsEntity::Id)
-			->addRule($form::INTEGER)
+			->addRule($form::Integer)
 			->setNullable();
 
 		$form->addSubmit('send', 'Send');
@@ -137,7 +137,7 @@ class PermissionsControl extends Component implements Base
 	public function success(Form $form, PermissionsData $data): void
 	{
 		try {
-			$this->permissionsRepository->save($data);
+			$this->permissionsRepository->save($data->toArray());
 			$this->cache->remove(Conf::Cache);
 
 			$message = $data->id ? 'Permission was updated.' : 'Permission added.';
@@ -209,7 +209,7 @@ class PermissionsControl extends Component implements Base
 		$items = $this->permissionsRepository->getOne($id);
 		$items ?: $this->error();
 
-		$this->permissionsRepository->remove($items->id);
+		$this->permissionsRepository->delete(PermissionsEntity::Id, $items->id)->execute();
 		$this->cache->remove(Conf::Cache);
 		$this->getPresenter()->flashMessage(
 			'Permission removed.',
@@ -240,7 +240,7 @@ class PermissionsControl extends Component implements Base
 			$entity->id = $id;
 			$entity->allowed = $value;
 
-			$this->permissionsRepository->put($entity->toArray());
+			$this->permissionsRepository->save($entity);
 			$message = 'Authorization has been changed.';
 			$this->getPresenter()->flashMessage($message, Alert::Info);
 

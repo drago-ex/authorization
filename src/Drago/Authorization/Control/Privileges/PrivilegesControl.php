@@ -82,7 +82,7 @@ class PrivilegesControl extends Component implements Base
 			->setRequired();
 
 		$form->addHidden(PrivilegesEntity::Id)
-			->addRule($form::INTEGER)
+			->addRule($form::Integer)
 			->setNullable();
 
 		$form->addSubmit('send', 'Send');
@@ -97,7 +97,7 @@ class PrivilegesControl extends Component implements Base
 	public function success(Form $form, PrivilegesData $data): void
 	{
 		try {
-			$this->privilegesRepository->save($data);
+			$this->privilegesRepository->save($data->toArray());
 			$this->cache->remove(Conf::Cache);
 
 			$message = $data->id ? 'Privilege updated.' : 'Privilege inserted.';
@@ -188,7 +188,7 @@ class PrivilegesControl extends Component implements Base
 
 		try {
 			if ($this->privilegesRepository->isAllowed($items->name)) {
-				$this->privilegesRepository->remove($items->id);
+				$this->privilegesRepository->delete(PrivilegesEntity::Id, $items->id)->execute();
 				$this->cache->remove(Conf::Cache);
 				$this->getPresenter()->flashMessage(
 					'Privilege deleted.',

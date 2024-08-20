@@ -79,7 +79,7 @@ class ResourcesControl extends Component implements Base
 			->setRequired();
 
 		$form->addHidden(ResourcesEntity::Id)
-			->addRule($form::INTEGER)
+			->addRule($form::Integer)
 			->setNullable();
 
 		$form->addSubmit('send', 'Send');
@@ -94,7 +94,7 @@ class ResourcesControl extends Component implements Base
 	public function success(Form $form, ResourcesData $data): void
 	{
 		try {
-			$this->resourcesRepository->save($data);
+			$this->resourcesRepository->save($data->toArray());
 			$this->cache->remove(Conf::Cache);
 
 			$message = $data->id ? 'Resource updated.' : 'Resource inserted.';
@@ -167,7 +167,7 @@ class ResourcesControl extends Component implements Base
 		$items ?: $this->error();
 
 		try {
-			$this->resourcesRepository->remove($items->id);
+			$this->resourcesRepository->delete(ResourcesEntity::Id, $items->id)->execute();
 			$this->cache->remove(Conf::Cache);
 			$this->getPresenter()->flashMessage(
 				'Resource deleted.',

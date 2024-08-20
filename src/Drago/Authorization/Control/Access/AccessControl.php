@@ -13,6 +13,7 @@ use App\Authorization\Control\ComponentTemplate;
 use Contributte\Datagrid\Column\Action\Confirmation\StringConfirmation;
 use Contributte\Datagrid\Datagrid;
 use Contributte\Datagrid\Exception\DatagridException;
+use Dibi\DriverException;
 use Dibi\Exception;
 use Drago\Application\UI\Alert;
 use Drago\Attr\AttributeDetectionException;
@@ -94,7 +95,7 @@ class AccessControl extends Component implements Base
 			->setPrompt('Select user')
 			->setRequired();
 
-		$roles = $this->rolesRepository->all()
+		$roles = $this->rolesRepository->read()
 			->where(RolesEntity::Name, '!= ?', Conf::RoleGuest);
 
 		if (!$this->user->isInRole(Conf::RoleAdmin)) {
@@ -106,7 +107,7 @@ class AccessControl extends Component implements Base
 			->setRequired();
 
 		$form->addHidden(AccessRolesData::Id)
-			->addRule($form::INTEGER)
+			->addRule($form::Integer)
 			->setNullable();
 
 		$form->addSubmit('send', 'Send');
@@ -116,51 +117,31 @@ class AccessControl extends Component implements Base
 
 
 	/**
-	 * @throws AbortException
+	 * @throws DriverException
 	 */
 	public function success(Form $form, AccessRolesData $data): void
 	{
 		try {
-			if (!$data->id) {
-				$entity = new AccessRolesEntity;
-				$entity->user_id = $data->user_id;
-				foreach ($data->role_id as $item) {
-					$entity->role_id = $item;
-					$this->usersRolesRepository->insert($entity);
-				}
-			} else {
-				$allUserRoles = $this->usersRolesRepository->getAllUserRoles();
-				$roleList = [];
-				foreach ($allUserRoles as $arr) {
-					if ($arr->user_id === $data->id) {
-						$roleList[] = $arr->role_id;
-					}
-				}
-				$insertRoles = array_diff($data->role_id, $roleList);
-				$deleteRoles = array_diff($roleList, $data->role_id);
-				if (count($insertRoles)) {
-					$entity = new AccessRolesEntity;
-					$entity->user_id = $data->user_id;
-					foreach ($insertRoles as $role) {
-						$entity->role_id = $role;
-						$this->usersRolesRepository->insert($entity);
-					}
-				}
+			$entity = new AccessRolesEntity;
+			$entity->user_id = $data->user_id;
 
-				if (count($deleteRoles)) {
-					$findRoles = $this->usersRolesRepository->getUserRoles($data->id);
-					$entity = new AccessRolesEntity;
-					foreach ($deleteRoles as $roleForDelete) {
-						foreach ($findRoles as $arr) {
-							if ($arr->role_id === $roleForDelete) {
-								$entity->user_id = $arr->user_id;
-								$entity->role_id = $arr->role_id;
-								$this->usersRolesRepository->delete($entity);
-							}
-						}
-					}
-				}
+			$this->usersRolesRepository->getConnection()
+				->begin();
+
+			if ($data->id) {
+				$this->usersRolesRepository->delete(
+					column: AccessRolesEntity::UserId,
+					args: $data->user_id,
+				)->execute();
 			}
+
+			foreach ($data->role_id as $item) {
+				$entity->role_id = $item;
+				$this->usersRolesRepository->save($entity);
+			}
+
+			$this->usersRolesRepository->getConnection()
+				->commit();
 
 			$message = $data->id ? 'Roles have been updated.' : 'Role assigned.';
 			$this->getPresenter()->flashMessage($message, Alert::Info);
@@ -179,6 +160,10 @@ class AccessControl extends Component implements Base
 			}
 
 		} catch (Throwable $e) {
+			$this->usersRolesRepository
+				->getConnection()
+				->rollback();
+
 			$message = match ($e->getCode()) {
 				1062 => 'The user already has this role assigned.',
 				default => 'Unknown status code.',
@@ -252,11 +237,10 @@ class AccessControl extends Component implements Base
 		$items ?: $this->error();
 
 		$records = $this->usersRolesRepository->getUserRoles($items->user_id);
-		$entity = new AccessRolesEntity;
 		foreach ($records as $record) {
-			$entity->user_id = $record->user_id;
-			$entity->role_id = $record->role_id;
-			$this->usersRolesRepository->delete($entity);
+			$this->usersRolesRepository->delete(AccessRolesEntity::RoleId, $record->role_id)
+				->and(AccessRolesEntity::UserId, '= ?', $record->user_id)
+				->execute();
 		}
 
 		$this->getPresenter()->flashMessage(

@@ -9,32 +9,22 @@ declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Resources;
 
-use Dibi\Connection;
 use Dibi\Exception;
-use Dibi\Fluent;
-use Dibi\Result;
 use Drago\Attr\AttributeDetectionException;
-use Drago\Attr\Table;
-use Drago\Database\Repository;
+use Drago\Attr\From;
+use Drago\Database\Database;
+use Drago\Database\FluentExtra;
 
 
-#[Table(ResourcesEntity::Table, ResourcesEntity::Id)]
-class ResourcesRepository
+#[From(ResourcesEntity::Table, ResourcesEntity::Id, class: ResourcesEntity::class)]
+class ResourcesRepository extends Database
 {
-	use Repository;
-
-	public function __construct(
-		protected Connection $db,
-	) {
-	}
-
-
 	/**
 	 * @throws AttributeDetectionException
 	 */
-	public function getAll(): Fluent
+	public function getAll(): FluentExtra
 	{
-		return $this->all()
+		return $this->read()
 			->orderBy(ResourcesEntity::Name, 'asc');
 	}
 
@@ -46,9 +36,8 @@ class ResourcesRepository
 	 */
 	public function getAllResources(): array
 	{
-		return $this->getAll()->execute()
-			->setRowClass(ResourcesEntity::class)
-			->fetchAll();
+		return $this->read()
+			->recordAll();
 	}
 
 
@@ -58,18 +47,7 @@ class ResourcesRepository
 	 */
 	public function getOne(int $id): array|ResourcesEntity|null
 	{
-		return $this->get($id)->execute()
-			->setRowClass(ResourcesEntity::class)
-			->fetch();
-	}
-
-
-	/**
-	 * @throws Exception
-	 * @throws AttributeDetectionException
-	 */
-	public function save(ResourcesData $data): Result|int|null
-	{
-		return $this->put($data->toArray());
+		return $this->find(ResourcesEntity::Id, $id)
+			->record();
 	}
 }

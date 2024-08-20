@@ -9,28 +9,19 @@ declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Roles;
 
-use Dibi\Connection;
 use Dibi\Exception;
 use Dibi\Fluent;
 use Dibi\Result;
 use Drago\Attr\AttributeDetectionException;
-use Drago\Attr\Table;
+use Drago\Attr\From;
 use Drago\Authorization\Conf;
 use Drago\Authorization\NotAllowedChange;
-use Drago\Database\Repository;
+use Drago\Database\Database;
 
 
-#[Table(RolesEntity::Table, RolesEntity::Id)]
-class RolesRepository
+#[From(RolesEntity::Table, RolesEntity::Id, class: RolesEntity::class)]
+class RolesRepository extends Database
 {
-	use Repository;
-
-	public function __construct(
-		protected Connection $db,
-	) {
-	}
-
-
 	/**
 	 * @throws AttributeDetectionException
 	 */
