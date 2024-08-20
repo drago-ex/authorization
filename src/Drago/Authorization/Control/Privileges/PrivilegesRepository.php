@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control\Privileges;
 
 use Dibi\Exception;
-use Dibi\Result;
 use Drago\Attr\AttributeDetectionException;
 use Drago\Attr\From;
 use Drago\Authorization\Conf;
