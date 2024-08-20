@@ -100,7 +100,7 @@ class RolesControl extends Component implements Base
 			->setRequired();
 
 		$form->addHidden(RolesEntity::Id)
-			->addRule($form::INTEGER)
+			->addRule($form::Integer)
 			->setNullable();
 
 		$form->addSubmit('send', 'Send');
@@ -119,7 +119,7 @@ class RolesControl extends Component implements Base
 				throw new \Exception('It is not allowed to select a higher parent.', 1);
 			}
 
-			$this->rolesRepository->save($data);
+			$this->rolesRepository->save($data->toArray());
 			$this->cache->remove(Conf::Cache);
 
 			$parent = $this['factory']['parent'];
@@ -218,7 +218,7 @@ class RolesControl extends Component implements Base
 		try {
 			$parent = $this->rolesRepository->findParent($items->id);
 			if (!$parent && $this->rolesRepository->isAllowed($items->name)) {
-				$this->rolesRepository->remove($id);
+				$this->rolesRepository->delete(RolesEntity::Id, $id)->execute();
 				$this->cache->remove(Conf::Cache);
 				$this->getPresenter()->flashMessage('Role deleted.', Alert::Danger);
 
