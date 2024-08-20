@@ -118,5 +118,4 @@ class RolesRepository extends Database
 		}
 		return true;
 	}
-
 }
