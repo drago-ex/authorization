@@ -76,12 +76,12 @@ class PrivilegesControl extends Component implements Base
 	protected function createComponentFactory(): Form
 	{
 		$form = $this->create();
-		$form->addText(PrivilegesEntity::Name, 'Action or signal')
+		$form->addText(PrivilegesEntity::ColumnName, 'Action or signal')
 			->setHtmlAttribute('placeholder', 'Name action or signal')
 			->setHtmlAttribute('autocomplete', 'off')
 			->setRequired();
 
-		$form->addHidden(PrivilegesEntity::Id)
+		$form->addHidden(PrivilegesEntity::PrimaryKey)
 			->addRule($form::Integer)
 			->setNullable();
 
@@ -188,7 +188,7 @@ class PrivilegesControl extends Component implements Base
 
 		try {
 			if ($this->privilegesRepository->isAllowed($items->name)) {
-				$this->privilegesRepository->delete(PrivilegesEntity::Id, $items->id)->execute();
+				$this->privilegesRepository->delete(PrivilegesEntity::PrimaryKey, $items->id)->execute();
 				$this->cache->remove(Conf::Cache);
 				$this->getPresenter()->flashMessage(
 					'Privilege deleted.',

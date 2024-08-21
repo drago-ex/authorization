@@ -57,7 +57,7 @@ class ExtraPermission
 
 				foreach ($this->permissionsViewRepository->getAllPermissions() as $row) {
 					$row->privilege = $row->privilege === Conf::PrivilegeAll
-						? Authorizator::ALL
+						? Authorizator::All
 						: $row->privilege;
 					$acl->{$row->allowed === 1
 						? 'allow'

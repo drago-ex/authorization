@@ -81,7 +81,7 @@ class RolesControl extends Component implements Base
 	public function createComponentFactory(): Form
 	{
 		$form = $this->create();
-		$form->addText(RolesEntity::Name, 'Role')
+		$form->addText(RolesEntity::ColumnName, 'Role')
 			->setHtmlAttribute('placeholder', 'Role name')
 			->setHtmlAttribute('autocomplete', 'off')
 			->setRequired();
@@ -95,11 +95,11 @@ class RolesControl extends Component implements Base
 			}
 		}
 
-		$form->addSelect(RolesEntity::Parent, 'Parent', $roles ?? $this->rolesRepository->getRoles())
+		$form->addSelect(RolesEntity::ColumnParent, 'Parent', $roles ?? $this->rolesRepository->getRoles())
 			->setPrompt('Select parent')
 			->setRequired();
 
-		$form->addHidden(RolesEntity::Id)
+		$form->addHidden(RolesEntity::PrimaryKey)
 			->addRule($form::Integer)
 			->setNullable();
 
@@ -218,7 +218,7 @@ class RolesControl extends Component implements Base
 		try {
 			$parent = $this->rolesRepository->findParent($items->id);
 			if (!$parent && $this->rolesRepository->isAllowed($items->name)) {
-				$this->rolesRepository->delete(RolesEntity::Id, $id)->execute();
+				$this->rolesRepository->delete(RolesEntity::PrimaryKey, $id)->execute();
 				$this->cache->remove(Conf::Cache);
 				$this->getPresenter()->flashMessage('Role deleted.', Alert::Danger);
 

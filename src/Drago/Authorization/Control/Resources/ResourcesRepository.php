@@ -16,7 +16,7 @@ use Drago\Database\Database;
 use Drago\Database\FluentExtra;
 
 
-#[From(ResourcesEntity::Table, ResourcesEntity::Id, class: ResourcesEntity::class)]
+#[From(ResourcesEntity::Table, ResourcesEntity::PrimaryKey, class: ResourcesEntity::class)]
 class ResourcesRepository extends Database
 {
 	/**
@@ -25,7 +25,7 @@ class ResourcesRepository extends Database
 	public function getAll(): FluentExtra
 	{
 		return $this->read()
-			->orderBy(ResourcesEntity::Name, 'asc');
+			->orderBy(ResourcesEntity::ColumnName, 'asc');
 	}
 
 
@@ -47,7 +47,7 @@ class ResourcesRepository extends Database
 	 */
 	public function getOne(int $id): array|ResourcesEntity|null
 	{
-		return $this->find(ResourcesEntity::Id, $id)
+		return $this->find(ResourcesEntity::PrimaryKey, $id)
 			->record();
 	}
 }

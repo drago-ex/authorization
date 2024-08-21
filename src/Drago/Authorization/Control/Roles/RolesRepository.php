@@ -18,7 +18,7 @@ use Drago\Database\Database;
 use Drago\Database\FluentExtra;
 
 
-#[From(RolesEntity::Table, RolesEntity::Id, class: RolesEntity::class)]
+#[From(RolesEntity::Table, RolesEntity::PrimaryKey, class: RolesEntity::class)]
 class RolesRepository extends Database
 {
 	/**
@@ -27,7 +27,7 @@ class RolesRepository extends Database
 	public function getAll(): FluentExtra
 	{
 		return $this->read()
-			->orderBy(RolesEntity::Id);
+			->orderBy(RolesEntity::PrimaryKey);
 	}
 
 
@@ -50,7 +50,7 @@ class RolesRepository extends Database
 	 */
 	public function findByParent(int $parent): array|RolesEntity|null
 	{
-		return $this->find(RolesEntity::Id, $parent)
+		return $this->find(RolesEntity::PrimaryKey, $parent)
 			->record();
 	}
 
@@ -61,7 +61,7 @@ class RolesRepository extends Database
 	 */
 	public function getOne(int $id): array|RolesEntity|null
 	{
-		return $this->find(RolesEntity::Id, $id)
+		return $this->find(RolesEntity::PrimaryKey, $id)
 			->record();
 	}
 
@@ -72,8 +72,8 @@ class RolesRepository extends Database
 	public function getRoles(): array
 	{
 		return $this->read()
-			->where(RolesEntity::Name, '!= ?', Conf::RoleAdmin)
-			->fetchPairs(RolesEntity::Id, RolesEntity::Name);
+			->where(RolesEntity::ColumnName, '!= ?', Conf::RoleAdmin)
+			->fetchPairs(RolesEntity::PrimaryKey, RolesEntity::ColumnName);
 	}
 
 
@@ -83,8 +83,8 @@ class RolesRepository extends Database
 	public function getRolesPairs(): array
 	{
 		return $this->read()
-			->where(RolesEntity::Name, '!= ?', Conf::RoleAdmin)
-			->fetchPairs(RolesEntity::Name, RolesEntity::Name);
+			->where(RolesEntity::ColumnName, '!= ?', Conf::RoleAdmin)
+			->fetchPairs(RolesEntity::ColumnName, RolesEntity::ColumnName);
 	}
 
 
@@ -94,7 +94,7 @@ class RolesRepository extends Database
 	 */
 	public function findParent(int $id): array|RolesEntity|null
 	{
-		$row = $this->find(RolesEntity::Parent, $id)->fetch();
+		$row = $this->find(RolesEntity::ColumnParent, $id)->fetch();
 		if ($row) {
 			throw new NotAllowedChange(
 				'The record can not be deleted, you must first delete the records that are associated with it.',

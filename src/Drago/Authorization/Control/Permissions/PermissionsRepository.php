@@ -15,7 +15,7 @@ use Drago\Attr\From;
 use Drago\Database\Database;
 
 
-#[From(PermissionsEntity::Table, PermissionsEntity::Id, class: PermissionsEntity::class)]
+#[From(PermissionsEntity::Table, PermissionsEntity::PrimaryKey, class: PermissionsEntity::class)]
 class PermissionsRepository extends Database
 {
 	/**

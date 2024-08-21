@@ -26,7 +26,7 @@ class PermissionsViewRepository extends Database
 	public function getAll(): FluentExtra
 	{
 		return $this->read()
-			->where(PermissionsViewEntity::Role, '!= ?', Conf::RoleAdmin);
+			->where(PermissionsViewEntity::ColumnRole, '!= ?', Conf::RoleAdmin);
 	}
 
 

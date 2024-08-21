@@ -91,19 +91,19 @@ class AccessControl extends Component implements Base
 			$user = $this->usersRepository->getUserById($id);
 		}
 
-		$form->addSelect(AccessRolesEntity::UserId, 'User', $user ?? $users)
+		$form->addSelect(AccessRolesEntity::ColumnUserId, 'User', $user ?? $users)
 			->setPrompt('Select user')
 			->setRequired();
 
 		$roles = $this->rolesRepository->read()
-			->where(RolesEntity::Name, '!= ?', Conf::RoleGuest);
+			->where(RolesEntity::ColumnName, '!= ?', Conf::RoleGuest);
 
 		if (!$this->user->isInRole(Conf::RoleAdmin)) {
-			$roles->and(RolesEntity::Name, '!= ?', Conf::RoleAdmin);
+			$roles->and(RolesEntity::ColumnName, '!= ?', Conf::RoleAdmin);
 		}
 
-		$roles = $roles->fetchPairs(RolesEntity::Id, RolesEntity::Name);
-		$form->addMultiSelect(AccessRolesEntity::RoleId, 'Select roles', $roles)
+		$roles = $roles->fetchPairs(RolesEntity::PrimaryKey, RolesEntity::ColumnName);
+		$form->addMultiSelect(AccessRolesEntity::ColumnRoleId, 'Select roles', $roles)
 			->setRequired();
 
 		$form->addHidden(AccessRolesData::Id)
@@ -130,7 +130,7 @@ class AccessControl extends Component implements Base
 
 			if ($data->id) {
 				$this->usersRolesRepository->delete(
-					column: AccessRolesEntity::UserId,
+					column: AccessRolesEntity::ColumnUserId,
 					args: $data->user_id,
 				)->execute();
 			}
@@ -190,7 +190,7 @@ class AccessControl extends Component implements Base
 
 		$userId = [];
 		foreach ($items as $item) {
-			$userId[AccessRolesEntity::UserId] = $item->user_id;
+			$userId[AccessRolesEntity::ColumnUserId] = $item->user_id;
 		}
 
 		$roleId = [];
@@ -198,10 +198,10 @@ class AccessControl extends Component implements Base
 			$roleId[$item->role_id] = $item->role_id;
 		}
 
-		$userId = $userId[AccessRolesEntity::UserId];
+		$userId = $userId[AccessRolesEntity::ColumnUserId];
 		$records = [
-			AccessRolesEntity::UserId => $userId,
-			AccessRolesEntity::RoleId => $roleId,
+			AccessRolesEntity::ColumnUserId => $userId,
+			AccessRolesEntity::ColumnRoleId => $roleId,
 			AccessRolesData::Id => $userId,
 		];
 
@@ -238,8 +238,8 @@ class AccessControl extends Component implements Base
 
 		$records = $this->usersRolesRepository->getUserRoles($items->user_id);
 		foreach ($records as $record) {
-			$this->usersRolesRepository->delete(AccessRolesEntity::RoleId, $record->role_id)
-				->and(AccessRolesEntity::UserId, '= ?', $record->user_id)
+			$this->usersRolesRepository->delete(AccessRolesEntity::ColumnRoleId, $record->role_id)
+				->and(AccessRolesEntity::ColumnUserId, '= ?', $record->user_id)
 				->execute();
 		}
 

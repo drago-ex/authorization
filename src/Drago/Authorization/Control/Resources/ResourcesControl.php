@@ -73,12 +73,12 @@ class ResourcesControl extends Component implements Base
 	protected function createComponentFactory(): Form
 	{
 		$form = $this->create();
-		$form->addText(ResourcesEntity::Name, 'Source')
+		$form->addText(ResourcesEntity::ColumnName, 'Source')
 			->setHtmlAttribute('placeholder', 'Source name')
 			->setHtmlAttribute('autocomplete', 'off')
 			->setRequired();
 
-		$form->addHidden(ResourcesEntity::Id)
+		$form->addHidden(ResourcesEntity::PrimaryKey)
 			->addRule($form::Integer)
 			->setNullable();
 
@@ -167,7 +167,7 @@ class ResourcesControl extends Component implements Base
 		$items ?: $this->error();
 
 		try {
-			$this->resourcesRepository->delete(ResourcesEntity::Id, $items->id)->execute();
+			$this->resourcesRepository->delete(ResourcesEntity::PrimaryKey, $items->id)->execute();
 			$this->cache->remove(Conf::Cache);
 			$this->getPresenter()->flashMessage(
 				'Resource deleted.',

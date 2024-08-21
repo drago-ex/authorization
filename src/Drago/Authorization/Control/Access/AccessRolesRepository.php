@@ -26,7 +26,7 @@ class AccessRolesRepository extends Database
 	 */
 	public function getUserRoles(int $userId): array
 	{
-		return $this->find(AccessRolesEntity::UserId, $userId)
+		return $this->find(AccessRolesEntity::ColumnUserId, $userId)
 			->recordAll();
 	}
 
@@ -46,7 +46,7 @@ class AccessRolesRepository extends Database
 	 */
 	public function getRecord(int $id): array|AccessRolesEntity|null
 	{
-		return $this->find(AccessRolesEntity::UserId, $id)
+		return $this->find(AccessRolesEntity::ColumnUserId, $id)
 			->fetch();
 	}
 }

@@ -18,7 +18,7 @@ use Drago\Database\Database;
 use Drago\Database\FluentExtra;
 
 
-#[From(PrivilegesEntity::Table, PrivilegesEntity::Id, class: PrivilegesEntity::class)]
+#[From(PrivilegesEntity::Table, PrivilegesEntity::PrimaryKey, class: PrivilegesEntity::class)]
 class PrivilegesRepository extends Database
 {
 	/**
@@ -27,8 +27,8 @@ class PrivilegesRepository extends Database
 	public function getAll(): FluentExtra
 	{
 		return $this->read()
-			->where(PrivilegesEntity::Name, '!= ?', Conf::PrivilegeAll)
-			->orderBy(PrivilegesEntity::Name, 'asc');
+			->where(PrivilegesEntity::ColumnName, '!= ?', Conf::PrivilegeAll)
+			->orderBy(PrivilegesEntity::ColumnName, 'asc');
 	}
 
 
@@ -38,7 +38,7 @@ class PrivilegesRepository extends Database
 	 */
 	public function getOne(int $id): PrivilegesEntity|null
 	{
-		return $this->find(PrivilegesEntity::Id, $id)
+		return $this->find(PrivilegesEntity::PrimaryKey, $id)
 			->record();
 	}
 
