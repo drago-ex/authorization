@@ -24,7 +24,7 @@ class PermissionsRepository extends Database
 	 */
 	public function getOne(int $id): PermissionsEntity|null
 	{
-		return $this->find(PermissionsEntity::Id, $id)
+		return $this->find(PermissionsEntity::PrimaryKey, $id)
 			->record();
 	}
 }
