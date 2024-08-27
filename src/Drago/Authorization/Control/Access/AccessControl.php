@@ -24,6 +24,7 @@ use Drago\Authorization\Control\Factory;
 use Drago\Authorization\Control\Roles\RolesEntity;
 use Drago\Authorization\Control\Roles\RolesRepository;
 use Nette\Application\AbortException;
+use Nette\Application\Attributes\Requires;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Security\User;
@@ -68,13 +69,12 @@ class AccessControl extends Component implements Base
 	}
 
 
+	#[Requires(ajax: true)]
 	public function handleClickOpenComponent(): void
 	{
-		if ($this->isAjax()) {
-			$component = $this->getUniqueComponent($this->openComponentType);
-			$this->getPresenter()->payload->{$this->openComponentType} = $component;
-			$this->redrawControl($this->snippetFactory);
-		}
+		$component = $this->getUniqueComponent($this->openComponentType);
+		$this->getPresenter()->payload->{$this->openComponentType} = $component;
+		$this->redrawControl($this->snippetFactory);
 	}
 
 
@@ -233,7 +233,7 @@ class AccessControl extends Component implements Base
 	 */
 	public function handleDelete(int $id): void
 	{
-		$items = $this->usersRolesRepository->getRecord($id);
+		$items = $this->usersRolesRepository->get($id)->record();
 		$items ?: $this->error();
 
 		$records = $this->usersRolesRepository->getUserRoles($items->user_id);

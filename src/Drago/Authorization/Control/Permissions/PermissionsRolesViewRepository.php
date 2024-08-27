@@ -9,15 +9,24 @@ declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Permissions;
 
+use Dibi\Connection;
 use Dibi\Exception;
 use Drago\Attr\AttributeDetectionException;
-use Drago\Attr\From;
+use Drago\Attr\Table;
 use Drago\Database\Database;
 
 
-#[From(PermissionsRolesViewEntity::Table, class: PermissionsRolesViewEntity::class)]
-class PermissionsRolesViewRepository extends Database
+#[Table(PermissionsRolesViewEntity::Table, class: PermissionsRolesViewEntity::class)]
+class PermissionsRolesViewRepository
 {
+	use Database;
+
+	public function __construct(
+		protected Connection $connection,
+	) {
+	}
+
+
 	/**
 	 * @return array[]|PermissionsRolesViewEntity[]
 	 * @throws Exception

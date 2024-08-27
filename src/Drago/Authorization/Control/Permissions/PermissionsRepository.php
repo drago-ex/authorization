@@ -9,22 +9,21 @@ declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Permissions;
 
-use Dibi\Exception;
-use Drago\Attr\AttributeDetectionException;
-use Drago\Attr\From;
+use Dibi\Connection;
+use Drago\Attr\Table;
 use Drago\Database\Database;
 
 
-#[From(PermissionsEntity::Table, PermissionsEntity::PrimaryKey, class: PermissionsEntity::class)]
-class PermissionsRepository extends Database
+/**
+ * @extends Database<PermissionsEntity>
+ */
+#[Table(PermissionsEntity::Table, PermissionsEntity::PrimaryKey, class: PermissionsEntity::class)]
+class PermissionsRepository
 {
-	/**
-	 * @throws Exception
-	 * @throws AttributeDetectionException
-	 */
-	public function getOne(int $id): PermissionsEntity|null
-	{
-		return $this->find(PermissionsEntity::PrimaryKey, $id)
-			->record();
+	use Database;
+
+	public function __construct(
+		protected Connection $connection,
+	) {
 	}
 }

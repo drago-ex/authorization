@@ -9,37 +9,37 @@ declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Privileges;
 
-use Dibi\Exception;
+use Dibi\Connection;
 use Drago\Attr\AttributeDetectionException;
-use Drago\Attr\From;
+use Drago\Attr\Table;
 use Drago\Authorization\Conf;
 use Drago\Authorization\NotAllowedChange;
 use Drago\Database\Database;
-use Drago\Database\FluentExtra;
+use Drago\Database\ExtraFluent;
 
 
-#[From(PrivilegesEntity::Table, PrivilegesEntity::PrimaryKey, class: PrivilegesEntity::class)]
-class PrivilegesRepository extends Database
+/**
+ * @extends Database<PrivilegesEntity>
+ */
+#[Table(PrivilegesEntity::Table, PrivilegesEntity::PrimaryKey, class: PrivilegesEntity::class)]
+class PrivilegesRepository
 {
-	/**
-	 * @throws AttributeDetectionException
-	 */
-	public function getAll(): FluentExtra
-	{
-		return $this->read()
-			->where(PrivilegesEntity::ColumnName, '!= ?', Conf::PrivilegeAll)
-			->orderBy(PrivilegesEntity::ColumnName, 'asc');
+	use Database;
+
+	public function __construct(
+		protected Connection $connection,
+	) {
 	}
 
 
 	/**
-	 * @throws Exception
 	 * @throws AttributeDetectionException
 	 */
-	public function getOne(int $id): PrivilegesEntity|null
+	public function getAll(): ExtraFluent
 	{
-		return $this->find(PrivilegesEntity::PrimaryKey, $id)
-			->record();
+		return $this->read()
+			->where(PrivilegesEntity::ColumnName, '!= ?', Conf::PrivilegeAll)
+			->orderBy(PrivilegesEntity::ColumnName, 'asc');
 	}
 
 

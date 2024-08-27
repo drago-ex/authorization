@@ -9,16 +9,25 @@ declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Access;
 
+use Dibi\Connection;
 use Dibi\Fluent;
 use Drago\Attr\AttributeDetectionException;
-use Drago\Attr\From;
+use Drago\Attr\Table;
 use Drago\Authorization\Conf;
 use Drago\Database\Database;
 
 
-#[From(AccessRolesViewEntity::Table)]
-class AccessRolesViewRepository extends Database
+#[Table(AccessRolesViewEntity::Table)]
+class AccessRolesViewRepository
 {
+	use Database;
+
+	public function __construct(
+		protected Connection $connection,
+	) {
+	}
+
+
 	/**
 	 * @throws AttributeDetectionException
 	 */

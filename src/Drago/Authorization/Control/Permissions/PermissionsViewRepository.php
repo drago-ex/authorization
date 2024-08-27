@@ -9,21 +9,30 @@ declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Permissions;
 
+use Dibi\Connection;
 use Dibi\Exception;
 use Drago\Attr\AttributeDetectionException;
-use Drago\Attr\From;
+use Drago\Attr\Table;
 use Drago\Authorization\Conf;
 use Drago\Database\Database;
-use Drago\Database\FluentExtra;
+use Drago\Database\ExtraFluent;
 
 
-#[From(PermissionsViewEntity::Table, class: PermissionsViewEntity::class)]
-class PermissionsViewRepository extends Database
+#[Table(PermissionsViewEntity::Table, class: PermissionsViewEntity::class)]
+class PermissionsViewRepository
 {
+	use Database;
+
+	public function __construct(
+		protected Connection $connection,
+	) {
+	}
+
+
 	/**
 	 * @throws AttributeDetectionException
 	 */
-	public function getAll(): FluentExtra
+	public function getAll(): ExtraFluent
 	{
 		return $this->read()
 			->where(PermissionsViewEntity::ColumnRole, '!= ?', Conf::RoleAdmin);

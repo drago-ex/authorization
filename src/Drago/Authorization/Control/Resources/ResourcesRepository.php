@@ -9,20 +9,32 @@ declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Resources;
 
+use Dibi\Connection;
 use Dibi\Exception;
 use Drago\Attr\AttributeDetectionException;
-use Drago\Attr\From;
+use Drago\Attr\Table;
 use Drago\Database\Database;
-use Drago\Database\FluentExtra;
+use Drago\Database\ExtraFluent;
 
 
-#[From(ResourcesEntity::Table, ResourcesEntity::PrimaryKey, class: ResourcesEntity::class)]
-class ResourcesRepository extends Database
+/**
+ * @extends Database<ResourcesEntity>
+ */
+#[Table(ResourcesEntity::Table, ResourcesEntity::PrimaryKey, class: ResourcesEntity::class)]
+class ResourcesRepository
 {
+	use Database;
+
+	public function __construct(
+		protected Connection $connection,
+	) {
+	}
+
+
 	/**
 	 * @throws AttributeDetectionException
 	 */
-	public function getAll(): FluentExtra
+	public function getAll(): ExtraFluent
 	{
 		return $this->read()
 			->orderBy(ResourcesEntity::ColumnName, 'asc');
@@ -38,16 +50,5 @@ class ResourcesRepository extends Database
 	{
 		return $this->read()
 			->recordAll();
-	}
-
-
-	/**
-	 * @throws AttributeDetectionException
-	 * @throws Exception
-	 */
-	public function getOne(int $id): array|ResourcesEntity|null
-	{
-		return $this->find(ResourcesEntity::PrimaryKey, $id)
-			->record();
 	}
 }

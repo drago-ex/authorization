@@ -28,6 +28,7 @@ use Drago\Authorization\Control\Resources\ResourcesRepository;
 use Drago\Authorization\Control\Roles\RolesEntity;
 use Drago\Authorization\Control\Roles\RolesRepository;
 use Nette\Application\AbortException;
+use Nette\Application\Attributes\Requires;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
@@ -74,13 +75,12 @@ class PermissionsControl extends Component implements Base
 	}
 
 
+	#[Requires(ajax: true)]
 	public function handleClickOpenComponent(): void
 	{
-		if ($this->isAjax()) {
-			$component = $this->getUniqueComponent($this->openComponentType);
-			$this->getPresenter()->payload->{$this->openComponentType} = $component;
-			$this->redrawControl($this->snippetFactory);
-		}
+		$component = $this->getUniqueComponent($this->openComponentType);
+		$this->getPresenter()->payload->{$this->openComponentType} = $component;
+		$this->redrawControl($this->snippetFactory);
 	}
 
 
@@ -174,9 +174,10 @@ class PermissionsControl extends Component implements Base
 	 * @throws BadRequestException
 	 * @throws Exception
 	 */
+	#[Requires(ajax: true)]
 	public function handleEdit(int $id): void
 	{
-		$items = $this->permissionsRepository->getOne($id);
+		$items = $this->permissionsRepository->get($id)->record();
 		$items ?: $this->error();
 
 		if ($this->getSignal()) {
@@ -206,7 +207,7 @@ class PermissionsControl extends Component implements Base
 	 */
 	public function handleDelete(int $id): void
 	{
-		$items = $this->permissionsRepository->getOne($id);
+		$items = $this->permissionsRepository->get($id)->record();
 		$items ?: $this->error();
 
 		$this->permissionsRepository->delete(PermissionsEntity::PrimaryKey, $items->id)->execute();

@@ -21,6 +21,7 @@ use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
 use Drago\Authorization\Control\Factory;
 use Nette\Application\AbortException;
+use Nette\Application\Attributes\Requires;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
@@ -60,13 +61,12 @@ class ResourcesControl extends Component implements Base
 	}
 
 
+	#[Requires(ajax: true)]
 	public function handleClickOpenComponent(): void
 	{
-		if ($this->isAjax()) {
-			$component = $this->getUniqueComponent($this->openComponentType);
-			$this->getPresenter()->payload->{$this->openComponentType} = $component;
-			$this->redrawControl($this->snippetFactory);
-		}
+		$component = $this->getUniqueComponent($this->openComponentType);
+		$this->getPresenter()->payload->{$this->openComponentType} = $component;
+		$this->redrawControl($this->snippetFactory);
 	}
 
 
@@ -135,7 +135,7 @@ class ResourcesControl extends Component implements Base
 	 */
 	public function handleEdit(int $id): void
 	{
-		$items = $this->resourcesRepository->getOne($id);
+		$items = $this->resourcesRepository->get($id)->record();
 		$items ?: $this->error();
 
 		$form = $this['factory'];
@@ -163,7 +163,7 @@ class ResourcesControl extends Component implements Base
 	 */
 	public function handleDelete(int $id): void
 	{
-		$items = $this->resourcesRepository->getOne($id);
+		$items = $this->resourcesRepository->get($id)->record();
 		$items ?: $this->error();
 
 		try {

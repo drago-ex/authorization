@@ -9,22 +9,35 @@ declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Roles;
 
+use Dibi\Connection;
 use Dibi\Exception;
 use Drago\Attr\AttributeDetectionException;
-use Drago\Attr\From;
+
+use Drago\Attr\Table;
 use Drago\Authorization\Conf;
 use Drago\Authorization\NotAllowedChange;
 use Drago\Database\Database;
-use Drago\Database\FluentExtra;
+use Drago\Database\ExtraFluent;
 
 
-#[From(RolesEntity::Table, RolesEntity::PrimaryKey, class: RolesEntity::class)]
-class RolesRepository extends Database
+/**
+ * @extends Database<RolesEntity>
+ */
+#[Table(RolesEntity::Table, RolesEntity::PrimaryKey, class: RolesEntity::class)]
+class RolesRepository
 {
+	use Database;
+
+	public function __construct(
+		protected Connection $connection,
+	){
+	}
+
+
 	/**
 	 * @throws AttributeDetectionException
 	 */
-	public function getAll(): FluentExtra
+	public function getAll(): ExtraFluent
 	{
 		return $this->read()
 			->orderBy(RolesEntity::PrimaryKey);
@@ -38,9 +51,8 @@ class RolesRepository extends Database
 	 */
 	public function getAllRoles(): array
 	{
-		return $this->getAll()->execute()
-			->setRowClass(RolesEntity::class)
-			->fetchAll();
+		return $this->read()
+			->recordAll();
 	}
 
 
@@ -51,17 +63,6 @@ class RolesRepository extends Database
 	public function findByParent(int $parent): array|RolesEntity|null
 	{
 		return $this->find(RolesEntity::PrimaryKey, $parent)
-			->record();
-	}
-
-
-	/**
-	 * @throws Exception
-	 * @throws AttributeDetectionException
-	 */
-	public function getOne(int $id): array|RolesEntity|null
-	{
-		return $this->find(RolesEntity::PrimaryKey, $id)
 			->record();
 	}
 

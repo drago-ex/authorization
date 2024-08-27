@@ -9,16 +9,25 @@ declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Access;
 
+use Dibi\Connection;
 use Dibi\Row;
 use Drago\Attr\AttributeDetectionException;
-use Drago\Attr\From;
+use Drago\Attr\Table;
 use Drago\Authorization\Conf;
 use Drago\Database\Database;
 
 
-#[From(AccessEntity::Table, AccessEntity::PrimaryKey)]
-class AccessRepository extends Database
+#[Table(AccessEntity::Table, AccessEntity::PrimaryKey)]
+class AccessRepository
 {
+	use Database;
+
+	public function __construct(
+		protected Connection $connection,
+	) {
+	}
+
+
 	/**
 	 * @throws AttributeDetectionException
 	 */
@@ -39,7 +48,7 @@ class AccessRepository extends Database
 	 */
 	public function getUserById(int $id): array|Row|null
 	{
-		return $this->find(column: AccessEntity::PrimaryKey, args: $id)
+		return $this->find(AccessEntity::PrimaryKey, $id)
 			->fetchPairs(AccessEntity::PrimaryKey, AccessEntity::ColumnUsername);
 	}
 }
