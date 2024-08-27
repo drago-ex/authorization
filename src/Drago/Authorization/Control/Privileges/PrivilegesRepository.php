@@ -37,7 +37,7 @@ class PrivilegesRepository
 	 */
 	public function getAll(): ExtraFluent
 	{
-		return $this->read()
+		return $this->read('*')
 			->where(PrivilegesEntity::ColumnName, '!= ?', Conf::PrivilegeAll)
 			->orderBy(PrivilegesEntity::ColumnName, 'asc');
 	}

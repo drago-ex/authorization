@@ -46,16 +46,28 @@ class ExtraPermission
 		$acl = new Permission;
 		try {
 			if (!$this->cache->load(Conf::Cache)) {
-				foreach ($this->rolesRepository->getAllRoles() as $role) {
+				$roles = $this->rolesRepository
+					->read('*')
+					->recordAll();
+
+				foreach ($roles as $role) {
 					$parent = $this->rolesRepository->findByParent($role->parent);
 					$acl->addRole($role->name, $parent->name ?? null);
 				}
 
-				foreach ($this->resourcesRepository->getAllResources() as $resource) {
+				$resources = $this->resourcesRepository
+					->read('*')
+					->recordAll();
+
+				foreach ($resources as $resource) {
 					$acl->addResource($resource->name);
 				}
 
-				foreach ($this->permissionsViewRepository->getAllPermissions() as $row) {
+				$permissions = $this->permissionsViewRepository
+					->read('*')
+					->recordAll();
+
+				foreach ($permissions as $row) {
 					$row->privilege = $row->privilege === Conf::PrivilegeAll
 						? Authorizator::All
 						: $row->privilege;

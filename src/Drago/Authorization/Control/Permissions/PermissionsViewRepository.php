@@ -18,6 +18,9 @@ use Drago\Database\Database;
 use Drago\Database\ExtraFluent;
 
 
+/**
+ * @extends Database<PermissionsViewEntity>
+ */
 #[Table(PermissionsViewEntity::Table, class: PermissionsViewEntity::class)]
 class PermissionsViewRepository
 {
@@ -34,19 +37,7 @@ class PermissionsViewRepository
 	 */
 	public function getAll(): ExtraFluent
 	{
-		return $this->read()
+		return $this->read('*')
 			->where(PermissionsViewEntity::ColumnRole, '!= ?', Conf::RoleAdmin);
-	}
-
-
-	/**
-	 * @return array[]|PermissionsViewEntity[]
-	 * @throws AttributeDetectionException
-	 * @throws Exception
-	 */
-	public function getAllPermissions(): array
-	{
-		return $this->getAll()
-			->recordAll();
 	}
 }

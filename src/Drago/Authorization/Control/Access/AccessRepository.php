@@ -48,7 +48,9 @@ class AccessRepository
 	 */
 	public function getUserById(int $id): array|Row|null
 	{
-		return $this->find(AccessEntity::PrimaryKey, $id)
-			->fetchPairs(AccessEntity::PrimaryKey, AccessEntity::ColumnUsername);
+		return $this->get($id)->fetchPairs(
+			AccessEntity::PrimaryKey,
+			AccessEntity::ColumnUsername,
+		);
 	}
 }

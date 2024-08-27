@@ -34,7 +34,7 @@ class PermissionsRolesViewRepository
 	 */
 	public function getAll(): array
 	{
-		return $this->read()
+		return $this->read('*')
 			->recordAll();
 	}
 }

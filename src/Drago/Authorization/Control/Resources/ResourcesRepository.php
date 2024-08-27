@@ -36,19 +36,7 @@ class ResourcesRepository
 	 */
 	public function getAll(): ExtraFluent
 	{
-		return $this->read()
+		return $this->read('*')
 			->orderBy(ResourcesEntity::ColumnName, 'asc');
-	}
-
-
-	/**
-	 * @return array[]|ResourcesEntity[]
-	 * @throws AttributeDetectionException
-	 * @throws Exception
-	 */
-	public function getAllResources(): array
-	{
-		return $this->read()
-			->recordAll();
 	}
 }

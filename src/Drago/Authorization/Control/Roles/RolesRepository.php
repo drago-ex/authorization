@@ -38,20 +38,8 @@ class RolesRepository
 	 */
 	public function getAll(): ExtraFluent
 	{
-		return $this->read()
+		return $this->read('*')
 			->orderBy(RolesEntity::PrimaryKey);
-	}
-
-
-	/**
-	 * @return array[]|RolesEntity[]
-	 * @throws AttributeDetectionException
-	 * @throws Exception
-	 */
-	public function getAllRoles(): array
-	{
-		return $this->read()
-			->recordAll();
 	}
 
 
@@ -71,7 +59,7 @@ class RolesRepository
 	 */
 	public function getRoles(): array
 	{
-		return $this->read()
+		return $this->read('*')
 			->where(RolesEntity::ColumnName, '!= ?', Conf::RoleAdmin)
 			->fetchPairs(RolesEntity::PrimaryKey, RolesEntity::ColumnName);
 	}
@@ -82,7 +70,7 @@ class RolesRepository
 	 */
 	public function getRolesPairs(): array
 	{
-		return $this->read()
+		return $this->read('*')
 			->where(RolesEntity::ColumnName, '!= ?', Conf::RoleAdmin)
 			->fetchPairs(RolesEntity::ColumnName, RolesEntity::ColumnName);
 	}
