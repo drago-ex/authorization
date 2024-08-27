@@ -85,7 +85,7 @@ class AccessControl extends Component implements Base
 			->setPrompt('Select user')
 			->setRequired();
 
-		$roles = $this->rolesRepository->read()
+		$roles = $this->rolesRepository->read('*')
 			->where(RolesEntity::ColumnName, '!= ?', Conf::RoleGuest);
 
 		if (!$this->user->isInRole(Conf::RoleAdmin)) {
