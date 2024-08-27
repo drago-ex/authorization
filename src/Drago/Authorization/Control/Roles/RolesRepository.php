@@ -12,7 +12,6 @@ namespace Drago\Authorization\Control\Roles;
 use Dibi\Connection;
 use Dibi\Exception;
 use Drago\Attr\AttributeDetectionException;
-
 use Drago\Attr\Table;
 use Drago\Authorization\Conf;
 use Drago\Authorization\NotAllowedChange;
