@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control\Resources;
 
 use Dibi\Connection;
-use Dibi\Exception;
 use Drago\Attr\AttributeDetectionException;
 use Drago\Attr\Table;
 use Drago\Database\Database;
