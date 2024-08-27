@@ -29,7 +29,7 @@ class RolesRepository
 
 	public function __construct(
 		protected Connection $connection,
-	){
+	) {
 	}
 
 
