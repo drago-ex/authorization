@@ -80,7 +80,7 @@ class PermissionsControl extends Component implements Base
 	protected function createComponentFactory(): Form
 	{
 		$form = $this->create();
-		$roles = $this->rolesRepository->read()
+		$roles = $this->rolesRepository->read('*')
 			->where(RolesEntity::ColumnName, '!= ?', Conf::RoleAdmin)
 			->fetchPairs(RolesEntity::PrimaryKey, RolesEntity::ColumnName);
 
@@ -88,14 +88,14 @@ class PermissionsControl extends Component implements Base
 			->setPrompt('Select role')
 			->setRequired();
 
-		$resources = $this->resourcesRepository->read()
+		$resources = $this->resourcesRepository->read('*')
 			->fetchPairs(ResourcesEntity::PrimaryKey, ResourcesEntity::ColumnName);
 
 		$form->addSelect(PermissionsEntity::ColumnResourceId, 'Resource', $resources)
 			->setPrompt('Select resource')
 			->setRequired();
 
-		$privileges = $this->privilegesRepository->read()
+		$privileges = $this->privilegesRepository->read('*')
 			->fetchPairs(PrivilegesEntity::PrimaryKey, PrivilegesEntity::ColumnName);
 
 		$form->addSelect(PermissionsEntity::ColumnPrivilegeId, 'Actions and signals', $privileges)
