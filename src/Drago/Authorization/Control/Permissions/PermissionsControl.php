@@ -61,26 +61,16 @@ class PermissionsControl extends Component implements Base
 
 	public function render(): void
 	{
-		$template = $this->template;
+		$template = $this->createRender();
 		$template->setFile($this->templateControl ?: __DIR__ . '/Permissions.latte');
-		$template->setTranslator($this->translator);
-		$template->uniqueComponentId = $this->getUniqueComponent($this->openComponentType);
 		$template->render();
-	}
-
-
-	public function getUniqueComponent(string $type): string
-	{
-		return $this->getUniqueIdComponent($type);
 	}
 
 
 	#[Requires(ajax: true)]
 	public function handleClickOpenComponent(): void
 	{
-		$component = $this->getUniqueComponent($this->openComponentType);
-		$this->getPresenter()->payload->{$this->openComponentType} = $component;
-		$this->redrawControl($this->snippetFactory);
+		$this->offCanvasComponent();
 	}
 
 
@@ -134,6 +124,7 @@ class PermissionsControl extends Component implements Base
 	/**
 	 * @throws AbortException
 	 */
+	#[Requires(ajax: true)]
 	public function success(Form $form, PermissionsData $data): void
 	{
 		try {
@@ -143,16 +134,14 @@ class PermissionsControl extends Component implements Base
 			$message = $data->id ? 'Permission was updated.' : 'Permission added.';
 			$this->getPresenter()->flashMessage($message, Alert::Info);
 
-			if ($this->isAjax()) {
-				if ($data->id) {
-					$this->getPresenter()->payload->close = 'close';
-				}
-
-				$this->getPresenter()->redrawControl($this->snippetMessage);
-				$this->redrawControl($this->snippetFactory);
-				$this['grid']->reload();
-				$form->reset();
+			if ($data->id) {
+				$this->getPresenter()->payload->close = 'close';
 			}
+
+			$this->redrawControlMessage();
+			$this->redrawControl($this->snippetFactory);
+			$this['grid']->reload();
+			$form->reset();
 
 		} catch (Throwable $e) {
 			$message = match ($e->getCode()) {
@@ -161,9 +150,7 @@ class PermissionsControl extends Component implements Base
 			};
 
 			$form->addError($message);
-			$this->isAjax()
-				? $this->redrawControl($this->snippetFactory)
-				: $this->redirect('this');
+			$this->redrawControl($this->snippetFactory);
 		}
 	}
 
@@ -186,15 +173,7 @@ class PermissionsControl extends Component implements Base
 
 			$buttonSend = $this->getFormComponent($form, 'send');
 			$buttonSend->setCaption('Edit');
-
-			if ($this->isAjax()) {
-				$component = $this->getUniqueComponent($this->openComponentType);
-				$this->getPresenter()->payload->{$this->openComponentType} = $component;
-				$this->redrawControl($this->snippetFactory);
-
-			} else {
-				$this->redirect('this');
-			}
+			$this->offCanvasComponent();
 		}
 	}
 
@@ -205,6 +184,7 @@ class PermissionsControl extends Component implements Base
 	 * @throws BadRequestException
 	 * @throws Exception
 	 */
+	#[Requires(ajax: true)]
 	public function handleDelete(int $id): void
 	{
 		$items = $this->permissionsRepository->get($id)->record();
@@ -217,13 +197,8 @@ class PermissionsControl extends Component implements Base
 			Alert::Danger,
 		);
 
-		if ($this->isAjax()) {
-			$this->getPresenter()->redrawControl($this->snippetMessage);
-			$this['grid']->reload();
-
-		} else {
-			$this->redirect('this');
-		}
+		$this->redrawControlMessage();
+		$this['grid']->reload();
 	}
 
 

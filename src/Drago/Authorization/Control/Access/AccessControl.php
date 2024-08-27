@@ -55,26 +55,16 @@ class AccessControl extends Component implements Base
 
 	public function render(): void
 	{
-		$template = $this->template;
+		$template = $this->createRender();
 		$template->setFile($this->templateControl ?: __DIR__ . '/Access.latte');
-		$template->setTranslator($this->translator);
-		$template->uniqueComponentId = $this->getUniqueComponent($this->openComponentType);
 		$template->render();
-	}
-
-
-	public function getUniqueComponent(string $type): string
-	{
-		return $this->getUniqueIdComponent($type);
 	}
 
 
 	#[Requires(ajax: true)]
 	public function handleClickOpenComponent(): void
 	{
-		$component = $this->getUniqueComponent($this->openComponentType);
-		$this->getPresenter()->payload->{$this->openComponentType} = $component;
-		$this->redrawControl($this->snippetFactory);
+		$this->offCanvasComponent();
 	}
 
 
@@ -119,6 +109,7 @@ class AccessControl extends Component implements Base
 	/**
 	 * @throws DriverException
 	 */
+	#[Requires(ajax: true)]
 	public function success(Form $form, AccessRolesData $data): void
 	{
 		try {
@@ -146,18 +137,13 @@ class AccessControl extends Component implements Base
 			$message = $data->id ? 'Roles have been updated.' : 'Role assigned.';
 			$this->getPresenter()->flashMessage($message, Alert::Info);
 
-			if ($this->isAjax()) {
-				if ($data->user_id) {
-					$this->getPresenter()->payload->close = 'close';
-				}
-				$this->getPresenter()->redrawControl($this->snippetMessage);
-				$this->redrawControl($this->snippetFactory);
-				$this['grid']->reload();
-				$form->reset();
-
-			} else {
-				$this->redirect('this');
+			if ($data->user_id) {
+				$this->getPresenter()->payload->close = 'close';
 			}
+			$this->redrawControlMessage();
+			$this->redrawControl($this->snippetFactory);
+			$this['grid']->reload();
+			$form->reset();
 
 		} catch (Throwable $e) {
 			$this->usersRolesRepository
@@ -170,9 +156,7 @@ class AccessControl extends Component implements Base
 			};
 
 			$form->addError($message);
-			$this->isAjax()
-				? $this->redrawControl($this->snippetFactory)
-				: $this->redirect('this');
+			$this->redrawControl($this->snippetFactory);
 		}
 	}
 
@@ -183,6 +167,7 @@ class AccessControl extends Component implements Base
 	 * @throws Exception
 	 * @throws BadRequestException
 	 */
+	#[Requires(ajax: true)]
 	public function handleEdit(int $id): void
 	{
 		$items = $this->usersRolesRepository->getUserRoles($id);
@@ -213,15 +198,7 @@ class AccessControl extends Component implements Base
 
 		$formUserId = $this->getFormComponent($form, 'user_id');
 		$formUserId->setHtmlAttribute('data-locked');
-
-		if ($this->isAjax()) {
-			$component = $this->getUniqueComponent($this->openComponentType);
-			$this->getPresenter()->payload->{$this->openComponentType} = $component;
-			$this->redrawControl($this->snippetFactory);
-
-		} else {
-			$this->redirect('this');
-		}
+		$this->offCanvasComponent();
 	}
 
 
@@ -231,6 +208,7 @@ class AccessControl extends Component implements Base
 	 * @throws BadRequestException
 	 * @throws Exception
 	 */
+	#[Requires(ajax: true)]
 	public function handleDelete(int $id): void
 	{
 		$items = $this->usersRolesRepository->get($id)->record();
@@ -248,13 +226,8 @@ class AccessControl extends Component implements Base
 			Alert::Danger,
 		);
 
-		if ($this->isAjax()) {
-			$this->getPresenter()->redrawControl($this->snippetMessage);
-			$this['grid']->reload();
-
-		} else {
-			$this->redirect('this');
-		}
+		$this->redrawControlMessage();
+		$this['grid']->reload();
 	}
 
 

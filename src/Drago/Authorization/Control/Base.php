@@ -15,9 +15,6 @@ interface Base
 	/** Render template for factory. */
 	public function render(): void;
 
-	/** Getting a unique id for offCanvas or modal window. */
-	public function getUniqueComponent(string $type): string;
-
 	/** Open modal or offCanvas. */
 	public function handleClickOpenComponent(): void;
 

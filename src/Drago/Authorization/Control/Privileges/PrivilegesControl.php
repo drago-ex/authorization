@@ -50,26 +50,16 @@ class PrivilegesControl extends Component implements Base
 
 	public function render(): void
 	{
-		$template = $this->template;
+		$template = $this->createRender();
 		$template->setFile($this->templateControl ?: __DIR__ . '/Privileges.latte');
-		$template->setTranslator($this->translator);
-		$template->uniqueComponentId = $this->getUniqueComponent($this->openComponentType);
 		$template->render();
-	}
-
-
-	public function getUniqueComponent(string $type): string
-	{
-		return $this->getUniqueIdComponent($type);
 	}
 
 
 	#[Requires(ajax: true)]
 	public function handleClickOpenComponent(): void
 	{
-		$component = $this->getUniqueComponent($this->openComponentType);
-		$this->getPresenter()->payload->{$this->openComponentType} = $component;
-		$this->redrawControl($this->snippetFactory);
+		$this->offCanvasComponent();
 	}
 
 
@@ -94,6 +84,7 @@ class PrivilegesControl extends Component implements Base
 	/**
 	 * @throws AbortException
 	 */
+	#[Requires(ajax: true)]
 	public function success(Form $form, PrivilegesData $data): void
 	{
 		try {
@@ -103,18 +94,13 @@ class PrivilegesControl extends Component implements Base
 			$message = $data->id ? 'Privilege updated.' : 'Privilege inserted.';
 			$this->getPresenter()->flashMessage($message, Alert::Info);
 
-			if ($this->isAjax()) {
-				if ($data->id) {
-					$this->getPresenter()->payload->close = 'close';
-				}
-				$this->getPresenter()->redrawControl($this->snippetMessage);
-				$this->redrawControl($this->snippetFactory);
-				$this['grid']->reload();
-				$form->reset();
-
-			} else {
-				$this->redirect('this');
+			if ($data->id) {
+				$this->getPresenter()->payload->close = 'close';
 			}
+			$this->redrawControlMessage();
+			$this->redrawControl($this->snippetFactory);
+			$this['grid']->reload();
+			$form->reset();
 
 		} catch (Throwable $e) {
 			$message = match ($e->getCode()) {
@@ -123,9 +109,7 @@ class PrivilegesControl extends Component implements Base
 			};
 
 			$form->addError($message);
-			$this->isAjax()
-				? $this->redrawControl($this->snippetFactory)
-				: $this->redirect('this');
+			$this->redrawControl($this->snippetFactory);
 		}
 	}
 
@@ -136,6 +120,7 @@ class PrivilegesControl extends Component implements Base
 	 * @throws BadRequestException
 	 * @throws Exception
 	 */
+	#[Requires(ajax: true)]
 	public function handleEdit(int $id): void
 	{
 		$items = $this->privilegesRepository->get($id)->record();
@@ -148,15 +133,7 @@ class PrivilegesControl extends Component implements Base
 
 				$buttonSend = $this->getFormComponent($form, 'send');
 				$buttonSend->setCaption('Edit');
-
-				if ($this->isAjax()) {
-					$component = $this->getUniqueComponent($this->openComponentType);
-					$this->getPresenter()->payload->{$this->openComponentType} = $component;
-					$this->redrawControl($this->snippetFactory);
-
-				} else {
-					$this->redirect('this');
-				}
+				$this->offCanvasComponent();
 			}
 
 		} catch (NotAllowedChange $e) {
@@ -165,12 +142,8 @@ class PrivilegesControl extends Component implements Base
 				default => 'Unknown status code.',
 			};
 
-			$this->getPresenter()
-				->flashMessage($message, Alert::Warning);
-
-			$this->isAjax()
-				? $this->getPresenter()->redrawControl($this->snippetMessage)
-				: $this->redirect('this');
+			$this->getPresenter()->flashMessage($message, Alert::Warning);
+			$this->redrawControlMessage();
 		}
 	}
 
@@ -181,6 +154,7 @@ class PrivilegesControl extends Component implements Base
 	 * @throws BadRequestException
 	 * @throws Exception
 	 */
+	#[Requires(ajax: true)]
 	public function handleDelete(int $id): void
 	{
 		$items = $this->privilegesRepository->get($id)->record();
@@ -195,13 +169,8 @@ class PrivilegesControl extends Component implements Base
 					Alert::Danger,
 				);
 
-				if ($this->isAjax()) {
-					$this->getPresenter()->redrawControl($this->snippetMessage);
-					$this['grid']->reload();
-
-				} else {
-					$this->redirect('this');
-				}
+				$this->redrawControlMessage();
+				$this['grid']->reload();
 			}
 
 		} catch (Throwable $e) {
@@ -211,12 +180,8 @@ class PrivilegesControl extends Component implements Base
 				default => 'Unknown status code.',
 			};
 
-			$this->getPresenter()
-				->flashMessage($message, Alert::Warning);
-
-			$this->isAjax()
-				? $this->getPresenter()->redrawControl($this->snippetMessage)
-				: $this->redirect('this');
+			$this->getPresenter()->flashMessage($message, Alert::Warning);
+			$this->redrawControlMessage();
 		}
 	}
 
