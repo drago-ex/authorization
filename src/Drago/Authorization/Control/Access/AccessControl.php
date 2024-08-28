@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control\Access;
 
 use App\Authorization\Control\ComponentTemplate;
-use Contributte\Datagrid\Column\Action\Confirmation\StringConfirmation;
 use Contributte\Datagrid\Datagrid;
 use Contributte\Datagrid\Exception\DatagridException;
 use Dibi\DriverException;
