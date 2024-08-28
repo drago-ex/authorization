@@ -111,7 +111,6 @@ class AccessControl extends Component implements Base
 	/**
 	 * @throws DriverException
 	 */
-	#[Requires(ajax: true)]
 	public function success(Form $form, AccessRolesData $data): void
 	{
 		try {

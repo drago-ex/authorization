@@ -80,7 +80,6 @@ class ResourcesControl extends Component implements Base
 	/**
 	 * @throws AbortException
 	 */
-	#[Requires(ajax: true)]
 	public function success(Form $form, ResourcesData $data): void
 	{
 		try {

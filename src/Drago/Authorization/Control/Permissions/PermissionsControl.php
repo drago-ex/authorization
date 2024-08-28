@@ -123,7 +123,6 @@ class PermissionsControl extends Component implements Base
 	/**
 	 * @throws AbortException
 	 */
-	#[Requires(ajax: true)]
 	public function success(Form $form, PermissionsData $data): void
 	{
 		try {
@@ -201,7 +200,6 @@ class PermissionsControl extends Component implements Base
 	 * @throws Exception
 	 * @throws AttributeDetectionException
 	 */
-	#[Requires(ajax: true)]
 	public function statusChange(string $id, string $value): void
 	{
 		$id = (int) $id;
