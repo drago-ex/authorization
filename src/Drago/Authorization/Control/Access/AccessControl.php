@@ -41,10 +41,10 @@ class AccessControl extends Component implements Base
 	use SmartObject;
 	use Factory;
 
+	public string $snippetFactory = 'access';
+
 	#[Parameter]
 	private int $id;
-
-	public string $snippetFactory = 'access';
 
 
 	public function __construct(

@@ -41,10 +41,10 @@ class RolesControl extends Component implements Base
 	use SmartObject;
 	use Factory;
 
+	public string $snippetFactory = 'roles';
+
 	#[Parameter]
 	private int $id;
-
-	public string $snippetFactory = 'roles';
 
 
 	public function __construct(
