@@ -225,7 +225,10 @@ class RolesControl extends Component implements Base
 	{
 		$grid = new DatagridComponent($this, $name);
 		$grid->setDataSource($this->rolesRepository->getAll());
-		$grid->init();
+
+		if ($this->translator) {
+			$grid->setTranslator($this->translator);
+		}
 
 		if ($this->templateGrid) {
 			$grid->setTemplateFile($this->templateGrid);

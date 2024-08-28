@@ -20,18 +20,10 @@ use Nette\ComponentModel\IContainer;
 class DatagridComponent extends Datagrid
 {
 	public function __construct(
-		?IContainer $parent = null,
-		?string $name = null,
+		public ?IContainer $parent = null,
+		public ?string $name = null,
 	) {
 		parent::__construct($parent, $name);
-	}
-
-
-	public function init(): void
-	{
-		if ($this->translator) {
-			$this->setTranslator($this->translator);
-		}
 	}
 
 

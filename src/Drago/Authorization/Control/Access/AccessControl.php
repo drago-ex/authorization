@@ -237,7 +237,10 @@ class AccessControl extends Component implements Base
 		$grid = new DatagridComponent($this, $name);
 		$grid->setPrimaryKey('user_id');
 		$grid->setDataSource($this->usersRolesViewRepository->getAllUsers());
-		$grid->init();
+
+		if ($this->translator) {
+			$grid->setTranslator($this->translator);
+		}
 
 		if ($this->templateGrid) {
 			$grid->setTemplateFile($this->templateGrid);
