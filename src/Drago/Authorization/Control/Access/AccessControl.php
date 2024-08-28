@@ -43,7 +43,7 @@ class AccessControl extends Component implements Base
 	public string $snippetFactory = 'access';
 
 	#[Parameter]
-	private int $id;
+	private int $id = 0;
 
 
 	public function __construct(
