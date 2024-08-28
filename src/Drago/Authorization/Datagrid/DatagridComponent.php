@@ -56,7 +56,8 @@ class DatagridComponent extends Datagrid
 	public function addActionEdit(string $key, string $name, ?string $href = null, ?array $params = null): Action
 	{
 		return $this->addAction($key, $name, $href, $params)
-			->setClass('btn btn-xs btn-primary text-white ajax');
+			->setClass('btn btn-xs btn-primary text-white ajax')
+			->setDataAttribute('naja-history', 'off');
 	}
 
 
@@ -72,6 +73,7 @@ class DatagridComponent extends Datagrid
 
 		return $this->addAction($key, $name, $href, $params)
 			->setClass('btn btn-xs btn-danger ajax')
+			->setDataAttribute('naja-history', 'off')
 			->setConfirmation(new StringConfirmation($confirm));
 	}
 }
