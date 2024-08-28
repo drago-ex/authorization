@@ -71,7 +71,7 @@ class RolesControl extends Component implements Base
 	/**
 	 * @throws AttributeDetectionException
 	 */
-	public function createComponentFactory(): Form
+	protected function createComponentFactory(): Form
 	{
 		$form = $this->create();
 		$form->addText(RolesEntity::ColumnName, 'Role')
