@@ -43,7 +43,7 @@ class RolesControl extends Component implements Base
 	public string $snippetFactory = 'roles';
 
 	#[Parameter]
-	private int $id = 0;
+	public int $id = 0;
 
 
 	public function __construct(
