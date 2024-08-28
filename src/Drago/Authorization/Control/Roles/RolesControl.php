@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control\Roles;
 
 use App\Authorization\Control\ComponentTemplate;
-use Contributte\Datagrid\Datagrid;
 use Contributte\Datagrid\Exception\DatagridException;
 use Dibi\Exception;
 use Dibi\Row;
@@ -220,7 +219,7 @@ class RolesControl extends Component implements Base
 	 * @throws AttributeDetectionException
 	 * @throws DataGridException
 	 */
-	protected function createComponentGrid($name): DataGrid
+	protected function createComponentGrid($name): DatagridComponent
 	{
 		$grid = new DatagridComponent($this, $name);
 		$grid->setDataSource($this->rolesRepository->getAll());

@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control\Permissions;
 
 use App\Authorization\Control\ComponentTemplate;
-use Contributte\Datagrid\Datagrid;
 use Contributte\Datagrid\Exception\DatagridColumnStatusException;
 use Contributte\Datagrid\Exception\DatagridException;
 use Dibi\Exception;
@@ -226,7 +225,7 @@ class PermissionsControl extends Component implements Base
 	 * @throws DataGridException
 	 * @throws DataGridColumnStatusException
 	 */
-	protected function createComponentGrid($name): DataGrid
+	protected function createComponentGrid($name): DatagridComponent
 	{
 		$grid = new DatagridComponent($this, $name);
 		$grid->setDataSource($this->permissionsViewRepository->getAll());
@@ -265,7 +264,6 @@ class PermissionsControl extends Component implements Base
 				1  => $grid->translateFilter('Allowed'),
 			]);
 		$expirationCol->onChange[] = [$this, 'statusChange'];
-
 		$grid->addActionEdit('edit', 'Edit');
 		$grid->addActionDelete('delete', 'Delete');
 		return $grid;
