@@ -27,18 +27,26 @@ class DatagridComponent extends Datagrid
 	}
 
 
-	private function translate(string $name): string
-	{
-		return $this->translator
-			->translate($name);
-	}
-
-
 	public function init(): void
 	{
 		if ($this->translator) {
 			$this->setTranslator($this->translator);
 		}
+	}
+
+
+	public function translate(string $name): ?string
+	{
+		return $this->translator
+			?->translate($name);
+
+	}
+
+
+	public function translateFilter(string $name): string
+	{
+		return $this->translator
+			->translate($name) ?? $name;
 	}
 
 

@@ -24,6 +24,7 @@ use Drago\Authorization\Control\Roles\RolesEntity;
 use Drago\Authorization\Control\Roles\RolesRepository;
 use Drago\Authorization\Datagrid\DatagridComponent;
 use Nette\Application\AbortException;
+use Nette\Application\Attributes\Parameter;
 use Nette\Application\Attributes\Requires;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
@@ -39,6 +40,9 @@ class AccessControl extends Component implements Base
 {
 	use SmartObject;
 	use Factory;
+
+	#[Parameter]
+	private int $id;
 
 	public string $snippetFactory = 'access';
 
@@ -77,8 +81,7 @@ class AccessControl extends Component implements Base
 		$users = $this->usersRepository->getAllUsers();
 
 		if ($this->getSignal()) {
-			$id = (int) $this->getParameter('id');
-			$user = $this->usersRepository->getUserById($id);
+			$user = $this->usersRepository->getUserById($this->id);
 		}
 
 		$form->addSelect(AccessRolesEntity::ColumnUserId, 'User', $user ?? $users)
@@ -137,6 +140,7 @@ class AccessControl extends Component implements Base
 			if ($data->user_id) {
 				$this->getPresenter()->payload->close = 'close';
 			}
+
 			$this->redrawControlMessage();
 			$this->redrawControl($this->snippetFactory);
 			$this['grid']->reload();
@@ -243,7 +247,6 @@ class AccessControl extends Component implements Base
 		$grid->addColumnBase('role', 'Roles');
 		$grid->addActionEdit('edit', 'Edit', 'edit!', ['id' => 'user_id']);
 		$grid->addActionDelete('delete', 'Delete', 'delete!', ['id' => 'user_id']);
-
 		return $grid;
 	}
 }

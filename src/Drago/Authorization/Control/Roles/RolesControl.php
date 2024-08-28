@@ -21,8 +21,10 @@ use Drago\Authorization\Conf;
 use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
 use Drago\Authorization\Control\Factory;
+use Drago\Authorization\Datagrid\DatagridComponent;
 use Drago\Authorization\NotAllowedChange;
 use Nette\Application\AbortException;
+use Nette\Application\Attributes\Parameter;
 use Nette\Application\Attributes\Requires;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
@@ -39,6 +41,9 @@ class RolesControl extends Component implements Base
 {
 	use SmartObject;
 	use Factory;
+
+	#[Parameter]
+	private int $id;
 
 	public string $snippetFactory = 'roles';
 
@@ -77,9 +82,8 @@ class RolesControl extends Component implements Base
 			->setRequired();
 
 		if ($this->getSignal()) {
-			$id = (int) $this->getParameter('id');
 			foreach ($this->rolesRepository->getRoles() as $key => $item) {
-				if ($id !== $key) {
+				if ($this->id !== $key) {
 					$roles[$key] = $item;
 				}
 			}
@@ -219,37 +223,22 @@ class RolesControl extends Component implements Base
 	 */
 	protected function createComponentGrid($name): DataGrid
 	{
-		$grid = new DataGrid($this, $name);
+		$grid = new DatagridComponent($this, $name);
 		$grid->setDataSource($this->rolesRepository->getAll());
-
-		if ($this->translator) {
-			$grid->setTranslator($this->translator);
-		}
+		$grid->init();
 
 		if ($this->templateGrid) {
 			$grid->setTemplateFile($this->templateGrid);
 		}
 
-		$grid->addColumnText('name', 'Name')
-			->setSortable()
-			->setFilterText();
-
+		$grid->addColumnBase('name', 'Name');
 		$grid->addColumnText('parent', 'Parent')
 			->setSortable()
-			->setRenderer(fn(Row|RolesEntity $item) => $this->rolesRepository->findByParent($item->parent)->name ?? null)
+			->setRenderer(fn(Row|RolesEntity $item) => $this->rolesRepository->findByParent($item->parent)?->name)
 			->setFilterText();
 
-		$grid->addAction('edit', 'Edit')
-			->setClass('btn btn-xs btn-primary text-white ajax');
-
-		$confirm = 'Are you sure you want to delete the selected item?';
-		if ($this->translator) {
-			$confirm = $this->translator->translate($confirm);
-		}
-		$grid->addAction('delete', 'Delete')
-			->setClass('btn btn-xs btn-danger ajax')
-			->setConfirmation(new StringConfirmation($confirm));
-
+		$grid->addActionEdit('edit', 'Edit');
+		$grid->addActionDelete('delete', 'Delete');
 		return $grid;
 	}
 }

@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control\Permissions;
 
 use App\Authorization\Control\ComponentTemplate;
-use Contributte\Datagrid\Column\Action\Confirmation\StringConfirmation;
 use Contributte\Datagrid\Datagrid;
 use Contributte\Datagrid\Exception\DatagridColumnStatusException;
 use Contributte\Datagrid\Exception\DatagridException;
@@ -27,6 +26,7 @@ use Drago\Authorization\Control\Resources\ResourcesEntity;
 use Drago\Authorization\Control\Resources\ResourcesRepository;
 use Drago\Authorization\Control\Roles\RolesEntity;
 use Drago\Authorization\Control\Roles\RolesRepository;
+use Drago\Authorization\Datagrid\DatagridComponent;
 use Nette\Application\AbortException;
 use Nette\Application\Attributes\Requires;
 use Nette\Application\BadRequestException;
@@ -192,11 +192,7 @@ class PermissionsControl extends Component implements Base
 
 		$this->permissionsRepository->delete(PermissionsEntity::PrimaryKey, $items->id)->execute();
 		$this->cache->remove(Conf::Cache);
-		$this->getPresenter()->flashMessage(
-			'Permission removed.',
-			Alert::Danger,
-		);
-
+		$this->getPresenter()->flashMessage('Permission removed.', Alert::Danger);
 		$this->redrawControlMessage();
 		$this['grid']->reload();
 	}
@@ -206,6 +202,7 @@ class PermissionsControl extends Component implements Base
 	 * @throws Exception
 	 * @throws AttributeDetectionException
 	 */
+	#[Requires(ajax: true)]
 	public function statusChange(string $id, string $value): void
 	{
 		$id = (int) $id;
@@ -217,13 +214,9 @@ class PermissionsControl extends Component implements Base
 			$entity->allowed = $value;
 
 			$this->permissionsRepository->save($entity);
-			$message = 'Authorization has been changed.';
-			$this->getPresenter()->flashMessage($message, Alert::Info);
-
-			if ($this->isAjax()) {
-				$this->getPresenter()->redrawControl($this->snippetMessage);
-				$this['grid']->reload();
-			}
+			$this->getPresenter()->flashMessage('Authorization has been changed.', Alert::Info);
+			$this->redrawControlMessage();
+			$this['grid']->reload();
 		}
 	}
 
@@ -235,12 +228,9 @@ class PermissionsControl extends Component implements Base
 	 */
 	protected function createComponentGrid($name): DataGrid
 	{
-		$grid = new DataGrid($this, $name);
+		$grid = new DatagridComponent($this, $name);
 		$grid->setDataSource($this->permissionsViewRepository->getAll());
-
-		if ($this->translator) {
-			$grid->setTranslator($this->translator);
-		}
+		$grid->init();
 
 		if ($this->templateGrid) {
 			$grid->setTemplateFile($this->templateGrid);
@@ -250,18 +240,11 @@ class PermissionsControl extends Component implements Base
 		$grid->addColumnText('role', 'Role')
 			->setSortable()
 			->setFilterSelect(array_merge([
-				null => $this->translator
-					? $this->translate('All')
-					: 'All',
+				null => $grid->translateFilter('All'),
 			], $roles));
 
-		$grid->addColumnText('resource', 'Resources')
-			->setSortable()
-			->setFilterText();
-
-		$grid->addColumnText('privilege', 'Privileges')
-			->setSortable()
-			->setFilterText();
+		$grid->addColumnBase('resource', 'Resources');
+		$grid->addColumnBase('privilege', 'Privileges');
 
 		$expirationCol = $grid->addColumnStatus('allowed', 'Permission')
 			->setSortable();
@@ -274,29 +257,14 @@ class PermissionsControl extends Component implements Base
 			->setClass('btn-success')
 			->endOption()
 			->setFilterSelect([
-				null => $this->translator ? $this->translate('All') : 'All',
-				0  => $this->translator ? $this->translate('Denied') : 'Denied',
-				1  => $this->translator ? $this->translate('Allowed') : 'Allowed',
+				null => $grid->translateFilter('All'),
+				0  => $grid->translateFilter('Denied'),
+				1  => $grid->translateFilter('Allowed'),
 			]);
 		$expirationCol->onChange[] = [$this, 'statusChange'];
 
-		$grid->addAction('edit', 'Edit')
-			->setClass('btn btn-xs btn-primary text-white ajax');
-
-		$confirm = 'Are you sure you want to delete the selected item?';
-		if ($this->translator) {
-			$confirm = $this->translate($confirm);
-		}
-		$grid->addAction('delete', 'Delete')
-			->setClass('btn btn-xs btn-danger ajax')
-			->setConfirmation(new StringConfirmation($confirm));
-
+		$grid->addActionEdit('edit', 'Edit');
+		$grid->addActionDelete('delete', 'Delete');
 		return $grid;
-	}
-
-
-	private function translate(string $name): string
-	{
-		return $this->translator->translate($name);
 	}
 }

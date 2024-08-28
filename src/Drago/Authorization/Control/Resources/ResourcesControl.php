@@ -20,6 +20,7 @@ use Drago\Authorization\Conf;
 use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
 use Drago\Authorization\Control\Factory;
+use Drago\Authorization\Datagrid\DatagridComponent;
 use Nette\Application\AbortException;
 use Nette\Application\Attributes\Requires;
 use Nette\Application\BadRequestException;
@@ -147,11 +148,7 @@ class ResourcesControl extends Component implements Base
 		try {
 			$this->resourcesRepository->delete(ResourcesEntity::PrimaryKey, $items->id)->execute();
 			$this->cache->remove(Conf::Cache);
-			$this->getPresenter()->flashMessage(
-				'Resource deleted.',
-				Alert::Danger,
-			);
-
+			$this->getPresenter()->flashMessage('Resource deleted.', Alert::Danger);
 			$this->redrawControlMessage();
 			$this['grid']->reload();
 
@@ -173,32 +170,17 @@ class ResourcesControl extends Component implements Base
 	 */
 	protected function createComponentGrid($name): DataGrid
 	{
-		$grid = new DataGrid($this, $name);
+		$grid = new DatagridComponent($this, $name);
 		$grid->setDataSource($this->resourcesRepository->getAll());
-
-		if ($this->translator) {
-			$grid->setTranslator($this->translator);
-		}
+		$grid->init();
 
 		if ($this->templateGrid) {
 			$grid->setTemplateFile($this->templateGrid);
 		}
 
-		$grid->addColumnText('name', 'Name')
-			->setSortable()
-			->setFilterText();
-
-		$grid->addAction('edit', 'Edit')
-			->setClass('btn btn-xs btn-primary text-white ajax');
-
-		$confirm = 'Are you sure you want to delete the selected item?';
-		if ($this->translator) {
-			$confirm = $this->translator->translate($confirm);
-		}
-		$grid->addAction('delete', 'Delete')
-			->setClass('btn btn-xs btn-danger ajax')
-			->setConfirmation(new StringConfirmation($confirm));
-
+		$grid->addColumnBase('name', 'Name');
+		$grid->addActionEdit('edit', 'Edit');
+		$grid->addActionDelete('delete', 'Delete');
 		return $grid;
 	}
 }
