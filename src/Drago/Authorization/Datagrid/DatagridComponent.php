@@ -46,7 +46,7 @@ class DatagridComponent extends Datagrid
 	public function translateFilter(string $name): string
 	{
 		return $this->translator
-			->translate($name) ?? $name;
+			?->translate($name) ?? $name;
 	}
 
 
