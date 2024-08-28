@@ -120,10 +120,9 @@ class AccessControl extends Component implements Base
 				->begin();
 
 			if ($data->id) {
-				$this->usersRolesRepository->delete(
-					column: AccessRolesEntity::ColumnUserId,
-					args: $data->user_id,
-				)->execute();
+				$this->usersRolesRepository
+					->delete(AccessRolesEntity::ColumnUserId, $data->user_id)
+					->execute();
 			}
 
 			foreach ($data->role_id as $item) {
@@ -131,9 +130,7 @@ class AccessControl extends Component implements Base
 				$this->usersRolesRepository->save($entity);
 			}
 
-			$this->usersRolesRepository->getConnection()
-				->commit();
-
+			$this->usersRolesRepository->getConnection()->commit();
 			$message = $data->id ? 'Roles have been updated.' : 'Role assigned.';
 			$this->getPresenter()->flashMessage($message, Alert::Info);
 
@@ -221,11 +218,7 @@ class AccessControl extends Component implements Base
 				->execute();
 		}
 
-		$this->getPresenter()->flashMessage(
-			'Role removed.',
-			Alert::Danger,
-		);
-
+		$this->getPresenter()->flashMessage('Role removed.', Alert::Danger);
 		$this->redrawControlMessage();
 		$this['grid']->reload();
 	}
