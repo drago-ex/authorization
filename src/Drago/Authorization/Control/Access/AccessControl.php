@@ -23,6 +23,7 @@ use Drago\Authorization\Control\Component;
 use Drago\Authorization\Control\Factory;
 use Drago\Authorization\Control\Roles\RolesEntity;
 use Drago\Authorization\Control\Roles\RolesRepository;
+use Drago\Authorization\Datagrid\DatagridComponent;
 use Nette\Application\AbortException;
 use Nette\Application\Attributes\Requires;
 use Nette\Application\BadRequestException;
@@ -237,36 +238,19 @@ class AccessControl extends Component implements Base
 	 */
 	protected function createComponentGrid($name): DataGrid
 	{
-		$grid = new DataGrid($this, $name);
+		$grid = new DatagridComponent($this, $name);
 		$grid->setPrimaryKey('user_id');
 		$grid->setDataSource($this->usersRolesViewRepository->getAllUsers());
-
-		if ($this->translator) {
-			$grid->setTranslator($this->translator);
-		}
+		$grid->init();
 
 		if ($this->templateGrid) {
 			$grid->setTemplateFile($this->templateGrid);
 		}
 
-		$grid->addColumnText('username', 'Users')
-			->setSortable()
-			->setFilterText();
-
-		$grid->addColumnText('role', 'Roles')
-			->setSortable()
-			->setFilterText();
-
-		$grid->addAction('edit', 'Edit', 'edit!', ['id' => 'user_id'])
-			->setClass('btn btn-xs btn-primary text-white ajax');
-
-		$confirm = 'Are you sure you want to delete the selected item?';
-		if ($this->translator) {
-			$confirm = $this->translator->translate($confirm);
-		}
-		$grid->addAction('delete', 'Delete', 'delete!', ['id' => 'user_id'])
-			->setClass('btn btn-xs btn-danger ajax')
-			->setConfirmation(new StringConfirmation($confirm));
+		$grid->addColumnBase('username', 'Users');
+		$grid->addColumnBase('role', 'Roles');
+		$grid->addActionEdit('edit', 'Edit', 'edit!', ['id' => 'user_id']);
+		$grid->addActionDelete('delete', 'Delete', 'delete!', ['id' => 'user_id']);
 
 		return $grid;
 	}

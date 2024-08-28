@@ -26,7 +26,7 @@ final class Conf
 	/**
 	 * Option to specify privileges for all actions and signals.
 	 */
-	public const PrivilegeAll = '*all';
+	public const PrivilegeAll = '*';
 
 	/**
 	 * Acl cache.

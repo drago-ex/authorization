@@ -9,9 +9,12 @@ declare(strict_types=1);
 
 namespace Drago\Authorization\Datagrid;
 
+use Contributte\Datagrid\Column\Action;
+use Contributte\Datagrid\Column\Action\Confirmation\StringConfirmation;
 use Contributte\Datagrid\Datagrid;
+use Contributte\Datagrid\Exception\DatagridException;
+use Contributte\Datagrid\Filter\FilterText;
 use Nette\ComponentModel\IContainer;
-use Nette\Localization\Translator;
 
 
 class DatagridComponent extends Datagrid
@@ -19,7 +22,6 @@ class DatagridComponent extends Datagrid
 	public function __construct(
 		?IContainer $parent = null,
 		?string $name = null,
-		?Translator $translator = null,
 	) {
 		parent::__construct($parent, $name);
 	}
@@ -29,5 +31,47 @@ class DatagridComponent extends Datagrid
 	{
 		return $this->translator
 			->translate($name);
+	}
+
+
+	public function init(): void
+	{
+		if ($this->translator) {
+			$this->setTranslator($this->translator);
+		}
+	}
+
+
+	public function addColumnBase(string $key, string $name, ?string $column = null): FilterText
+	{
+		return $this->addColumnText($key, $name, $column)
+			->setSortable()
+			->setFilterText();
+	}
+
+
+	/**
+	 * @throws DatagridException
+	 */
+	public function addActionEdit(string $key, string $name, ?string $href = null, ?array $params = null): Action
+	{
+		return $this->addAction($key, $name, $href, $params)
+			->setClass('btn btn-xs btn-primary text-white ajax');
+	}
+
+
+	/**
+	 * @throws DatagridException
+	 */
+	public function addActionDelete(string $key, string $name, ?string $href = null, ?array $params = null): Action
+	{
+		$confirm = 'Are you sure you want to delete the selected item?';
+		if ($this->translator) {
+			$confirm = $this->translate($confirm);
+		}
+
+		return $this->addAction($key, $name, $href, $params)
+			->setClass('btn btn-xs btn-danger ajax')
+			->setConfirmation(new StringConfirmation($confirm));
 	}
 }

@@ -47,7 +47,7 @@ CREATE TABLE `privileges` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `privileges` (`id`, `name`) VALUES
-(1,	'*all'),
+(1,	'*'),
 (2,	'default');
 
 DROP TABLE IF EXISTS `resources`;
@@ -62,7 +62,7 @@ INSERT INTO `resources` (`id`, `name`) VALUES
 (1,	'Front:Home'),
 (2,	'Backend:Admin'),
 (3,	'Backend:Sign'),
-(4,	'Backend:Access');
+(4,	'Backend:Permissions');
 
 DROP TABLE IF EXISTS `roles`;
 CREATE TABLE `roles` (
@@ -91,7 +91,8 @@ CREATE TABLE `users` (
   `username` varchar(50) NOT NULL,
   `email` varchar(50) NOT NULL,
   `password` varchar(60) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
