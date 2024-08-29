@@ -81,8 +81,7 @@ class AccessControl extends Component implements Base
 		};
 
 		$form->addSubmit('confirm', 'Confirm')->onClick[] = function (Form $form, \stdClass $data) {
-			$items = $this->accessRolesRepository->get($data->id)->record();
-			$this->accessRolesRepository->delete(AccessRolesEntity::ColumnUserId, $items->user_id)->execute();
+			$this->accessRolesRepository->delete(AccessRolesEntity::ColumnUserId, $data->id)->execute();
 			$this->getPresenter()->flashMessage('Access deleted.', Alert::Danger);
 			$this->redrawControl($this->snippetDeleteItem);
 			if (!$this->templateControl) {
