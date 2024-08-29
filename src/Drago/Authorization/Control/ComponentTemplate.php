@@ -9,5 +9,7 @@ use Drago\Application\UI\ExtraTemplate;
 
 class ComponentTemplate extends ExtraTemplate
 {
-	public string $uniqueComponentId;
+	public string $uniqueComponentOffcanvas;
+	public string $uniqueComponentModal;
+	public ?string $deleteItems = null;
 }

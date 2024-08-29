@@ -17,17 +17,26 @@ use Nette\SmartObject;
 
 /**
  * Base control.
- * @property-read string $snippetFactory
+ * @property-read string|null $snippetFactory
  * @property-read ComponentTemplate $template
  */
 abstract class Component extends UI\ExtraControl
 {
 	use SmartObject;
 
-	public string $componentType = 'offcanvas';
+	/** Custom control template */
 	public ?string $templateControl = null;
+
+	/** Custom grid template. */
 	public ?string $templateGrid = null;
+
+	/** Delete item name. */
+	public ?string $deleteItems = null;
+
+	/** Base snippets. */
 	protected string $snippetMessage = 'message';
+	protected string $snippetDeleteItem = 'delete';
+	protected string $snippetDeleteTitle = 'title';
 
 
 	/**
@@ -37,17 +46,9 @@ abstract class Component extends UI\ExtraControl
 	{
 		$template = $this->template;
 		$template->setTranslator($this->translator);
-		$template->uniqueComponentId = $this->getUniqueIdComponent($this->componentType);
+		$template->uniqueComponentOffcanvas = $this->getUniqueIdComponent(self::Offcanvas);
+		$template->uniqueComponentModal = $this->getUniqueIdComponent(self::Modal);
 		return $template;
-	}
-
-
-	/**
-	 * Getting a unique id for offCanvas or modal window.
-	 */
-	public function getUniqueComponent(string $type): string
-	{
-		return $this->getUniqueIdComponent($type);
 	}
 
 
@@ -56,9 +57,27 @@ abstract class Component extends UI\ExtraControl
 	 */
 	public function offCanvasComponent(): void
 	{
-		$component = $this->getUniqueComponent($this->componentType);
-		$this->getPresenter()->payload->{$this->componentType} = $component;
+		$component = $this->getUniqueIdComponent(self::Offcanvas);
+		$this->getPresenter()->payload->{self::Offcanvas} = $component;
 		$this->redrawControl($this->snippetFactory);
+	}
+
+
+	/**
+	 * Calling the modal component.
+	 */
+	public function modalComponent(): void
+	{
+		$component = $this->getUniqueIdComponent(self::Modal);
+		$this->getPresenter()->payload->{self::Modal} = $component;
+		$this->redrawControl($this->snippetDeleteItem);
+
+		if ($this->templateControl) {
+			$this->redrawControl($this->snippetDeleteTitle);
+
+		} else {
+			$this->redrawControl($this->snippetFactory);
+		}
 	}
 
 
