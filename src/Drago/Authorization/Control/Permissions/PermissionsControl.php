@@ -18,6 +18,7 @@ use Drago\Attr\AttributeDetectionException;
 use Drago\Authorization\Conf;
 use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
+use Drago\Authorization\Control\DatagridComponent;
 use Drago\Authorization\Control\Factory;
 use Drago\Authorization\Control\Privileges\PrivilegesEntity;
 use Drago\Authorization\Control\Privileges\PrivilegesRepository;
@@ -25,7 +26,6 @@ use Drago\Authorization\Control\Resources\ResourcesEntity;
 use Drago\Authorization\Control\Resources\ResourcesRepository;
 use Drago\Authorization\Control\Roles\RolesEntity;
 use Drago\Authorization\Control\Roles\RolesRepository;
-use Drago\Authorization\Datagrid\DatagridComponent;
 use Nette\Application\AbortException;
 use Nette\Application\Attributes\Requires;
 use Nette\Application\BadRequestException;
@@ -75,7 +75,30 @@ class PermissionsControl extends Component implements Base
 
 	protected function createComponentDelete(): Form
 	{
-		return new Form();
+		$form = $this->create();
+		$form->addHidden('id', $this->id)
+			->addRule($form::Integer);
+
+		$form->addSubmit('cancel', 'Cancel')->onClick[] = function () {
+			$this->redrawControl($this->snippetDeleteItem);
+			if (!$this->templateControl) {
+				$this->redrawControl($this->snippetFactory);
+			}
+		};
+
+		$form->addSubmit('confirm', 'Confirm')->onClick[] = function (Form $form, \stdClass $data) {
+			$this->permissionsRepository->delete(PermissionsEntity::PrimaryKey, $data->id)->execute();
+			$this->cache->remove(Conf::Cache);
+			$this->getPresenter()->flashMessage('Permissions deleted.', Alert::Danger);
+			$this->redrawControl($this->snippetDeleteItem);
+			if (!$this->templateControl) {
+				$this->redrawControl($this->snippetFactory);
+			}
+			$this->redrawControlMessage();
+			$this->closeComponent();
+			$this['grid']->reload();
+		};
+		return $form;
 	}
 
 
@@ -194,11 +217,9 @@ class PermissionsControl extends Component implements Base
 		$items = $this->permissionsRepository->get($id)->record();
 		$items ?: $this->error();
 
-		$this->permissionsRepository->delete(PermissionsEntity::PrimaryKey, $items->id)->execute();
-		$this->cache->remove(Conf::Cache);
-		$this->getPresenter()->flashMessage('Permission removed.', Alert::Danger);
-		$this->redrawControlMessage();
-		$this['grid']->reload();
+		$permissions = $this->rolesRepository->find(RolesEntity::PrimaryKey, $items->role_id)->record();
+		$this->deleteItems = $permissions->name;
+		$this->modalComponent();
 	}
 
 
@@ -269,7 +290,7 @@ class PermissionsControl extends Component implements Base
 			]);
 		$expirationCol->onChange[] = [$this, 'statusChange'];
 		$grid->addActionEdit('edit', 'Edit');
-		$grid->addActionDelete('delete', 'Delete');
+		$grid->addActionDeleteBase('delete', 'Delete');
 		return $grid;
 	}
 }

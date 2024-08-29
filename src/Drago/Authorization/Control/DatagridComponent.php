@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Drago\Authorization\Datagrid;
+namespace Drago\Authorization\Control;
 
 use Contributte\Datagrid\Column\Action;
 use Contributte\Datagrid\Column\Action\Confirmation\StringConfirmation;
@@ -57,6 +57,17 @@ class DatagridComponent extends Datagrid
 	{
 		return $this->addAction($key, $name, $href, $params)
 			->setClass('btn btn-xs btn-primary text-white ajax')
+			->setDataAttribute('naja-history', 'off');
+	}
+
+
+	/**
+	 * @throws DatagridException
+	 */
+	public function addActionDeleteBase(string $key, string $name, ?string $href = null, ?array $params = null): Action
+	{
+		return $this->addAction($key, $name, $href, $params)
+			->setClass('btn btn-xs btn-secondary ajax')
 			->setDataAttribute('naja-history', 'off');
 	}
 

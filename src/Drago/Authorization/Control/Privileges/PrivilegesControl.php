@@ -17,8 +17,8 @@ use Drago\Attr\AttributeDetectionException;
 use Drago\Authorization\Conf;
 use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
+use Drago\Authorization\Control\DatagridComponent;
 use Drago\Authorization\Control\Factory;
-use Drago\Authorization\Datagrid\DatagridComponent;
 use Drago\Authorization\NotAllowedChange;
 use Nette\Application\AbortException;
 use Nette\Application\Attributes\Requires;
@@ -64,7 +64,30 @@ class PrivilegesControl extends Component implements Base
 
 	protected function createComponentDelete(): Form
 	{
-		return new Form();
+		$form = $this->create();
+		$form->addHidden('id', $this->id)
+			->addRule($form::Integer);
+
+		$form->addSubmit('cancel', 'Cancel')->onClick[] = function () {
+			$this->redrawControl($this->snippetDeleteItem);
+			if (!$this->templateControl) {
+				$this->redrawControl($this->snippetFactory);
+			}
+		};
+
+		$form->addSubmit('confirm', 'Confirm')->onClick[] = function (Form $form, \stdClass $data) {
+			$this->privilegesRepository->delete(PrivilegesEntity::PrimaryKey, $data->id)->execute();
+			$this->cache->remove(Conf::Cache);
+			$this->getPresenter()->flashMessage('Privilege deleted.', Alert::Danger);
+			$this->redrawControl($this->snippetDeleteItem);
+			if (!$this->templateControl) {
+				$this->redrawControl($this->snippetFactory);
+			}
+			$this->redrawControlMessage();
+			$this->closeComponent();
+			$this['grid']->reload();
+		};
+		return $form;
 	}
 
 
@@ -166,11 +189,8 @@ class PrivilegesControl extends Component implements Base
 
 		try {
 			if ($this->privilegesRepository->isAllowed($items->name)) {
-				$this->privilegesRepository->delete(PrivilegesEntity::PrimaryKey, $items->id)->execute();
-				$this->cache->remove(Conf::Cache);
-				$this->getPresenter()->flashMessage('Privilege deleted.', Alert::Danger);
-				$this->redrawControlMessage();
-				$this['grid']->reload();
+				$this->deleteItems = $items->name;
+				$this->modalComponent();
 			}
 
 		} catch (Throwable $e) {
@@ -205,7 +225,7 @@ class PrivilegesControl extends Component implements Base
 
 		$grid->addColumnBase('name', 'Name');
 		$grid->addActionEdit('edit', 'Edit');
-		$grid->addActionDelete('delete', 'Delete');
+		$grid->addActionDeleteBase('delete', 'Delete');
 		return $grid;
 	}
 }

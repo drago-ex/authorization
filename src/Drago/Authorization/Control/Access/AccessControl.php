@@ -18,12 +18,11 @@ use Drago\Attr\AttributeDetectionException;
 use Drago\Authorization\Conf;
 use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
+use Drago\Authorization\Control\DatagridComponent;
 use Drago\Authorization\Control\Factory;
 use Drago\Authorization\Control\Roles\RolesEntity;
 use Drago\Authorization\Control\Roles\RolesRepository;
-use Drago\Authorization\Datagrid\DatagridComponent;
 use Nette\Application\AbortException;
-use Nette\Application\Attributes\Parameter;
 use Nette\Application\Attributes\Requires;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
@@ -42,14 +41,11 @@ class AccessControl extends Component implements Base
 
 	public string $snippetFactory = 'access';
 
-	#[Parameter]
-	public int $id = 0;
-
 
 	public function __construct(
-		private readonly AccessRepository $usersRepository,
-		private readonly AccessRolesRepository $usersRolesRepository,
-		private readonly AccessRolesViewRepository $usersRolesViewRepository,
+		private readonly AccessRepository $accessRepository,
+		private readonly AccessRolesRepository $accessRolesRepository,
+		private readonly AccessRolesViewRepository $accessRolesViewRepository,
 		private readonly RolesRepository $rolesRepository,
 		private readonly User $user,
 	) {
@@ -73,7 +69,30 @@ class AccessControl extends Component implements Base
 
 	protected function createComponentDelete(): Form
 	{
-		return new Form();
+		$form = $this->create();
+		$form->addHidden('id', $this->id)
+			->addRule($form::Integer);
+
+		$form->addSubmit('cancel', 'Cancel')->onClick[] = function () {
+			$this->redrawControl($this->snippetDeleteItem);
+			if (!$this->templateControl) {
+				$this->redrawControl($this->snippetFactory);
+			}
+		};
+
+		$form->addSubmit('confirm', 'Confirm')->onClick[] = function (Form $form, \stdClass $data) {
+			$items = $this->accessRolesRepository->get($data->id)->record();
+			$this->accessRolesRepository->delete(AccessRolesEntity::ColumnUserId, $items->user_id)->execute();
+			$this->getPresenter()->flashMessage('Access deleted.', Alert::Danger);
+			$this->redrawControl($this->snippetDeleteItem);
+			if (!$this->templateControl) {
+				$this->redrawControl($this->snippetFactory);
+			}
+			$this->redrawControlMessage();
+			$this->closeComponent();
+			$this['grid']->reload();
+		};
+		return $form;
 	}
 
 
@@ -83,10 +102,10 @@ class AccessControl extends Component implements Base
 	protected function createComponentFactory(): Form
 	{
 		$form = $this->create();
-		$users = $this->usersRepository->getAllUsers();
+		$users = $this->accessRepository->getAllUsers();
 
 		if ($this->getSignal()) {
-			$user = $this->usersRepository->getUserById($this->id);
+			$user = $this->accessRepository->getUserById($this->id);
 		}
 
 		$form->addSelect(AccessRolesEntity::ColumnUserId, 'User', $user ?? $users)
@@ -123,21 +142,21 @@ class AccessControl extends Component implements Base
 			$entity = new AccessRolesEntity;
 			$entity->user_id = $data->user_id;
 
-			$this->usersRolesRepository->getConnection()
+			$this->accessRolesRepository->getConnection()
 				->begin();
 
 			if ($data->id) {
-				$this->usersRolesRepository
+				$this->accessRolesRepository
 					->delete(AccessRolesEntity::ColumnUserId, $data->user_id)
 					->execute();
 			}
 
 			foreach ($data->role_id as $item) {
 				$entity->role_id = $item;
-				$this->usersRolesRepository->save($entity);
+				$this->accessRolesRepository->save($entity);
 			}
 
-			$this->usersRolesRepository->getConnection()->commit();
+			$this->accessRolesRepository->getConnection()->commit();
 			$message = $data->id ? 'Roles have been updated.' : 'Role assigned.';
 			$this->getPresenter()->flashMessage($message, Alert::Info);
 
@@ -151,7 +170,7 @@ class AccessControl extends Component implements Base
 			$form->reset();
 
 		} catch (Throwable $e) {
-			$this->usersRolesRepository
+			$this->accessRolesRepository
 				->getConnection()
 				->rollback();
 
@@ -175,7 +194,7 @@ class AccessControl extends Component implements Base
 	#[Requires(ajax: true)]
 	public function handleEdit(int $id): void
 	{
-		$items = $this->usersRolesRepository->getUserRoles($id);
+		$items = $this->accessRolesRepository->getUserRoles($id);
 		$items ?: $this->error();
 
 		$userId = [];
@@ -216,19 +235,14 @@ class AccessControl extends Component implements Base
 	#[Requires(ajax: true)]
 	public function handleDelete(int $id): void
 	{
-		$items = $this->usersRolesRepository->get($id)->record();
+		$items = $this->accessRolesRepository->get($id)->record();
 		$items ?: $this->error();
+		$user = $this->accessRolesViewRepository
+			->find(AccessRolesViewEntity::ColumnUserId, $items->user_id)
+			->record();
 
-		$records = $this->usersRolesRepository->getUserRoles($items->user_id);
-		foreach ($records as $record) {
-			$this->usersRolesRepository->delete(AccessRolesEntity::ColumnRoleId, $record->role_id)
-				->and(AccessRolesEntity::ColumnUserId, '= ?', $record->user_id)
-				->execute();
-		}
-
-		$this->getPresenter()->flashMessage('Role removed.', Alert::Danger);
-		$this->redrawControlMessage();
-		$this['grid']->reload();
+		$this->deleteItems = $user->username;
+		$this->modalComponent();
 	}
 
 
@@ -240,7 +254,7 @@ class AccessControl extends Component implements Base
 	{
 		$grid = new DatagridComponent($this, $name);
 		$grid->setPrimaryKey('user_id');
-		$grid->setDataSource($this->usersRolesViewRepository->getAllUsers());
+		$grid->setDataSource($this->accessRolesViewRepository->getAllUsers());
 
 		if ($this->translator) {
 			$grid->setTranslator($this->translator);
@@ -253,7 +267,7 @@ class AccessControl extends Component implements Base
 		$grid->addColumnBase('username', 'Users');
 		$grid->addColumnBase('role', 'Roles');
 		$grid->addActionEdit('edit', 'Edit', 'edit!', ['id' => 'user_id']);
-		$grid->addActionDelete('delete', 'Delete', 'delete!', ['id' => 'user_id']);
+		$grid->addActionDeleteBase('delete', 'Delete', 'delete!', ['id' => 'user_id']);
 		return $grid;
 	}
 }

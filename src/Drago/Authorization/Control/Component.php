@@ -11,6 +11,7 @@ namespace Drago\Authorization\Control;
 
 use App\Authorization\Control\ComponentTemplate;
 use Drago\Application\UI;
+use Nette\Application\Attributes\Parameter;
 use Nette\Application\UI\Template;
 use Nette\SmartObject;
 
@@ -23,6 +24,9 @@ use Nette\SmartObject;
 abstract class Component extends UI\ExtraControl
 {
 	use SmartObject;
+
+	#[Parameter]
+	public int $id = 0;
 
 	/** Custom control template */
 	public ?string $templateControl = null;

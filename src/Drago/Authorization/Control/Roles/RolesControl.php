@@ -18,11 +18,10 @@ use Drago\Attr\AttributeDetectionException;
 use Drago\Authorization\Conf;
 use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
+use Drago\Authorization\Control\DatagridComponent;
 use Drago\Authorization\Control\Factory;
-use Drago\Authorization\Datagrid\DatagridComponent;
 use Drago\Authorization\NotAllowedChange;
 use Nette\Application\AbortException;
-use Nette\Application\Attributes\Parameter;
 use Nette\Application\Attributes\Requires;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
@@ -41,9 +40,6 @@ class RolesControl extends Component implements Base
 	use Factory;
 
 	public string $snippetFactory = 'roles';
-
-	#[Parameter]
-	public int $id = 0;
 
 
 	public function __construct(
@@ -74,16 +70,14 @@ class RolesControl extends Component implements Base
 		$form->addHidden('id', $this->id)
 			->addRule($form::Integer);
 
-		$form->addSubmit('cancel', 'Cancel')
-			->onClick[] = function () {
+		$form->addSubmit('cancel', 'Cancel')->onClick[] = function () {
 			$this->redrawControl($this->snippetDeleteItem);
 			if (!$this->templateControl) {
 				$this->redrawControl($this->snippetFactory);
 			}
 		};
 
-		$form->addSubmit('confirm', 'Confirm')
-			->onClick[] = function (Form $form, \stdClass $data) {
+		$form->addSubmit('confirm', 'Confirm')->onClick[] = function (Form $form, \stdClass $data) {
 			$this->rolesRepository->delete(RolesEntity::PrimaryKey, $data->id)->execute();
 			$this->cache->remove(Conf::Cache);
 			$this->getPresenter()->flashMessage('Role deleted.', Alert::Danger);
@@ -92,6 +86,7 @@ class RolesControl extends Component implements Base
 				$this->redrawControl($this->snippetFactory);
 			}
 			$this->redrawControlMessage();
+			$this->closeComponent();
 			$this['grid']->reload();
 		};
 		return $form;
@@ -224,11 +219,8 @@ class RolesControl extends Component implements Base
 		try {
 			$parent = $this->rolesRepository->findParent($items->id);
 			if (!$parent && $this->rolesRepository->isAllowed($items->name)) {
-				$this->rolesRepository->delete(RolesEntity::PrimaryKey, $id)->execute();
-				$this->cache->remove(Conf::Cache);
-				$this->getPresenter()->flashMessage('Role deleted.', Alert::Danger);
-				$this->redrawControlMessage();
-				$this['grid']->reload();
+				$this->deleteItems = $items->name;
+				$this->modalComponent();
 			}
 
 		} catch (Throwable $e) {
@@ -268,7 +260,7 @@ class RolesControl extends Component implements Base
 			->setFilterText();
 
 		$grid->addActionEdit('edit', 'Edit');
-		$grid->addActionDelete('delete', 'Delete');
+		$grid->addActionDeleteBase('delete', 'Delete');
 		return $grid;
 	}
 }

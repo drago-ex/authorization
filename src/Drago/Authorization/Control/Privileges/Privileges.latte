@@ -5,18 +5,32 @@
 </h5>
 
 {snippet privileges}
-	<form n:name="factory" class="row g-3 ajax" data-naja-history="off">
-		<ul n:if="$form->hasErrors()" class="errors">
-			<li n:foreach="$form->errors as $error">{_$error}</li>
-		</ul>
-		<div class="col-md-12">
-			<label n:name="name" class="form-label" />
-			<input n:name="name" class="form-control">
-		</div>
-		<div class="col-md-12">
-			<input n:name="send" class="btn btn-block btn-primary text-white" data-btn-submit>
-		</div>
-	</form>
+	{if $deleteItems === null}
+		<form n:name="factory" class="row g-3 ajax" data-naja-history="off">
+			<ul n:if="$form->hasErrors()" class="errors">
+				<li n:foreach="$form->errors as $error">{_$error}</li>
+			</ul>
+			<div class="col-md-12">
+				<label n:name="name" class="form-label" />
+				<input n:name="name" class="form-control">
+			</div>
+			<div class="col-md-12">
+				<input n:name="send" class="btn btn-block btn-primary text-white" data-btn-submit>
+			</div>
+		</form>
+	{/if}
+{/snippet}
+
+{snippet delete}
+	{if $deleteItems}
+		<form n:name="delete" class="row g-3 ajax" data-naja-history="off">
+			<div class="col-md-12">
+				<p><em>{_'Do you really want to delete the item: '}{$deleteItems}?</em></p>
+				<input n:name="confirm" class="btn btn-block btn-primary text-white" data-btn-submit>
+				<input n:name="cancel" class="btn btn-block btn-secondary text-white" data-btn-submit>
+			</div>
+		</form>
+	{/if}
 {/snippet}
 
 <h5 class="border-bottom pb-2">
