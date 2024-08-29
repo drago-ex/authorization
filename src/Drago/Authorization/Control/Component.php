@@ -87,7 +87,7 @@ abstract class Component extends UI\ExtraControl
 	 */
 	public function closeComponent(): void
 	{
-		$this->closeComponent();
+		$this->getPresenter()->payload->close = 'close';
 	}
 
 
