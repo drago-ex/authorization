@@ -20,7 +20,7 @@ use Drago\Database\Database;
 /**
  * @extends Database<AccessRolesViewEntity>
  */
-#[Table(AccessRolesViewEntity::Table)]
+#[Table(AccessRolesViewEntity::Table, class: AccessRolesViewEntity::class)]
 class AccessRolesViewRepository
 {
 	use Database;

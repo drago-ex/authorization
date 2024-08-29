@@ -237,7 +237,7 @@ class AccessControl extends Component implements Base
 	#[Requires(ajax: true)]
 	public function handleDelete(int $id): void
 	{
-		$items = $this->accessRolesRepository->get($id)->record();
+		$items = $this->accessRolesRepository->find(AccessRolesEntity::ColumnUserId, $id)->record();
 		$items ?: $this->error();
 		$user = $this->accessRolesViewRepository
 			->find(AccessRolesViewEntity::ColumnUserId, $items->user_id)
