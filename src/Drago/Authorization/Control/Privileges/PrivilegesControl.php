@@ -78,7 +78,7 @@ class PrivilegesControl extends Component implements Base
 		$form->addSubmit('confirm', 'Confirm')->onClick[] = function (Form $form, \stdClass $data) {
 			$this->privilegesRepository->delete(PrivilegesEntity::PrimaryKey, $data->id)->execute();
 			$this->cache->remove(Conf::Cache);
-			$this->getPresenter()->flashMessage('Privilege deleted.', Alert::Danger);
+			$this->getPresenter()->flashMessage('Privilege deleted.', Alert::Info);
 			$this->redrawControl($this->snippetDeleteItem);
 			if (!$this->templateControl) {
 				$this->redrawControl($this->snippetFactory);
@@ -119,7 +119,7 @@ class PrivilegesControl extends Component implements Base
 			$this->cache->remove(Conf::Cache);
 
 			$message = $data->id ? 'Privilege updated.' : 'Privilege inserted.';
-			$this->getPresenter()->flashMessage($message, Alert::Info);
+			$this->getPresenter()->flashMessage($message, Alert::Success);
 
 			if ($data->id) {
 				$this->closeComponent();

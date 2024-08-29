@@ -75,7 +75,7 @@ class ResourcesControl extends Component implements Base
 		$form->addSubmit('confirm', 'Confirm')->onClick[] = function (Form $form, \stdClass $data) {
 			$this->resourcesRepository->delete(ResourcesEntity::PrimaryKey, $data->id)->execute();
 			$this->cache->remove(Conf::Cache);
-			$this->getPresenter()->flashMessage('Resource deleted.', Alert::Danger);
+			$this->getPresenter()->flashMessage('Resource deleted.', Alert::Info);
 			$this->redrawControl($this->snippetDeleteItem);
 			if (!$this->templateControl) {
 				$this->redrawControl($this->snippetFactory);
@@ -116,7 +116,7 @@ class ResourcesControl extends Component implements Base
 			$this->cache->remove(Conf::Cache);
 
 			$message = $data->id ? 'Resource updated.' : 'Resource inserted.';
-			$this->getPresenter()->flashMessage($message, Alert::Info);
+			$this->getPresenter()->flashMessage($message, Alert::Success);
 
 			if ($data->id) {
 				$this->closeComponent();

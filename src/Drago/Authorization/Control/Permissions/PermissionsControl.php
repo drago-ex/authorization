@@ -89,7 +89,7 @@ class PermissionsControl extends Component implements Base
 		$form->addSubmit('confirm', 'Confirm')->onClick[] = function (Form $form, \stdClass $data) {
 			$this->permissionsRepository->delete(PermissionsEntity::PrimaryKey, $data->id)->execute();
 			$this->cache->remove(Conf::Cache);
-			$this->getPresenter()->flashMessage('Permissions deleted.', Alert::Danger);
+			$this->getPresenter()->flashMessage('Permissions deleted.', Alert::Info);
 			$this->redrawControl($this->snippetDeleteItem);
 			if (!$this->templateControl) {
 				$this->redrawControl($this->snippetFactory);
@@ -159,7 +159,7 @@ class PermissionsControl extends Component implements Base
 			$this->cache->remove(Conf::Cache);
 
 			$message = $data->id ? 'Permission was updated.' : 'Permission added.';
-			$this->getPresenter()->flashMessage($message, Alert::Info);
+			$this->getPresenter()->flashMessage($message, Alert::Success);
 
 			if ($data->id) {
 				$this->closeComponent();

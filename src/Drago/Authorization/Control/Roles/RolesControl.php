@@ -80,7 +80,7 @@ class RolesControl extends Component implements Base
 		$form->addSubmit('confirm', 'Confirm')->onClick[] = function (Form $form, \stdClass $data) {
 			$this->rolesRepository->delete(RolesEntity::PrimaryKey, $data->id)->execute();
 			$this->cache->remove(Conf::Cache);
-			$this->getPresenter()->flashMessage('Role deleted.', Alert::Danger);
+			$this->getPresenter()->flashMessage('Role deleted.', Alert::Info);
 			$this->redrawControl($this->snippetDeleteItem);
 			if (!$this->templateControl) {
 				$this->redrawControl($this->snippetFactory);
@@ -145,7 +145,7 @@ class RolesControl extends Component implements Base
 			}
 
 			$message = $data->id ? 'Role updated.' : 'The role was inserted.';
-			$this->getPresenter()->flashMessage($message, Alert::Info);
+			$this->getPresenter()->flashMessage($message, Alert::Success);
 
 			if ($data->id) {
 				$this->closeComponent();
