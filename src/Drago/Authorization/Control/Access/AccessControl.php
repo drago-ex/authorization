@@ -72,7 +72,7 @@ class AccessControl extends Component implements Base
 		$form = $this->createDelete($this->id);
 		$form->addSubmit('confirm', 'Confirm')->onClick[] = function (Form $form, \stdClass $data) {
 			$this->accessRolesRepository->delete(AccessRolesEntity::ColumnUserId, $data->id)->execute();
-			$this->getPresenter()->flashMessage('Access deleted.', Alert::Info);
+			$this->flashMessageOnPresenter('Access deleted.');
 			$this->redrawDeleteFactoryAll();
 		};
 		return $form;
@@ -143,7 +143,7 @@ class AccessControl extends Component implements Base
 
 			$this->accessRolesRepository->getConnection()->commit();
 			$message = $data->id ? 'Roles have been updated.' : 'Role assigned.';
-			$this->getPresenter()->flashMessage($message, Alert::Success);
+			$this->flashMessageOnPresenter($message, Alert::Success);
 
 			if ($data->user_id) {
 				$this->closeComponent();

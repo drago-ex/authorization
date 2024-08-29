@@ -65,7 +65,7 @@ class ResourcesControl extends Component implements Base
 		$form->addSubmit('confirm', 'Confirm')->onClick[] = function (Form $form, \stdClass $data) {
 			$this->resourcesRepository->delete(ResourcesEntity::PrimaryKey, $data->id)->execute();
 			$this->cache->remove(Conf::Cache);
-			$this->getPresenter()->flashMessage('Resource deleted.', Alert::Info);
+			$this->flashMessageOnPresenter('Resource deleted.');
 			$this->redrawDeleteFactoryAll();
 		};
 		return $form;
@@ -100,7 +100,7 @@ class ResourcesControl extends Component implements Base
 			$this->cache->remove(Conf::Cache);
 
 			$message = $data->id ? 'Resource updated.' : 'Resource inserted.';
-			$this->getPresenter()->flashMessage($message, Alert::Success);
+			$this->flashMessageOnPresenter($message, Alert::Success);
 
 			if ($data->id) {
 				$this->closeComponent();
@@ -163,8 +163,8 @@ class ResourcesControl extends Component implements Base
 				default => 'Unknown status code.',
 			};
 
-			$this->getPresenter()->flashMessage($message, Alert::Warning);
-			$this->redrawControlMessage();
+			$this->flashMessageOnPresenter($message, Alert::Warning);
+			$this->redrawPresenterMessage();
 		}
 	}
 

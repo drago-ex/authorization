@@ -70,7 +70,7 @@ class RolesControl extends Component implements Base
 		$form->addSubmit('confirm', 'Confirm')->onClick[] = function (Form $form, \stdClass $data) {
 			$this->rolesRepository->delete(RolesEntity::PrimaryKey, $data->id)->execute();
 			$this->cache->remove(Conf::Cache);
-			$this->getPresenter()->flashMessage('Role deleted.', Alert::Info);
+			$this->flashMessageOnPresenter('Role deleted.');
 			$this->redrawDeleteFactoryAll();
 		};
 		return $form;
@@ -129,7 +129,7 @@ class RolesControl extends Component implements Base
 			}
 
 			$message = $data->id ? 'Role updated.' : 'The role was inserted.';
-			$this->getPresenter()->flashMessage($message, Alert::Success);
+			$this->flashMessageOnPresenter($message, Alert::Success);
 
 			if ($data->id) {
 				$this->closeComponent();
@@ -179,8 +179,8 @@ class RolesControl extends Component implements Base
 				default => 'Unknown status code.',
 			};
 
-			$this->getPresenter()->flashMessage($message, Alert::Warning);
-			$this->redrawControlMessage();
+			$this->flashMessageOnPresenter($message, Alert::Warning);
+			$this->redrawPresenterMessage();
 		}
 	}
 
@@ -211,8 +211,8 @@ class RolesControl extends Component implements Base
 				default => 'Unknown status code.',
 			};
 
-			$this->getPresenter()->flashMessage($message, Alert::Warning);
-			$this->redrawControlMessage();
+			$this->flashMessageOnPresenter($message, Alert::Warning);
+			$this->redrawPresenterMessage();
 		}
 	}
 

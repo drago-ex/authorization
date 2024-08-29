@@ -11,6 +11,7 @@ namespace Drago\Authorization\Control;
 
 use App\Authorization\Control\ComponentTemplate;
 use Drago\Application\UI;
+use Drago\Application\UI\Alert;
 use Nette\Application\Attributes\Parameter;
 use Nette\Application\UI\Template;
 use Nette\SmartObject;
@@ -91,14 +92,22 @@ abstract class Component extends UI\ExtraControl
 	 */
 	public function closeComponent(): void
 	{
-		$this->getPresenter()->payload->close = 'close';
+		$this->getPresenter()->payload
+			->close = 'close';
+	}
+
+
+	public function flashMessageOnPresenter(string|\stdClass|\Stringable $message, string $type = 'info'): void
+	{
+		$this->getPresenter()
+			->flashMessage($message, $type);
 	}
 
 
 	/**
-	 * Redraw snippet message.
+	 * Redraw snippet message on presenter.
 	 */
-	public function redrawControlMessage(): void
+	public function redrawPresenterMessage(): void
 	{
 		$this->getPresenter()
 			->redrawControl($this->snippetMessage);
@@ -125,14 +134,14 @@ abstract class Component extends UI\ExtraControl
 	public function redrawDeleteFactoryAll(): void
 	{
 		$this->redrawDeleteFactory();
-		$this->redrawControlMessage();
+		$this->redrawPresenterMessage();
 		$this->redrawGrid();
 	}
 
 
 	public function redrawSuccessFactory(): void
 	{
-		$this->redrawControlMessage();
+		$this->redrawPresenterMessage();
 		$this->redrawControl($this->snippetFactory);
 		$this->redrawGrid();
 	}

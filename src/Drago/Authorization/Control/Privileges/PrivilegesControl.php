@@ -68,7 +68,7 @@ class PrivilegesControl extends Component implements Base
 		$form->addSubmit('confirm', 'Confirm')->onClick[] = function (Form $form, \stdClass $data) {
 			$this->privilegesRepository->delete(PrivilegesEntity::PrimaryKey, $data->id)->execute();
 			$this->cache->remove(Conf::Cache);
-			$this->getPresenter()->flashMessage('Privilege deleted.', Alert::Info);
+			$this->flashMessageOnPresenter('Privilege deleted.');
 			$this->redrawDeleteFactoryAll();
 		};
 		return $form;
@@ -103,7 +103,7 @@ class PrivilegesControl extends Component implements Base
 			$this->cache->remove(Conf::Cache);
 
 			$message = $data->id ? 'Privilege updated.' : 'Privilege inserted.';
-			$this->getPresenter()->flashMessage($message, Alert::Success);
+			$this->flashMessageOnPresenter($message, Alert::Success);
 
 			if ($data->id) {
 				$this->closeComponent();
@@ -151,8 +151,8 @@ class PrivilegesControl extends Component implements Base
 				default => 'Unknown status code.',
 			};
 
-			$this->getPresenter()->flashMessage($message, Alert::Warning);
-			$this->redrawControlMessage();
+			$this->flashMessageOnPresenter($message, Alert::Warning);
+			$this->redrawPresenterMessage();
 		}
 	}
 
@@ -182,8 +182,8 @@ class PrivilegesControl extends Component implements Base
 				default => 'Unknown status code.',
 			};
 
-			$this->getPresenter()->flashMessage($message, Alert::Warning);
-			$this->redrawControlMessage();
+			$this->flashMessageOnPresenter($message, Alert::Warning);
+			$this->redrawPresenterMessage();
 		}
 	}
 
