@@ -97,9 +97,9 @@ abstract class Component extends UI\ExtraControl
 	}
 
 
-	public function flashMessageOnPresenter(string|\stdClass|\Stringable $message, string $type = 'info'): void
+	public function flashMessageOnPresenter(string|\stdClass|\Stringable $message, string $type = 'info'): \stdClass
 	{
-		$this->getPresenter()
+		return $this->getPresenter()
 			->flashMessage($message, $type);
 	}
 
