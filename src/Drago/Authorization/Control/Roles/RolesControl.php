@@ -68,6 +68,36 @@ class RolesControl extends Component implements Base
 	}
 
 
+	protected function createComponentDelete(): Form
+	{
+		$form = $this->create();
+		$form->addHidden('id', $this->id)
+			->addRule($form::Integer);
+
+		$form->addSubmit('cancel', 'Cancel')
+			->onClick[] = function () {
+			$this->redrawControl($this->snippetDeleteItem);
+			if (!$this->templateControl) {
+				$this->redrawControl($this->snippetFactory);
+			}
+		};
+
+		$form->addSubmit('confirm', 'Confirm')
+			->onClick[] = function (Form $form, \stdClass $data) {
+			$this->rolesRepository->delete(RolesEntity::PrimaryKey, $data->id)->execute();
+			$this->cache->remove(Conf::Cache);
+			$this->getPresenter()->flashMessage('Role deleted.', Alert::Danger);
+			$this->redrawControl($this->snippetDeleteItem);
+			if (!$this->templateControl) {
+				$this->redrawControl($this->snippetFactory);
+			}
+			$this->redrawControlMessage();
+			$this['grid']->reload();
+		};
+		return $form;
+	}
+
+
 	/**
 	 * @throws AttributeDetectionException
 	 */
@@ -123,7 +153,7 @@ class RolesControl extends Component implements Base
 			$this->getPresenter()->flashMessage($message, Alert::Info);
 
 			if ($data->id) {
-				$this->getPresenter()->payload->close = 'close';
+				$this->closeComponent();
 			}
 
 			$this->redrawControlMessage();

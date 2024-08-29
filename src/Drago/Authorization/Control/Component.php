@@ -48,6 +48,7 @@ abstract class Component extends UI\ExtraControl
 		$template->setTranslator($this->translator);
 		$template->uniqueComponentOffcanvas = $this->getUniqueIdComponent(self::Offcanvas);
 		$template->uniqueComponentModal = $this->getUniqueIdComponent(self::Modal);
+		$template->deleteItems = $this->deleteItems;
 		return $template;
 	}
 
@@ -78,6 +79,15 @@ abstract class Component extends UI\ExtraControl
 		} else {
 			$this->redrawControl($this->snippetFactory);
 		}
+	}
+
+
+	/**
+	 * close modal or offcanvas component.
+	 */
+	public function closeComponent(): void
+	{
+		$this->closeComponent();
 	}
 
 

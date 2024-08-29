@@ -59,6 +59,12 @@ class ResourcesControl extends Component implements Base
 	}
 
 
+	protected function createComponentDelete(): Form
+	{
+		return new Form();
+	}
+
+
 	protected function createComponentFactory(): Form
 	{
 		$form = $this->create();
@@ -90,7 +96,7 @@ class ResourcesControl extends Component implements Base
 			$this->getPresenter()->flashMessage($message, Alert::Info);
 
 			if ($data->id) {
-				$this->getPresenter()->payload->close = 'close';
+				$this->closeComponent();
 			}
 			$this->redrawControlMessage();
 			$this->redrawControl($this->snippetFactory);
