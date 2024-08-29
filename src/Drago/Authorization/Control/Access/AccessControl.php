@@ -153,7 +153,9 @@ class AccessControl extends Component implements Base
 
 			foreach ($data->role_id as $item) {
 				$entity->role_id = $item;
-				$this->accessRolesRepository->save($entity);
+				$repository = $this->accessRolesRepository;
+				$repository->getConnection()->insert($repository->getTableName(), $entity->toArray())
+					->execute();
 			}
 
 			$this->accessRolesRepository->getConnection()->commit();
