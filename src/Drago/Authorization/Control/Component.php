@@ -103,4 +103,37 @@ abstract class Component extends UI\ExtraControl
 		$this->getPresenter()
 			->redrawControl($this->snippetMessage);
 	}
+
+
+	public function redrawDeleteFactory(): void
+	{
+		$this->redrawControl($this->snippetDeleteItem);
+		if (!$this->templateControl) {
+			$this->redrawControl($this->snippetFactory);
+		}
+	}
+
+
+	public function redrawGrid(): void
+	{
+		$grid = $this['grid'];
+		assert($grid instanceof DatagridComponent);
+		$grid->reload();
+	}
+
+
+	public function redrawDeleteFactoryAll(): void
+	{
+		$this->redrawDeleteFactory();
+		$this->redrawControlMessage();
+		$this->redrawGrid();
+	}
+
+
+	public function redrawSuccessFactory(): void
+	{
+		$this->redrawControlMessage();
+		$this->redrawControl($this->snippetFactory);
+		$this->redrawGrid();
+	}
 }

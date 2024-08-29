@@ -20,4 +20,17 @@ trait Factory
 		$form->setTranslator($this->translator);
 		return $form;
 	}
+
+
+	public function createDelete(int $id): Form
+	{
+		$form = $this->create();
+		$form->addHidden('id', $id)
+			->addRule($form::Integer);
+
+		$form->addSubmit('cancel', 'Cancel')->onClick[] = function () {
+			$this->redrawDeleteFactory();
+		};
+		return $form;
+	}
 }

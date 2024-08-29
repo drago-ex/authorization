@@ -64,28 +64,12 @@ class PrivilegesControl extends Component implements Base
 
 	protected function createComponentDelete(): Form
 	{
-		$form = $this->create();
-		$form->addHidden('id', $this->id)
-			->addRule($form::Integer);
-
-		$form->addSubmit('cancel', 'Cancel')->onClick[] = function () {
-			$this->redrawControl($this->snippetDeleteItem);
-			if (!$this->templateControl) {
-				$this->redrawControl($this->snippetFactory);
-			}
-		};
-
+		$form = $this->createDelete($this->id);
 		$form->addSubmit('confirm', 'Confirm')->onClick[] = function (Form $form, \stdClass $data) {
 			$this->privilegesRepository->delete(PrivilegesEntity::PrimaryKey, $data->id)->execute();
 			$this->cache->remove(Conf::Cache);
 			$this->getPresenter()->flashMessage('Privilege deleted.', Alert::Info);
-			$this->redrawControl($this->snippetDeleteItem);
-			if (!$this->templateControl) {
-				$this->redrawControl($this->snippetFactory);
-			}
-			$this->redrawControlMessage();
-			$this->closeComponent();
-			$this['grid']->reload();
+			$this->redrawDeleteFactoryAll();
 		};
 		return $form;
 	}
@@ -124,9 +108,7 @@ class PrivilegesControl extends Component implements Base
 			if ($data->id) {
 				$this->closeComponent();
 			}
-			$this->redrawControlMessage();
-			$this->redrawControl($this->snippetFactory);
-			$this['grid']->reload();
+			$this->redrawSuccessFactory();
 			$form->reset();
 
 		} catch (Throwable $e) {
@@ -210,7 +192,7 @@ class PrivilegesControl extends Component implements Base
 	 * @throws AttributeDetectionException
 	 * @throws DataGridException
 	 */
-	protected function createComponentGrid($name): DatagridComponent
+	protected function createComponentGrid(string $name): DatagridComponent
 	{
 		$grid = new DatagridComponent($this, $name);
 		$grid->setDataSource($this->privilegesRepository->getAll());
