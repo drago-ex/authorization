@@ -11,7 +11,6 @@ namespace Drago\Authorization\Control;
 
 use App\Authorization\Control\ComponentTemplate;
 use Drago\Application\UI;
-use Drago\Application\UI\Alert;
 use Nette\Application\Attributes\Parameter;
 use Nette\Application\UI\Template;
 use Nette\SmartObject;
@@ -97,9 +96,9 @@ abstract class Component extends UI\ExtraControl
 	}
 
 
-	public function flashMessageOnPresenter(string|\stdClass|\Stringable $message, string $type = 'info'): \stdClass
+	public function flashMessageOnPresenter(string|\stdClass|\Stringable $message, string $type = 'info'): void
 	{
-		return $this->getPresenter()
+		$this->getPresenter()
 			->flashMessage($message, $type);
 	}
 
