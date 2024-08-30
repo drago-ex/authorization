@@ -97,7 +97,7 @@ class PrivilegesControl extends Component implements Base
 	/**
 	 * @throws AbortException
 	 */
-	public function success(Form $form, PrivilegesData $data): void
+	private function success(Form $form, PrivilegesData $data): void
 	{
 		try {
 			$this->privilegesRepository->save($data->toArray());

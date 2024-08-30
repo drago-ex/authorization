@@ -120,7 +120,7 @@ class AccessControl extends Component implements Base
 	/**
 	 * @throws DriverException
 	 */
-	public function success(Form $form, AccessRolesData $data): void
+	private function success(Form $form, AccessRolesData $data): void
 	{
 		try {
 			$entity = new AccessRolesEntity;

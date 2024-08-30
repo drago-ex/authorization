@@ -114,7 +114,7 @@ class RolesControl extends Component implements Base
 	/**
 	 * @throws AbortException
 	 */
-	public function success(Form $form, RolesData $data): void
+	private function success(Form $form, RolesData $data): void
 	{
 		try {
 			if ($data->id !== null && $data->id < $data->parent) {

@@ -137,7 +137,7 @@ class PermissionsControl extends Component implements Base
 	/**
 	 * @throws AbortException
 	 */
-	public function success(Form $form, PermissionsData $data): void
+	private function success(Form $form, PermissionsData $data): void
 	{
 		try {
 			$this->permissionsRepository->save($data->toArray());

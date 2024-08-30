@@ -94,7 +94,7 @@ class ResourcesControl extends Component implements Base
 	/**
 	 * @throws AbortException
 	 */
-	public function success(Form $form, ResourcesData $data): void
+	private function success(Form $form, ResourcesData $data): void
 	{
 		try {
 			$this->resourcesRepository->save($data->toArray());
