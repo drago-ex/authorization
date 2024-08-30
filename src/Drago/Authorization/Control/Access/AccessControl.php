@@ -73,6 +73,7 @@ class AccessControl extends Component implements Base
 		$form->addSubmit('confirm', 'Confirm')->onClick[] = function (Form $form, \stdClass $data) {
 			$this->accessRolesRepository->delete(AccessRolesEntity::ColumnUserId, $data->id)->execute();
 			$this->flashMessageOnPresenter('Access deleted.');
+			$this->closeComponent();
 			$this->redrawDeleteFactoryAll();
 		};
 		return $form;
@@ -111,7 +112,7 @@ class AccessControl extends Component implements Base
 			->setNullable();
 
 		$form->addSubmit('send', 'Send');
-		$form->onSuccess[] = [$this, 'success'];
+		$form->onSuccess[] = $this->success(...);
 		return $form;
 	}
 

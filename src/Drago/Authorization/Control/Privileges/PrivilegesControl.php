@@ -69,6 +69,7 @@ class PrivilegesControl extends Component implements Base
 			$this->privilegesRepository->delete(PrivilegesEntity::PrimaryKey, $data->id)->execute();
 			$this->cache->remove(Conf::Cache);
 			$this->flashMessageOnPresenter('Privilege deleted.');
+			$this->closeComponent();
 			$this->redrawDeleteFactoryAll();
 		};
 		return $form;
@@ -88,7 +89,7 @@ class PrivilegesControl extends Component implements Base
 			->setNullable();
 
 		$form->addSubmit('send', 'Send');
-		$form->onSuccess[] = [$this, 'success'];
+		$form->onSuccess[] = $this->success(...);
 		return $form;
 	}
 

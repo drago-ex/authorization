@@ -80,6 +80,7 @@ class PermissionsControl extends Component implements Base
 			$this->permissionsRepository->delete(PermissionsEntity::PrimaryKey, $data->id)->execute();
 			$this->cache->remove(Conf::Cache);
 			$this->flashMessageOnPresenter('Permissions deleted.');
+			$this->closeComponent();
 			$this->redrawDeleteFactoryAll();
 		};
 		return $form;
@@ -128,7 +129,7 @@ class PermissionsControl extends Component implements Base
 			->setNullable();
 
 		$form->addSubmit('send', 'Send');
-		$form->onSuccess[] = [$this, 'success'];
+		$form->onSuccess[] = $this->success(...);
 		return $form;
 	}
 

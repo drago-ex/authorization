@@ -71,6 +71,7 @@ class RolesControl extends Component implements Base
 			$this->rolesRepository->delete(RolesEntity::PrimaryKey, $data->id)->execute();
 			$this->cache->remove(Conf::Cache);
 			$this->flashMessageOnPresenter('Role deleted.');
+			$this->closeComponent();
 			$this->redrawDeleteFactoryAll();
 		};
 		return $form;
@@ -105,7 +106,7 @@ class RolesControl extends Component implements Base
 			->setNullable();
 
 		$form->addSubmit('send', 'Send');
-		$form->onSuccess[] = [$this, 'success'];
+		$form->onSuccess[] = $this->success(...);
 		return $form;
 	}
 

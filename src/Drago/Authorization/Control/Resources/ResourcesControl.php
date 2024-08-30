@@ -66,6 +66,7 @@ class ResourcesControl extends Component implements Base
 			$this->resourcesRepository->delete(ResourcesEntity::PrimaryKey, $data->id)->execute();
 			$this->cache->remove(Conf::Cache);
 			$this->flashMessageOnPresenter('Resource deleted.');
+			$this->closeComponent();
 			$this->redrawDeleteFactoryAll();
 		};
 		return $form;
@@ -85,7 +86,7 @@ class ResourcesControl extends Component implements Base
 			->setNullable();
 
 		$form->addSubmit('send', 'Send');
-		$form->onSuccess[] = [$this, 'success'];
+		$form->onSuccess[] = $this->success(...);
 		return $form;
 	}
 
