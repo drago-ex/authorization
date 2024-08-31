@@ -106,7 +106,7 @@ abstract class Component extends UI\ExtraControl
 	/**
 	 * Redraw snippet message on presenter.
 	 */
-	public function redrawPresenterMessage(): void
+	public function redrawMessageOnPresenter(): void
 	{
 		$this->getPresenter()
 			->redrawControl($this->snippetMessage);
@@ -133,14 +133,14 @@ abstract class Component extends UI\ExtraControl
 	public function redrawDeleteFactoryAll(): void
 	{
 		$this->redrawDeleteFactory();
-		$this->redrawPresenterMessage();
+		$this->redrawMessageOnPresenter();
 		$this->redrawGrid();
 	}
 
 
 	public function redrawSuccessFactory(): void
 	{
-		$this->redrawPresenterMessage();
+		$this->redrawMessageOnPresenter();
 		$this->redrawControl($this->snippetFactory);
 		$this->redrawGrid();
 	}

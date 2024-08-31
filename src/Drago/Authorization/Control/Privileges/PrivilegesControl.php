@@ -65,14 +65,32 @@ class PrivilegesControl extends Component implements Base
 	protected function createComponentDelete(): Form
 	{
 		$form = $this->createDelete($this->id);
-		$form->addSubmit('confirm', 'Confirm')->onClick[] = function (Form $form, \stdClass $data) {
-			$this->privilegesRepository->delete(PrivilegesEntity::PrimaryKey, $data->id)->execute();
+		$form->addSubmit('confirm', 'Confirm')
+			->onClick[] = $this->delete(...);
+		return $form;
+	}
+
+
+	public function delete(Form $form, \stdClass $data): void
+	{
+		try {
+			$this->privilegesRepository
+				->delete(PrivilegesEntity::PrimaryKey, $data->id)
+				->execute();
+
 			$this->cache->remove(Conf::Cache);
 			$this->flashMessageOnPresenter('Privilege deleted.');
 			$this->closeComponent();
 			$this->redrawDeleteFactoryAll();
-		};
-		return $form;
+
+		} catch (Throwable $e) {
+			$message = match ($e->getCode()) {
+				1451 => 'The privilege can not be deleted, you must first delete the records that are associated with it.',
+				default => 'Unknown status code.',
+			};
+			$this->flashMessageOnPresenter($message, Alert::Warning);
+			$this->redrawMessageOnPresenter();
+		}
 	}
 
 
@@ -153,7 +171,7 @@ class PrivilegesControl extends Component implements Base
 			};
 
 			$this->flashMessageOnPresenter($message, Alert::Warning);
-			$this->redrawPresenterMessage();
+			$this->redrawMessageOnPresenter();
 		}
 	}
 
@@ -179,12 +197,11 @@ class PrivilegesControl extends Component implements Base
 		} catch (Throwable $e) {
 			$message = match ($e->getCode()) {
 				1001 => 'The privilege is not allowed to be deleted.',
-				1451 => 'The privilege can not be deleted, you must first delete the records that are associated with it.',
 				default => 'Unknown status code.',
 			};
 
 			$this->flashMessageOnPresenter($message, Alert::Warning);
-			$this->redrawPresenterMessage();
+			$this->redrawMessageOnPresenter();
 		}
 	}
 

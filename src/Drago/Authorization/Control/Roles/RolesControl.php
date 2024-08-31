@@ -67,14 +67,26 @@ class RolesControl extends Component implements Base
 	protected function createComponentDelete(): Form
 	{
 		$form = $this->createDelete($this->id);
-		$form->addSubmit('confirm', 'Confirm')->onClick[] = function (Form $form, \stdClass $data) {
+		$form->addSubmit('confirm', 'Confirm')
+			->onClick[] = $this->delete(...);
+		return $form;
+	}
+
+
+	private function delete(Form $form, \stdClass $data): void
+	{
+		try {
 			$this->rolesRepository->delete(RolesEntity::PrimaryKey, $data->id)->execute();
 			$this->cache->remove(Conf::Cache);
 			$this->flashMessageOnPresenter('Role deleted.');
 			$this->closeComponent();
 			$this->redrawDeleteFactoryAll();
-		};
-		return $form;
+
+		} catch (Throwable $e) {
+			$message = 'Unknown status code.';
+			$this->flashMessageOnPresenter($message, Alert::Warning);
+			$this->redrawMessageOnPresenter();
+		}
 	}
 
 
@@ -181,7 +193,7 @@ class RolesControl extends Component implements Base
 			};
 
 			$this->flashMessageOnPresenter($message, Alert::Warning);
-			$this->redrawPresenterMessage();
+			$this->redrawMessageOnPresenter();
 		}
 	}
 
@@ -213,7 +225,7 @@ class RolesControl extends Component implements Base
 			};
 
 			$this->flashMessageOnPresenter($message, Alert::Warning);
-			$this->redrawPresenterMessage();
+			$this->redrawMessageOnPresenter();
 		}
 	}
 

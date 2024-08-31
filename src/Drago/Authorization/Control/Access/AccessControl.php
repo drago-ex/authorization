@@ -70,13 +70,28 @@ class AccessControl extends Component implements Base
 	protected function createComponentDelete(): Form
 	{
 		$form = $this->createDelete($this->id);
-		$form->addSubmit('confirm', 'Confirm')->onClick[] = function (Form $form, \stdClass $data) {
-			$this->accessRolesRepository->delete(AccessRolesEntity::ColumnUserId, $data->id)->execute();
+		$form->addSubmit('confirm', 'Confirm')
+			->onClick[] = $this->delete(...);
+		return $form;
+	}
+
+
+	public function delete(Form $form, \stdClass $data): void
+	{
+		try {
+			$this->accessRolesRepository
+				->delete(AccessRolesEntity::ColumnUserId, $data->id)
+				->execute();
+
 			$this->flashMessageOnPresenter('Access deleted.');
 			$this->closeComponent();
 			$this->redrawDeleteFactoryAll();
-		};
-		return $form;
+
+		} catch (Throwable $e) {
+			$message = 'Unknown status code.';
+			$this->flashMessageOnPresenter($message, Alert::Warning);
+			$this->redrawMessageOnPresenter();
+		}
 	}
 
 
@@ -126,7 +141,8 @@ class AccessControl extends Component implements Base
 			$entity = new AccessRolesEntity;
 			$entity->user_id = $data->user_id;
 
-			$this->accessRolesRepository->getConnection()
+			$this->accessRolesRepository
+				->getConnection()
 				->begin();
 
 			if ($data->id) {
@@ -138,7 +154,8 @@ class AccessControl extends Component implements Base
 			foreach ($data->role_id as $item) {
 				$entity->role_id = $item;
 				$repository = $this->accessRolesRepository;
-				$repository->getConnection()->insert($repository->getTableName(), $entity->toArray())
+				$repository->getConnection()
+					->insert($repository->getTableName(), $entity->toArray())
 					->execute();
 			}
 
@@ -221,6 +238,7 @@ class AccessControl extends Component implements Base
 	{
 		$items = $this->accessRolesRepository->find(AccessRolesEntity::ColumnUserId, $id)->record();
 		$items ?: $this->error();
+
 		$user = $this->accessRolesViewRepository
 			->find(AccessRolesViewEntity::ColumnUserId, $items->user_id)
 			->record();

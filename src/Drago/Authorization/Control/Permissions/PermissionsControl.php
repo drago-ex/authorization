@@ -76,14 +76,29 @@ class PermissionsControl extends Component implements Base
 	protected function createComponentDelete(): Form
 	{
 		$form = $this->createDelete($this->id);
-		$form->addSubmit('confirm', 'Confirm')->onClick[] = function (Form $form, \stdClass $data) {
-			$this->permissionsRepository->delete(PermissionsEntity::PrimaryKey, $data->id)->execute();
+		$form->addSubmit('confirm', 'Confirm')
+			->onClick[] = $this->delete(...);
+		return $form;
+	}
+
+
+	public function delete(Form $form, \stdClass $data): void
+	{
+		try {
+			$this->permissionsRepository
+				->delete(PermissionsEntity::PrimaryKey, $data->id)
+				->execute();
+
 			$this->cache->remove(Conf::Cache);
 			$this->flashMessageOnPresenter('Permissions deleted.');
 			$this->closeComponent();
 			$this->redrawDeleteFactoryAll();
-		};
-		return $form;
+
+		} catch (Throwable $e) {
+			$message = 'Unknown status code.';
+			$this->flashMessageOnPresenter($message, Alert::Warning);
+			$this->redrawMessageOnPresenter();
+		}
 	}
 
 
@@ -200,7 +215,10 @@ class PermissionsControl extends Component implements Base
 		$items = $this->permissionsRepository->get($id)->record();
 		$items ?: $this->error();
 
-		$permissions = $this->rolesRepository->find(RolesEntity::PrimaryKey, $items->role_id)->record();
+		$permissions = $this->rolesRepository
+			->find(RolesEntity::PrimaryKey, $items->role_id)
+			->record();
+
 		$this->deleteItems = $permissions->name;
 		$this->modalComponent();
 	}
@@ -222,8 +240,8 @@ class PermissionsControl extends Component implements Base
 
 			$this->permissionsRepository->save($entity);
 			$this->flashMessageOnPresenter('Authorization has been changed.');
-			$this->redrawPresenterMessage();
-			$this['grid']->reload();
+			$this->redrawMessageOnPresenter();
+			$this->redrawGrid();
 		}
 	}
 

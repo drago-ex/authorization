@@ -62,14 +62,32 @@ class ResourcesControl extends Component implements Base
 	protected function createComponentDelete(): Form
 	{
 		$form = $this->createDelete($this->id);
-		$form->addSubmit('confirm', 'Confirm')->onClick[] = function (Form $form, \stdClass $data) {
-			$this->resourcesRepository->delete(ResourcesEntity::PrimaryKey, $data->id)->execute();
+		$form->addSubmit('confirm', 'Confirm')
+			->onClick[] = $this->delete(...);
+		return $form;
+	}
+
+
+	public function delete(Form $form, \stdClass $data): void
+	{
+		try {
+			$this->resourcesRepository
+				->delete(ResourcesEntity::PrimaryKey, $data->id)
+				->execute();
+
 			$this->cache->remove(Conf::Cache);
 			$this->flashMessageOnPresenter('Resource deleted.');
 			$this->closeComponent();
 			$this->redrawDeleteFactoryAll();
-		};
-		return $form;
+
+		} catch (Throwable $e) {
+			$message = match ($e->getCode()) {
+				1451 => 'The resource can not be deleted, you must first delete the records that are associated with it',
+				default => 'Unknown status code.',
+			};
+			$this->flashMessageOnPresenter($message, Alert::Warning);
+			$this->redrawMessageOnPresenter();
+		}
 	}
 
 
@@ -154,19 +172,8 @@ class ResourcesControl extends Component implements Base
 		$items = $this->resourcesRepository->get($id)->record();
 		$items ?: $this->error();
 
-		try {
-			$this->deleteItems = $items->name;
-			$this->modalComponent();
-
-		} catch (Throwable $e) {
-			$message = match ($e->getCode()) {
-				1451 => 'The resource can not be deleted, you must first delete the records that are associated with it',
-				default => 'Unknown status code.',
-			};
-
-			$this->flashMessageOnPresenter($message, Alert::Warning);
-			$this->redrawPresenterMessage();
-		}
+		$this->deleteItems = $items->name;
+		$this->modalComponent();
 	}
 
 
