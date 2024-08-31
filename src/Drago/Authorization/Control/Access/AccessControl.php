@@ -266,10 +266,11 @@ class AccessControl extends Component implements Base
 			$grid->setTemplateFile($this->templateGrid);
 		}
 
+		$args = ['id' => 'user_id'];
 		$grid->addColumnBase('username', 'Users');
 		$grid->addColumnBase('role', 'Roles');
-		$grid->addActionEdit('edit', 'Edit', 'edit!', ['id' => 'user_id']);
-		$grid->addActionDeleteBase('delete', 'Delete', 'delete!', ['id' => 'user_id']);
+		$grid->addActionEdit('edit', 'Edit', 'edit!', $args);
+		$grid->addActionDeleteBase('delete', 'Delete', 'delete!', $args);
 		return $grid;
 	}
 }
