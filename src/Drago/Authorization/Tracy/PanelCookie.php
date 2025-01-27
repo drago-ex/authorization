@@ -19,12 +19,12 @@ use Nette\Http\SessionSection;
  */
 class PanelCookie
 {
-	public string $section = 'roles'; // Session section name for storing role data.
-	private SessionSection $sessionSection; // Session section instance for roles data.
+	public string $section = 'roles';
+	private SessionSection $sessionSection;
 
 
 	public function __construct(
-		private readonly Session $session, // Nette session service for session management.
+		private readonly Session $session,
 	) {
 		// Initialize the session section for this class.
 		$this->sessionSection = $this->session
