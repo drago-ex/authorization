@@ -15,6 +15,8 @@ use Drago\Database\Database;
 
 
 /**
+ * Repository for CRUD operations on PermissionsEntity.
+ *
  * @extends Database<PermissionsEntity>
  */
 #[Table(PermissionsEntity::Table, PermissionsEntity::PrimaryKey, class: PermissionsEntity::class)]

@@ -11,7 +11,11 @@ namespace Drago\Authorization;
 
 use Exception;
 
-
+/**
+ * Exception thrown when an operation is not allowed to change.
+ *
+ * This exception is thrown when a user attempts to change something they are not authorized to modify.
+ */
 class NotAllowedChange extends Exception
 {
 }

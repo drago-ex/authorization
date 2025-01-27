@@ -11,14 +11,25 @@ namespace Drago\Authorization\Control\Access;
 use Drago;
 
 
+/**
+ * Entity representing a user role view in the system.
+ */
 class AccessRolesViewEntity extends Drago\Database\Entity
 {
-	public const Table = 'users_roles_view';
-	public const ColumnUserId = 'user_id';
-	public const ColumnUsername = 'username';
-	public const ColumnRole = 'role';
+	// Table name in the database
+	public const string Table = 'users_roles_view';
 
+	// Column names in the table
+	public const string ColumnUserId = 'user_id';
+	public const string ColumnUsername = 'username';
+	public const string ColumnRole = 'role';
+
+	// User ID, nullable
 	public ?int $user_id = null;
+
+	// Username, nullable
 	public ?string $username = null;
+
+	// Role(s) assigned to the user, can be string, array or null
 	public string|array|null $role = null;
 }

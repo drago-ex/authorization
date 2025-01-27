@@ -28,6 +28,8 @@ use Throwable;
 
 
 /**
+ * This control manages resources: allows adding, editing, deleting, and viewing resources.
+ *
  * @property-read ComponentTemplate $template
  */
 class ResourcesControl extends Component implements Base
@@ -37,6 +39,12 @@ class ResourcesControl extends Component implements Base
 	public string $snippetFactory = 'resources';
 
 
+	/**
+	 * Constructor for ResourcesControl.
+	 *
+	 * @param Cache $cache
+	 * @param ResourcesRepository $resourcesRepository
+	 */
 	public function __construct(
 		private readonly Cache $cache,
 		private readonly ResourcesRepository $resourcesRepository,
@@ -44,6 +52,9 @@ class ResourcesControl extends Component implements Base
 	}
 
 
+	/**
+	 * Renders the template for the resources control.
+	 */
 	public function render(): void
 	{
 		$template = $this->createRender();
@@ -52,6 +63,9 @@ class ResourcesControl extends Component implements Base
 	}
 
 
+	/**
+	 * Handles the AJAX request to open the component.
+	 */
 	#[Requires(ajax: true)]
 	public function handleClickOpenComponent(): void
 	{
@@ -59,6 +73,9 @@ class ResourcesControl extends Component implements Base
 	}
 
 
+	/**
+	 * Creates the delete form.
+	 */
 	protected function createComponentDelete(): Form
 	{
 		$form = $this->createDelete($this->id);
@@ -68,6 +85,9 @@ class ResourcesControl extends Component implements Base
 	}
 
 
+	/**
+	 * Deletes a resource and shows the result in a flash message.
+	 */
 	public function delete(Form $form, \stdClass $data): void
 	{
 		try {
@@ -82,7 +102,7 @@ class ResourcesControl extends Component implements Base
 
 		} catch (Throwable $e) {
 			$message = match ($e->getCode()) {
-				1451 => 'The resource can not be deleted, you must first delete the records that are associated with it',
+				1451 => 'The resource can not be deleted, you must first delete the records that are associated with it.',
 				default => 'Unknown status code.',
 			};
 			$this->flashMessageOnPresenter($message, Alert::Warning);
@@ -91,6 +111,9 @@ class ResourcesControl extends Component implements Base
 	}
 
 
+	/**
+	 * Creates the form to add or edit a resource.
+	 */
 	protected function createComponentFactory(): Form
 	{
 		$form = $this->create();
@@ -110,6 +133,8 @@ class ResourcesControl extends Component implements Base
 
 
 	/**
+	 * Handles the success of the add/edit form, saving the resource.
+	 *
 	 * @throws AbortException
 	 */
 	private function success(Form $form, ResourcesData $data): void
@@ -140,6 +165,8 @@ class ResourcesControl extends Component implements Base
 
 
 	/**
+	 * Handles the AJAX request to edit a resource.
+	 *
 	 * @throws AbortException
 	 * @throws AttributeDetectionException
 	 * @throws BadRequestException
@@ -161,6 +188,8 @@ class ResourcesControl extends Component implements Base
 
 
 	/**
+	 * Handles the AJAX request to delete a resource.
+	 *
 	 * @throws AbortException
 	 * @throws AttributeDetectionException
 	 * @throws BadRequestException
@@ -178,6 +207,8 @@ class ResourcesControl extends Component implements Base
 
 
 	/**
+	 * Creates the grid component for displaying resources.
+	 *
 	 * @throws AttributeDetectionException
 	 * @throws DataGridException
 	 */

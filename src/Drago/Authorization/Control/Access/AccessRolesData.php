@@ -11,11 +11,20 @@ namespace Drago\Authorization\Control\Access;
 use Drago;
 
 
+/**
+ * Data class for Access roles.
+ */
 class AccessRolesData extends Drago\Utils\ExtraArrayHash
 {
-	public const Id = 'id';
+	// Constant for the ID field
+	public const string Id = 'id';
 
+	// Array of role IDs associated with the user
 	public array $role_id;
+
+	// User ID the roles are associated with
 	public ?int $user_id;
+
+	// ID of the role data record
 	public ?int $id;
 }

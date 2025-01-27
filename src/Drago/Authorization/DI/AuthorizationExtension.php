@@ -17,10 +17,17 @@ use Tracy\Bar;
 
 class AuthorizationExtension extends CompilerExtension
 {
-	/** @var mixed|string|null */
+	/**
+	 * Panel for role switching
+	 * Stores the panel instance to add it to Tracy's debug bar.
+	 */
 	private mixed $panel;
 
 
+	/**
+	 * Loads the configuration for the extension.
+	 * Initializes and registers services from the configuration file and adds the panel definition.
+	 */
 	public function loadConfiguration(): void
 	{
 		$builder = $this->getContainerBuilder();
@@ -31,17 +38,25 @@ class AuthorizationExtension extends CompilerExtension
 		);
 
 		/** Role switch panel */
+		// Registers the role switch panel definition in the container
 		$builder->addDefinition($this->prefix('panel'))
 			->setFactory(Panel::class);
 
+		// Retrieve the Tracy debug bar service
 		$this->panel = $this->getContainerBuilder()
 			->getByType(Bar::class);
 	}
 
 
+	/**
+	 * Adds the role switch panel to the Tracy debug bar.
+	 * This method is called after the container is compiled to ensure the panel is added.
+	 */
 	public function afterCompile(ClassType $class): void
 	{
 		$init = $class->getMethods()['initialize'];
+
+		// Adds the panel to the Tracy debug bar
 		$init->addBody('$this->getService(?)->addPanel($this->getService(?));', [
 			$this->panel, $this->prefix('panel'),
 		]);

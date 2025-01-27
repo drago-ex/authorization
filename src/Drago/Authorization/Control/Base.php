@@ -10,6 +10,10 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control;
 
 
+/**
+ * Interface defining the basic methods for handling UI components
+ * such as rendering, editing, deleting, and opening modal/offCanvas components.
+ */
 interface Base
 {
 	/** Render template for factory. */

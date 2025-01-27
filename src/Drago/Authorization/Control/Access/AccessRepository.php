@@ -17,6 +17,9 @@ use Drago\Authorization\Conf;
 use Drago\Database\Database;
 
 
+/**
+ * Repository for accessing user-related data.
+ */
 #[Table(AccessEntity::Table, AccessEntity::PrimaryKey)]
 class AccessRepository
 {
@@ -29,6 +32,7 @@ class AccessRepository
 
 
 	/**
+	 * Fetch all users excluding admin role.
 	 * @throws AttributeDetectionException
 	 */
 	public function getAllUsers(): array
@@ -44,6 +48,7 @@ class AccessRepository
 
 
 	/**
+	 * Fetch a user by their ID.
 	 * @throws AttributeDetectionException
 	 */
 	public function getUserById(int $id): array|Row|null

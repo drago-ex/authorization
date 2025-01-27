@@ -17,6 +17,7 @@ use Drago\Database\Database;
 
 
 /**
+ * Repository for managing user roles in the system.
  * @extends Database<AccessRolesEntity>
  */
 #[Table(AccessRolesEntity::Table, class: AccessRolesEntity::class)]
@@ -31,9 +32,12 @@ class AccessRolesRepository
 
 
 	/**
-	 * @return array[]|AccessRolesEntity[]
-	 * @throws Exception
-	 * @throws AttributeDetectionException
+	 * Fetch all roles for a specific user.
+	 *
+	 * @param int $userId User ID to fetch roles for.
+	 * @return array[]|AccessRolesEntity[] List of roles associated with the user.
+	 * @throws Exception If there is an issue with the database query.
+	 * @throws AttributeDetectionException If attributes are not correctly detected.
 	 */
 	public function getUserRoles(int $userId): array
 	{

@@ -18,7 +18,8 @@ use Drago\Database\Database;
 
 
 /**
- * @extends Database<AccessRolesViewEntity>
+ * Repository for accessing the users' roles view.
+ * Provides methods to fetch user roles and related data from the database.
  */
 #[Table(AccessRolesViewEntity::Table, class: AccessRolesViewEntity::class)]
 class AccessRolesViewRepository
@@ -32,13 +33,16 @@ class AccessRolesViewRepository
 
 
 	/**
+	 * Fetches all users, their usernames, and the roles associated with them.
+	 *
 	 * @throws AttributeDetectionException
 	 */
 	public function getAllUsers(): Fluent
 	{
 		return $this->getConnection()
 			->select('user_id, username, group_concat(role separator ", ") role')
-			->from($this->getTableName())->groupBy('user_id, username')
+			->from($this->getTableName())
+			->groupBy('user_id, username')
 			->having('sum(case when role = ? then 1 else 0 end) = ?', Conf::RoleAdmin, 0)
 			->orderBy(AccessRolesViewEntity::ColumnUserId, 'asc');
 	}

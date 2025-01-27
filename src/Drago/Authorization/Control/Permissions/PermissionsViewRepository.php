@@ -18,7 +18,8 @@ use Drago\Database\ExtraFluent;
 
 
 /**
- * @extends Database<PermissionsViewEntity>
+ * Repository for handling the 'permissions_view' table.
+ * Provides methods for retrieving permissions, excluding admin roles.
  */
 #[Table(PermissionsViewEntity::Table, class: PermissionsViewEntity::class)]
 class PermissionsViewRepository
@@ -32,7 +33,10 @@ class PermissionsViewRepository
 
 
 	/**
-	 * @throws AttributeDetectionException
+	 * Retrieves all permissions from the database excluding admin roles.
+	 *
+	 * @throws AttributeDetectionException If attributes are incorrectly detected
+	 * @return ExtraFluent Fluent query builder for fetching the data
 	 */
 	public function getAll(): ExtraFluent
 	{

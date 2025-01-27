@@ -3,6 +3,9 @@
 /**
  * Drago Extension
  * Package built on Nette Framework
+ *
+ * Base control class that manages rendering and component interaction
+ * for modal, offcanvas, and grid components.
  */
 
 declare(strict_types=1);
@@ -17,7 +20,7 @@ use Nette\SmartObject;
 
 
 /**
- * Base control.
+ * Base control class.
  * @property-read string|null $snippetFactory
  * @property-read ComponentTemplate $template
  */
@@ -44,7 +47,7 @@ abstract class Component extends UI\ExtraControl
 
 
 	/**
-	 * Base render.
+	 * Creates and prepares the template for rendering.
 	 */
 	public function createRender(): Template
 	{
@@ -58,7 +61,7 @@ abstract class Component extends UI\ExtraControl
 
 
 	/**
-	 * Calling the offcanvas component.
+	 * Calls the offcanvas component.
 	 */
 	public function offCanvasComponent(): void
 	{
@@ -69,7 +72,7 @@ abstract class Component extends UI\ExtraControl
 
 
 	/**
-	 * Calling the modal component.
+	 * Calls the modal component.
 	 */
 	public function modalComponent(): void
 	{
@@ -79,7 +82,6 @@ abstract class Component extends UI\ExtraControl
 
 		if ($this->templateControl) {
 			$this->redrawControl($this->snippetDeleteTitle);
-
 		} else {
 			$this->redrawControl($this->snippetFactory);
 		}
@@ -87,7 +89,7 @@ abstract class Component extends UI\ExtraControl
 
 
 	/**
-	 * close modal or offcanvas component.
+	 * Closes modal or offcanvas component.
 	 */
 	public function closeComponent(): void
 	{
@@ -96,6 +98,9 @@ abstract class Component extends UI\ExtraControl
 	}
 
 
+	/**
+	 * Flash a message on the presenter.
+	 */
 	public function flashMessageOnPresenter(string|\stdClass|\Stringable $message, string $type = 'info'): void
 	{
 		$this->getPresenter()
@@ -104,7 +109,7 @@ abstract class Component extends UI\ExtraControl
 
 
 	/**
-	 * Redraw snippet message on presenter.
+	 * Redraws the snippet message on the presenter.
 	 */
 	public function redrawMessageOnPresenter(): void
 	{
@@ -113,6 +118,9 @@ abstract class Component extends UI\ExtraControl
 	}
 
 
+	/**
+	 * Redraw the delete factory snippet.
+	 */
 	public function redrawDeleteFactory(): void
 	{
 		$this->redrawControl($this->snippetDeleteItem);
@@ -122,6 +130,9 @@ abstract class Component extends UI\ExtraControl
 	}
 
 
+	/**
+	 * Redraw the grid component.
+	 */
 	public function redrawGrid(): void
 	{
 		$grid = $this['grid'];
@@ -130,6 +141,9 @@ abstract class Component extends UI\ExtraControl
 	}
 
 
+	/**
+	 * Redraw all necessary parts after a delete action.
+	 */
 	public function redrawDeleteFactoryAll(): void
 	{
 		$this->redrawDeleteFactory();
@@ -138,6 +152,9 @@ abstract class Component extends UI\ExtraControl
 	}
 
 
+	/**
+	 * Redraw the factory with success message.
+	 */
 	public function redrawSuccessFactory(): void
 	{
 		$this->redrawMessageOnPresenter();

@@ -11,6 +11,9 @@ namespace Drago\Authorization\Control\Privileges;
 use Drago;
 
 
+/**
+ * Class representing the data structure for privileges.
+ */
 class PrivilegesData extends Drago\Utils\ExtraArrayHash
 {
 	use PrivilegesMapper;

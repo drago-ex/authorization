@@ -19,6 +19,10 @@ use Tracy\Debugger;
 use Tracy\IBarPanel;
 
 
+/**
+ * Tracy Debugger panel for managing and displaying role switching.
+ * This panel allows users to switch roles and provides information about the current role context.
+ */
 class Panel implements IBarPanel
 {
 	use SmartObject;
@@ -30,6 +34,7 @@ class Panel implements IBarPanel
 		private readonly Request $request,
 		private readonly PanelCookie $panelCookie,
 	) {
+		// In development mode, handle role switching from query parameters.
 		if (Debugger::$productionMode === false) {
 			if ($this->request->getQuery('roleSwitchForm') === '1') {
 				$identity = $user->getIdentity();
@@ -47,6 +52,9 @@ class Panel implements IBarPanel
 	}
 
 
+	/**
+	 * Returns the HTML for the tab in the Tracy Debugger bar.
+	 */
 	public function getTab(): string
 	{
 		$html = '<span title="Role switch">';
@@ -61,6 +69,9 @@ class Panel implements IBarPanel
 	}
 
 
+	/**
+	 * Returns the HTML for the panel content in the Tracy Debugger.
+	 */
 	public function getPanel(): string
 	{
 		ob_start();

@@ -11,12 +11,23 @@ namespace Drago\Authorization\Control\Access;
 use Drago;
 
 
+/**
+ * Entity class for user roles in the system.
+ */
 class AccessRolesEntity extends Drago\Database\Entity
 {
-	public const Table = 'users_roles';
-	public const ColumnRoleId = 'role_id';
-	public const ColumnUserId = 'user_id';
+	// Constant for the table name
+	public const string Table = 'users_roles';
 
+	// Constant for the column name representing the role ID
+	public const string ColumnRoleId = 'role_id';
+
+	// Constant for the column name representing the user ID
+	public const string ColumnUserId = 'user_id';
+
+	// Role ID assigned to a user
 	public int $role_id;
+
+	// User ID to which the role is assigned
 	public int $user_id;
 }

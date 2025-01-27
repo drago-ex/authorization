@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Access;
 
-use App\Authorization\Control\ComponentTemplate;
 use Contributte\Datagrid\Exception\DatagridException;
 use Dibi\DriverException;
 use Dibi\Exception;
@@ -22,9 +21,7 @@ use Drago\Authorization\Control\DatagridComponent;
 use Drago\Authorization\Control\Factory;
 use Drago\Authorization\Control\Roles\RolesEntity;
 use Drago\Authorization\Control\Roles\RolesRepository;
-use Nette\Application\AbortException;
 use Nette\Application\Attributes\Requires;
-use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Security\User;
 use Nette\SmartObject;
@@ -32,7 +29,7 @@ use Throwable;
 
 
 /**
- * @property-read ComponentTemplate $template
+ * Manages user role assignments and access control.
  */
 class AccessControl extends Component implements Base
 {
@@ -52,6 +49,9 @@ class AccessControl extends Component implements Base
 	}
 
 
+	/**
+	 * Renders the access control template.
+	 */
 	public function render(): void
 	{
 		$template = $this->createRender();
@@ -60,6 +60,9 @@ class AccessControl extends Component implements Base
 	}
 
 
+	/**
+	 * Opens the component offcanvas.
+	 */
 	#[Requires(ajax: true)]
 	public function handleClickOpenComponent(): void
 	{
@@ -67,6 +70,9 @@ class AccessControl extends Component implements Base
 	}
 
 
+	/**
+	 * Creates the delete form for user access.
+	 */
 	protected function createComponentDelete(): Form
 	{
 		$form = $this->createDelete($this->id);
@@ -76,6 +82,9 @@ class AccessControl extends Component implements Base
 	}
 
 
+	/**
+	 * Deletes user access.
+	 */
 	public function delete(Form $form, \stdClass $data): void
 	{
 		try {
@@ -88,14 +97,14 @@ class AccessControl extends Component implements Base
 			$this->redrawDeleteFactoryAll();
 
 		} catch (Throwable $e) {
-			$message = 'Unknown status code.';
-			$this->flashMessageOnPresenter($message, Alert::Warning);
+			$this->flashMessageOnPresenter('Unknown status code.', Alert::Warning);
 			$this->redrawMessageOnPresenter();
 		}
 	}
 
 
 	/**
+	 * Creates the form for assigning roles to a user.
 	 * @throws AttributeDetectionException
 	 */
 	protected function createComponentFactory(): Form
@@ -133,6 +142,7 @@ class AccessControl extends Component implements Base
 
 
 	/**
+	 * Handles role assignment success.
 	 * @throws DriverException
 	 */
 	private function success(Form $form, AccessRolesData $data): void
@@ -160,8 +170,7 @@ class AccessControl extends Component implements Base
 			}
 
 			$this->accessRolesRepository->getConnection()->commit();
-			$message = $data->id ? 'Roles have been updated.' : 'Role assigned.';
-			$this->flashMessageOnPresenter($message, Alert::Success);
+			$this->flashMessageOnPresenter($data->id ? 'Roles updated.' : 'Role assigned.', Alert::Success);
 
 			if ($data->user_id) {
 				$this->closeComponent();
@@ -175,22 +184,14 @@ class AccessControl extends Component implements Base
 				->getConnection()
 				->rollback();
 
-			$message = match ($e->getCode()) {
-				1062 => 'The user already has this role assigned.',
-				default => 'Unknown status code.',
-			};
-
-			$form->addError($message);
+			$form->addError($e->getCode() === 1062 ? 'Role already assigned.' : 'Unknown error.');
 			$this->redrawControl($this->snippetFactory);
 		}
 	}
 
 
 	/**
-	 * @throws AbortException
-	 * @throws AttributeDetectionException
-	 * @throws Exception
-	 * @throws BadRequestException
+	 * Edits user roles by ID.
 	 */
 	#[Requires(ajax: true)]
 	public function handleEdit(int $id): void
@@ -198,39 +199,25 @@ class AccessControl extends Component implements Base
 		$items = $this->accessRolesRepository->getUserRoles($id);
 		$items ?: $this->error();
 
-		$userId = [];
-		foreach ($items as $item) {
-			$userId[AccessRolesEntity::ColumnUserId] = $item->user_id;
-		}
+		$userId = $items[0]->user_id ?? null;
+		$roleId = array_column($items, 'role_id');
 
-		$roleId = [];
-		foreach ($items as $item) {
-			$roleId[$item->role_id] = $item->role_id;
-		}
-
-		$userId = $userId[AccessRolesEntity::ColumnUserId];
-		$records = [
+		$form = $this['factory'];
+		$form->setDefaults([
 			AccessRolesEntity::ColumnUserId => $userId,
 			AccessRolesEntity::ColumnRoleId => $roleId,
 			AccessRolesData::Id => $userId,
-		];
+		]);
 
-		$form = $this['factory'];
-		$form->setDefaults($records);
-
-		$buttonSend = $this->getFormComponent($form, 'send');
-		$buttonSend->setCaption('Edit');
-
-		$formUserId = $this->getFormComponent($form, 'user_id');
-		$formUserId->setHtmlAttribute('data-locked');
+		$this->getFormComponent($form, 'send')->setCaption('Edit');
+		$this->getFormComponent($form, 'user_id')->setHtmlAttribute('data-locked');
 		$this->offCanvasComponent();
 	}
 
 
 	/**
-	 * @throws AbortException
+	 * Deletes user roles by ID.
 	 * @throws AttributeDetectionException
-	 * @throws BadRequestException
 	 * @throws Exception
 	 */
 	#[Requires(ajax: true)]
@@ -249,8 +236,9 @@ class AccessControl extends Component implements Base
 
 
 	/**
+	 * Creates the user roles data grid.
+	 * @throws DatagridException
 	 * @throws AttributeDetectionException
-	 * @throws DataGridException
 	 */
 	protected function createComponentGrid(string $name): DatagridComponent
 	{
@@ -266,11 +254,10 @@ class AccessControl extends Component implements Base
 			$grid->setTemplateFile($this->templateGrid);
 		}
 
-		$args = ['id' => 'user_id'];
 		$grid->addColumnBase('username', 'Users');
 		$grid->addColumnBase('role', 'Roles');
-		$grid->addActionEdit('edit', 'Edit', 'edit!', $args);
-		$grid->addActionDeleteBase('delete', 'Delete', 'delete!', $args);
+		$grid->addActionEdit('edit', 'Edit', 'edit!', ['id' => 'user_id']);
+		$grid->addActionDeleteBase('delete', 'Delete', 'delete!', ['id' => 'user_id']);
 		return $grid;
 	}
 }

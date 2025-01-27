@@ -5,7 +5,6 @@
  * Package built on Nette Framework
  */
 
-
 declare(strict_types=1);
 
 namespace Drago\Authorization;
@@ -19,22 +18,22 @@ final class Conf
 	/**
 	 * Default role.
 	 */
-	public const RoleGuest = 'guest';
-	public const RoleMember = 'member';
-	public const RoleAdmin = 'admin';
+	public const string RoleGuest = 'guest';
+	public const string RoleMember = 'member';
+	public const string RoleAdmin = 'admin';
 
 	/**
 	 * Option to specify privileges for all actions and signals.
 	 */
-	public const PrivilegeAll = '*';
+	public const string PrivilegeAll = '*';
 
 	/**
 	 * Acl cache.
 	 */
-	public const Cache = 'drago.aclCache';
+	public const string Cache = 'drago.aclCache';
 
 
-	/** @var array|string[] */
+	/** @var string[] Array of roles. */
 	public static array $roles = [
 		self::RoleGuest => self::RoleGuest,
 		self::RoleMember => self::RoleMember,

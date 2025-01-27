@@ -19,7 +19,8 @@ use Drago\Database\ExtraFluent;
 
 
 /**
- * @extends Database<PrivilegesEntity>
+ * Repository class for managing Privileges entities.
+ * Provides methods for fetching privileges and checking if a privilege is allowed to be changed.
  */
 #[Table(PrivilegesEntity::Table, PrivilegesEntity::PrimaryKey, class: PrivilegesEntity::class)]
 class PrivilegesRepository
@@ -33,6 +34,8 @@ class PrivilegesRepository
 
 
 	/**
+	 * Returns all privileges, excluding the "all" privilege.
+	 *
 	 * @throws AttributeDetectionException
 	 */
 	public function getAll(): ExtraFluent
@@ -44,7 +47,9 @@ class PrivilegesRepository
 
 
 	/**
-	 * @throws NotAllowedChange
+	 * Checks if the given privilege can be changed.
+	 *
+	 * @throws NotAllowedChange if the privilege is not allowed to be edited or deleted.
 	 */
 	public function isAllowed(string $privilege): bool
 	{

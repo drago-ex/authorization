@@ -17,6 +17,7 @@ use Drago\Database\ExtraFluent;
 
 
 /**
+ * Repository for accessing resources in the database.
  * @extends Database<ResourcesEntity>
  */
 #[Table(ResourcesEntity::Table, ResourcesEntity::PrimaryKey, class: ResourcesEntity::class)]
@@ -31,7 +32,10 @@ class ResourcesRepository
 
 
 	/**
+	 * Retrieves all resources from the database.
+	 *
 	 * @throws AttributeDetectionException
+	 * @return ExtraFluent
 	 */
 	public function getAll(): ExtraFluent
 	{

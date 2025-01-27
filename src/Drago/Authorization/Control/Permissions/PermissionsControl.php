@@ -26,9 +26,7 @@ use Drago\Authorization\Control\Resources\ResourcesEntity;
 use Drago\Authorization\Control\Resources\ResourcesRepository;
 use Drago\Authorization\Control\Roles\RolesEntity;
 use Drago\Authorization\Control\Roles\RolesRepository;
-use Nette\Application\AbortException;
 use Nette\Application\Attributes\Requires;
-use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
 use Nette\SmartObject;
@@ -36,16 +34,21 @@ use Throwable;
 
 
 /**
- * @property-read ComponentTemplate $template;
+ * Permissions control to manage roles and permissions
+ * @property-read ComponentTemplate $template
  */
 class PermissionsControl extends Component implements Base
 {
 	use SmartObject;
 	use Factory;
 
+	/** @var string Snippet factory identifier for rendering permissions */
 	public string $snippetFactory = 'permissions';
 
 
+	/**
+	 * Constructor for initializing repository dependencies and cache.
+	 */
 	public function __construct(
 		private readonly Cache $cache,
 		private readonly RolesRepository $rolesRepository,
@@ -58,6 +61,9 @@ class PermissionsControl extends Component implements Base
 	}
 
 
+	/**
+	 * Renders the permissions control.
+	 */
 	public function render(): void
 	{
 		$template = $this->createRender();
@@ -66,6 +72,9 @@ class PermissionsControl extends Component implements Base
 	}
 
 
+	/**
+	 * Handles the click event to open the component via AJAX.
+	 */
 	#[Requires(ajax: true)]
 	public function handleClickOpenComponent(): void
 	{
@@ -73,6 +82,10 @@ class PermissionsControl extends Component implements Base
 	}
 
 
+	/**
+	 * Creates and returns the delete form.
+	 * The form is used to confirm and execute deletion of permissions.
+	 */
 	protected function createComponentDelete(): Form
 	{
 		$form = $this->createDelete($this->id);
@@ -82,6 +95,10 @@ class PermissionsControl extends Component implements Base
 	}
 
 
+	/**
+	 * Deletes a permission and updates the cache.
+	 * Displays success or failure messages based on the operation result.
+	 */
 	public function delete(Form $form, \stdClass $data): void
 	{
 		try {
@@ -103,7 +120,8 @@ class PermissionsControl extends Component implements Base
 
 
 	/**
-	 * @throws AttributeDetectionException
+	 * Creates the form for adding/editing permissions.
+	 * The form includes role, resource, privilege, and permission selections.
 	 */
 	protected function createComponentFactory(): Form
 	{
@@ -150,7 +168,8 @@ class PermissionsControl extends Component implements Base
 
 
 	/**
-	 * @throws AbortException
+	 * Success handler after submitting the permissions form.
+	 * Saves the permission and provides feedback messages.
 	 */
 	private function success(Form $form, PermissionsData $data): void
 	{
@@ -181,10 +200,8 @@ class PermissionsControl extends Component implements Base
 
 
 	/**
-	 * @throws AbortException
-	 * @throws AttributeDetectionException
-	 * @throws BadRequestException
-	 * @throws Exception
+	 * Handles the edit action for a permission.
+	 * Fetches the permission data and fills the form for editing.
 	 */
 	#[Requires(ajax: true)]
 	public function handleEdit(int $id): void
@@ -204,9 +221,9 @@ class PermissionsControl extends Component implements Base
 
 
 	/**
-	 * @throws AbortException
+	 * Handles the delete action for a permission.
+	 * Confirms the deletion before proceeding.
 	 * @throws AttributeDetectionException
-	 * @throws BadRequestException
 	 * @throws Exception
 	 */
 	#[Requires(ajax: true)]
@@ -225,8 +242,8 @@ class PermissionsControl extends Component implements Base
 
 
 	/**
-	 * @throws Exception
-	 * @throws AttributeDetectionException
+	 * Changes the permission status (Allow/Deny).
+	 * Updates the permission in the repository and redraws the grid.
 	 */
 	public function statusChange(string $id, string $value): void
 	{
@@ -247,9 +264,11 @@ class PermissionsControl extends Component implements Base
 
 
 	/**
+	 * Creates a grid component for displaying the permissions.
+	 * The grid includes columns for role, resource, privilege, and permission status.
 	 * @throws AttributeDetectionException
-	 * @throws DataGridException
-	 * @throws DataGridColumnStatusException
+	 * @throws DatagridColumnStatusException
+	 * @throws DatagridException
 	 */
 	protected function createComponentGrid(string $name): DatagridComponent
 	{

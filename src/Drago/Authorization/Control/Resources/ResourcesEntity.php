@@ -15,7 +15,7 @@ class ResourcesEntity extends Drago\Database\Entity
 {
 	use ResourcesMapper;
 
-	public const Table = 'resources';
-	public const PrimaryKey = 'id';
-	public const ColumnName = 'name';
+	public const string Table = 'resources';
+	public const string PrimaryKey = 'id';
+	public const string ColumnName = 'name';
 }

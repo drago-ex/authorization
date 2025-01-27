@@ -9,9 +9,18 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control\Roles;
 
 
+/**
+ * Trait for mapping role data to the Role entity.
+ * It defines the common properties used for a role's attributes.
+ */
 trait RolesMapper
 {
+	// The unique identifier for the role (nullable)
 	public ?int $id;
+
+	// The name of the role
 	public string $name;
+
+	// The parent role, which can be either an integer (ID of the parent) or null
 	public string|int $parent;
 }

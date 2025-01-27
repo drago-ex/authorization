@@ -11,12 +11,23 @@ namespace Drago\Authorization\Control\Access;
 use Drago;
 
 
+/**
+ * Represents an entity for user access data.
+ */
 class AccessEntity extends Drago\Database\Entity
 {
-	public const Table = 'users';
-	public const PrimaryKey = 'id';
-	public const ColumnUsername = 'username';
+	/** The name of the database table */
+	public const string Table = 'users';
 
+	/** The primary key column name */
+	public const string PrimaryKey = 'id';
+
+	/** The column name for the username */
+	public const string ColumnUsername = 'username';
+
+	/** The user ID (nullable) */
 	public ?int $id;
+
+	/** The username of the user */
 	public string $username;
 }

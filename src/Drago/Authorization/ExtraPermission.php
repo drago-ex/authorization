@@ -22,7 +22,7 @@ use Throwable;
 
 
 /**
- * Managing user permissions.
+ * Manages user permissions.
  */
 class ExtraPermission
 {
@@ -38,13 +38,17 @@ class ExtraPermission
 
 
 	/**
+	 * Creates the permissions based on roles, resources, and permissions from the database.
+	 *
 	 * @throws Exception
 	 * @throws Throwable
+	 * @return Permission The configured ACL permission object.
 	 */
 	public function create(): Permission
 	{
 		$acl = new Permission;
 		try {
+			// If ACL is not cached, create it.
 			if (!$this->cache->load(Conf::Cache)) {
 				$roles = $this->rolesRepository
 					->read('*')
@@ -76,15 +80,21 @@ class ExtraPermission
 						: 'deny'} ($row->role, $row->resource, $row->privilege);
 				}
 
+				// Admin role gets full access by default
 				$acl->allow(Conf::RoleAdmin);
+
+				// Cache the ACL for later use
 				$this->cache->save(Conf::Cache, $acl);
 			}
 
+			// If ACL is cached, load it
 			if ($this->cache->load(Conf::Cache)) {
 				$acl = $this->cache->load(Conf::Cache);
 			}
-		} catch (DriverException) {
-			// Not implemented.
+		} catch (DriverException $e) {
+			// Handle database connection or query issues
+			// You could log this exception or handle it differently depending on your needs.
+			// For now, we leave it as not implemented.
 		}
 
 		return $acl;

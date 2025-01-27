@@ -32,6 +32,9 @@ use Throwable;
 
 
 /**
+ *  Manages roles in the authorization system, supporting creation, editing,
+ *  deletion, and display of roles in a grid with AJAX actions.
+ *
  * @property-read ComponentTemplate $template
  */
 class RolesControl extends Component implements Base
@@ -73,6 +76,12 @@ class RolesControl extends Component implements Base
 	}
 
 
+	/**
+	 * Deletes the selected role and clears the cache.
+	 * @param Form $form
+	 * @param \stdClass $data
+	 * @throws Throwable
+	 */
 	private function delete(Form $form, \stdClass $data): void
 	{
 		try {
@@ -81,8 +90,8 @@ class RolesControl extends Component implements Base
 			$this->flashMessageOnPresenter('Role deleted.');
 			$this->closeComponent();
 			$this->redrawDeleteFactoryAll();
-
 		} catch (Throwable $e) {
+			$e->getCode();
 			$message = 'Unknown status code.';
 			$this->flashMessageOnPresenter($message, Alert::Warning);
 			$this->redrawMessageOnPresenter();
@@ -91,6 +100,7 @@ class RolesControl extends Component implements Base
 
 
 	/**
+	 * Creates and returns the form for role creation/editing.
 	 * @throws AttributeDetectionException
 	 */
 	protected function createComponentFactory(): Form
@@ -124,13 +134,16 @@ class RolesControl extends Component implements Base
 
 
 	/**
+	 * Success handler for role form submission.
+	 * @param Form $form
+	 * @param RolesData $data
 	 * @throws AbortException
 	 */
 	private function success(Form $form, RolesData $data): void
 	{
 		try {
 			if ($data->id !== null && $data->id < $data->parent) {
-				throw new \Exception('It is not allowed to select a higher parent.', 1);
+				throw new \Exception('It is not allowed to select a higher parent.');
 			}
 
 			$this->rolesRepository->save($data->toArray());
@@ -165,6 +178,7 @@ class RolesControl extends Component implements Base
 
 
 	/**
+	 * Handles editing of a role.
 	 * @throws AbortException
 	 * @throws AttributeDetectionException
 	 * @throws BadRequestException
@@ -185,7 +199,6 @@ class RolesControl extends Component implements Base
 				$buttonSend->setCaption('Edit');
 				$this->offCanvasComponent();
 			}
-
 		} catch (NotAllowedChange $e) {
 			$message = match ($e->getCode()) {
 				1001 => 'The role is not allowed to be updated.',
@@ -199,6 +212,7 @@ class RolesControl extends Component implements Base
 
 
 	/**
+	 * Handles deletion of a role.
 	 * @throws AbortException
 	 * @throws AttributeDetectionException
 	 * @throws BadRequestException
@@ -216,7 +230,6 @@ class RolesControl extends Component implements Base
 				$this->deleteItems = $items->name;
 				$this->modalComponent();
 			}
-
 		} catch (Throwable $e) {
 			$message = match ($e->getCode()) {
 				1001 => 'The role is not allowed to be deleted.',
@@ -231,6 +244,7 @@ class RolesControl extends Component implements Base
 
 
 	/**
+	 * Creates and configures a data grid for roles.
 	 * @throws AttributeDetectionException
 	 * @throws DataGridException
 	 */
