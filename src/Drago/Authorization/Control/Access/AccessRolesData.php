@@ -20,9 +20,7 @@ class AccessRolesData extends Drago\Utils\ExtraArrayHash
 	// Constant for the ID field
 	public const string Id = 'id';
 
-	// Array of role IDs associated with the user
 	public array $role_id;
-
 	public ?int $user_id;
 	public ?int $id;
 }
