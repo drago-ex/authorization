@@ -13,9 +13,11 @@ use Drago;
 
 class DepartmentsEntity extends Drago\Database\EntityOracle
 {
-	public const TABLE = 'DEPARTMENTS';
-	public const PRIMARY = 'ID';
-	public const USERNAME = 'NAME';
+	public const string
+		TABLE = 'DEPARTMENTS',
+		PRIMARY = 'ID',
+		USERNAME = 'NAME';
+
 	public ?int $id;
 	public string $name;
 }

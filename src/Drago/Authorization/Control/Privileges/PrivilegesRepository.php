@@ -12,21 +12,21 @@ namespace Drago\Authorization\Control\Privileges;
 use Dibi\Connection;
 use Dibi\Exception;
 use Dibi\Fluent;
-use Dibi\Result;
 use Drago\Attr\AttributeDetectionException;
 use Drago\Attr\Table;
 use Drago\Authorization\Conf;
 use Drago\Authorization\NotAllowedChange;
-use Drago\Database\Repository;
+use Drago\Database\Database;
+use Drago\Database\ExtraFluent;
 
 
 #[Table(PrivilegesEntity::TABLE, PrivilegesEntity::PRIMARY)]
 class PrivilegesRepository
 {
-	use Repository;
+	use Database;
 
 	public function __construct(
-		protected Connection $db,
+		protected Connection $connection,
 	) {
 	}
 
@@ -36,7 +36,7 @@ class PrivilegesRepository
 	 */
 	public function getAll(): Fluent
 	{
-		return $this->all()
+		return $this->read('*')
 			->where(PrivilegesEntity::NAME, '!= ?', Conf::PRIVILEGE_ALL)
 			->orderBy(PrivilegesEntity::NAME, 'asc');
 	}
@@ -70,11 +70,10 @@ class PrivilegesRepository
 
 
 	/**
-	 * @throws Exception
 	 * @throws AttributeDetectionException
 	 */
-	public function save(PrivilegesData $data): Result|int|null
+	public function remove(int $id): ExtraFluent
 	{
-		return $this->put($data->toArrayUpper());
+		return $this->delete(PrivilegesEntity::PRIMARY, $id);
 	}
 }

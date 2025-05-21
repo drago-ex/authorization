@@ -13,9 +13,10 @@ use Drago;
 
 class PrivilegesEntity extends Drago\Database\EntityOracle
 {
-	public const TABLE = 'ACL_PRIVILEGES';
-	public const PRIMARY = 'ID';
-	public const NAME = 'NAME';
+	public const string
+		TABLE = 'ACL_PRIVILEGES',
+		PRIMARY = 'ID',
+		NAME = 'NAME';
 
 	public ?int $id;
 	public string $name;

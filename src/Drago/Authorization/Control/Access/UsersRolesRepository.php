@@ -14,16 +14,16 @@ use Dibi\Exception;
 use Dibi\Result;
 use Drago\Attr\AttributeDetectionException;
 use Drago\Attr\Table;
-use Drago\Database\Repository;
+use Drago\Database\Database;
 
 
 #[Table(UsersRolesEntity::TABLE)]
 class UsersRolesRepository
 {
-	use Repository;
+	use Database;
 
 	public function __construct(
-		protected Connection $db,
+		protected Connection $connection,
 	) {
 	}
 
@@ -35,7 +35,7 @@ class UsersRolesRepository
 	 */
 	public function getAllUserRoles(): array
 	{
-		return $this->all()->execute()
+		return $this->read('*')->execute()
 			->setRowClass(UsersRolesEntity::class)
 			->fetchAll();
 	}
@@ -48,7 +48,7 @@ class UsersRolesRepository
 	 */
 	public function getUserRoles(int $userId): array
 	{
-		return $this->all()
+		return $this->read('*')
 			->where(UsersRolesEntity::USER_ID, '= ?', $userId)
 			->execute()->setRowClass(UsersRolesEntity::class)
 			->fetchAll();
@@ -57,19 +57,23 @@ class UsersRolesRepository
 
 	/**
 	 * @throws Exception
+	 * @throws AttributeDetectionException
 	 */
-	public function delete(UsersRolesEntity $entity): Result|int|null
+	public function deleteRole(UsersRolesEntity $entity): Result|int|null
 	{
-		return $this->db->delete(UsersRolesEntity::TABLE)
-			->where(UsersRolesEntity::USER_ID, '= ?', $entity->user_id)
+		return $this->delete(UsersRolesEntity::USER_ID, $entity->user_id)
 			->and(UsersRolesEntity::ROLE_ID, '= ?', $entity->role_id)
 			->execute();
 	}
-	
-	public function deleteByUserId(int $userId)
+
+
+	/**
+	 * @throws Exception
+	 * @throws AttributeDetectionException
+	 */
+	public function deleteByUserId(int $userId): Result|int|null
 	{
-		return $this->db->delete(UsersRolesEntity::TABLE)
-			->where(UsersRolesEntity::USER_ID, '= ?', $userId)
+		return $this->delete(UsersRolesEntity::USER_ID, $userId)
 			->execute();
 	}
 
@@ -90,7 +94,7 @@ class UsersRolesRepository
 	 */
 	public function getRecord(int $id): array|UsersRolesEntity|null
 	{
-		return $this->discover(UsersRolesEntity::USER_ID, $id)
+		return $this->find(UsersRolesEntity::USER_ID, $id)
 			->execute()->setRowClass(UsersRolesEntity::class)
 			->fetch();
 	}

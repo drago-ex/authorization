@@ -14,28 +14,27 @@ use Dibi\Exception;
 use Dibi\Result;
 use Drago\Attr\AttributeDetectionException;
 use Drago\Attr\Table;
-use Drago\Database\Repository;
+use Drago\Database\Database;
 
 
 #[Table(UsersDepartmentsEntity::TABLE, UsersDepartmentsEntity::PRIMARY)]
 class UsersDepartmentsRepository
 {
-	use Repository;
+	use Database;
 
 	public function __construct(
-		protected Connection $db,
+		protected Connection $connection,
 	) {
 	}
 
 
 	/**
-	 * @return Result|int|null
 	 * @throws AttributeDetectionException
 	 * @throws Exception
 	 */
-	public function deleteByUserId(int $userId)
+	public function deleteByUserId(int $userId): Result|int|null
 	{
-		return $this->db->delete($this->getTable())->where(UsersDepartmentsEntity::USER_ID, '= ?', $userId)
+		return $this->delete(UsersDepartmentsEntity::USER_ID, $userId)
 			->execute();
 	}
 
@@ -47,7 +46,7 @@ class UsersDepartmentsRepository
 	 */
 	public function findByUserId(int $userId): array
 	{
-		return $this->discover(UsersDepartmentsEntity::USER_ID, $userId)
+		return $this->find(UsersDepartmentsEntity::USER_ID, $userId)
 			->execute()->setRowClass(UsersDepartmentsEntity::class)
 			->fetchAll();
 	}

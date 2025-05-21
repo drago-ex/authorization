@@ -13,10 +13,11 @@ use Drago;
 
 class PermissionsRolesViewEntity extends Drago\Database\EntityOracle
 {
-	public const TABLE = 'ACL_PERMISSIONS_ROLES_VIEW';
-	public const ID = 'ID';
-	public const NAME = 'NAME';
-	public const PARENT = 'PARENT';
+	public const string
+		TABLE = 'ACL_PERMISSIONS_ROLES_VIEW',
+		ID = 'ID',
+		NAME = 'NAME',
+		PARENT = 'PARENT';
 
 	public int $id;
 	public string $name;

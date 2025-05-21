@@ -13,9 +13,10 @@ use Drago;
 
 class ResourcesEntity extends Drago\Database\EntityOracle
 {
-	public const TABLE = 'ACL_RESOURCES';
-	public const PRIMARY = 'ID';
-	public const NAME = 'NAME';
+	public const string
+		TABLE = 'ACL_RESOURCES',
+		PRIMARY = 'ID',
+		NAME = 'NAME';
 
 	public ?int $id;
 	public string $name;

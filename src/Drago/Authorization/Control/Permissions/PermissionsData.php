@@ -13,11 +13,12 @@ use Drago;
 
 class PermissionsData extends Drago\Utils\ExtraArrayHash
 {
-	public const ID = 'id';
-	public const ROLE_ID = 'role_id';
-	public const RESOURCE_ID = 'resource_id';
-	public const PRIVILEGE_ID = 'privilege_id';
-	public const ALLOWED = 'allowed';
+	public const string
+		ID = 'id',
+		ROLE_ID = 'role_id',
+		RESOURCE_ID = 'resource_id',
+		PRIVILEGE_ID = 'privilege_id',
+		ALLOWED = 'allowed';
 
 	public ?int $id;
 	public int $role_id;

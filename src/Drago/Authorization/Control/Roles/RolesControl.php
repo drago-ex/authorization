@@ -105,7 +105,7 @@ class RolesControl extends Component implements Base
 			->setRequired();
 
 		$form->addHidden(RolesData::ID)
-			->addRule($form::INTEGER)
+			->addRule($form::Integer)
 			->setNullable();
 
 		$form->addSubmit('send', 'Send');

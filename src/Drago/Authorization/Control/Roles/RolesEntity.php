@@ -13,11 +13,12 @@ use Drago;
 
 class RolesEntity extends Drago\Database\EntityOracle
 {
-	public const TABLE = 'ACL_ROLES';
-	public const PRIMARY = 'ID';
-	public const NAME = 'NAME';
-	public const PARENT = 'PARENT';
-	public const DESCRIPTION = 'DESCRIPTION';
+	public const string
+		TABLE = 'ACL_ROLES',
+		PRIMARY = 'ID',
+		NAME = 'NAME',
+		PARENT = 'PARENT',
+		DESCRIPTION = 'DESCRIPTION';
 
 	public ?int $id;
 	public string $name;

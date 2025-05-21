@@ -14,17 +14,16 @@ use Dibi\Exception;
 use Dibi\Fluent;
 use Drago\Attr\AttributeDetectionException;
 use Drago\Attr\Table;
-use Drago\Authorization\Conf;
-use Drago\Database\Repository;
+use Drago\Database\Database;
 
 
 #[Table(UsersRolesViewEntity::TABLE)]
 class UsersRolesViewRepository
 {
-	use Repository;
+	use Database;
 
 	public function __construct(
-		protected Connection $db,
+		protected Connection $connection,
 	) {
 	}
 
@@ -34,9 +33,8 @@ class UsersRolesViewRepository
 	 */
 	public function getAllUsers(): Fluent
 	{
-		return $this->db
-			->select('user_id, username, LISTAGG(NVL(description, role), ", ") WITHIN GROUP (order by description asc) role')
-			->from($this->getTable())->groupBy('user_id, username')
+		return $this->read('user_id, username, LISTAGG(NVL(description, role), ", ") WITHIN GROUP (order by description asc) role')
+			->groupBy('user_id, username')
 			->orderBy(UsersRolesViewEntity::USER_ID, 'asc');
 	}
 
@@ -48,7 +46,7 @@ class UsersRolesViewRepository
 	 */
 	public function getAllUsersRoles(): array
 	{
-		return $this->all()
+		return $this->read('*')
 			->orderBy(UsersRolesViewEntity::USER_ID, 'asc')
 			->execute()->setRowClass(UsersRolesViewEntity::class)
 			->fetchAll();
@@ -62,7 +60,7 @@ class UsersRolesViewRepository
 	 */
 	public function getUserRoles(): array
 	{
-		return $this->all()->execute()
+		return $this->read('*')->execute()
 			->setRowClass(UsersRolesViewEntity::class)
 			->fetchAll();
 	}

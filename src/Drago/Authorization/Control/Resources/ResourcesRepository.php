@@ -15,16 +15,16 @@ use Dibi\Fluent;
 use Dibi\Result;
 use Drago\Attr\AttributeDetectionException;
 use Drago\Attr\Table;
-use Drago\Database\Repository;
+use Drago\Database\Database;
 
 
 #[Table(ResourcesEntity::TABLE, ResourcesEntity::PRIMARY)]
 class ResourcesRepository
 {
-	use Repository;
+	use Database;
 
 	public function __construct(
-		protected Connection $db,
+		protected Connection $connection,
 	) {
 	}
 
@@ -34,7 +34,7 @@ class ResourcesRepository
 	 */
 	public function getAll(): Fluent
 	{
-		return $this->all()
+		return $this->read('*')
 			->orderBy(ResourcesEntity::NAME, 'asc');
 	}
 
@@ -68,8 +68,9 @@ class ResourcesRepository
 	 * @throws Exception
 	 * @throws AttributeDetectionException
 	 */
-	public function save(ResourcesData $data): Result|int|null
+	public function remove(int $id): Result|int|null
 	{
-		return $this->put($data->toArrayUpper());
+		return $this->delete(ResourcesEntity::PRIMARY, $id)
+			->execute();
 	}
 }

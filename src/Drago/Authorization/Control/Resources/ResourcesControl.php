@@ -82,7 +82,7 @@ class ResourcesControl extends Component implements Base
 			->setRequired();
 
 		$form->addHidden(ResourcesData::ID)
-			->addRule($form::INTEGER)
+			->addRule($form::Integer)
 			->setNullable();
 
 		$form->addSubmit('send', 'Send');

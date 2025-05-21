@@ -18,16 +18,16 @@ use Drago\Attr\AttributeDetectionException;
 use Drago\Attr\Table;
 use Drago\Authorization\Conf;
 use Drago\Authorization\NotAllowedChange;
-use Drago\Database\Repository;
+use Drago\Database\Database;
 
 
 #[Table(RolesEntity::TABLE, RolesEntity::PRIMARY)]
 class RolesRepository
 {
-	use Repository;
+	use Database;
 
 	public function __construct(
-		protected Connection $db,
+		protected Connection $connection,
 	) {
 	}
 
@@ -37,7 +37,7 @@ class RolesRepository
 	 */
 	public function getAll(): Fluent
 	{
-		return $this->all()
+		return $this->read('*')
 			->orderBy(RolesEntity::PRIMARY);
 	}
 
@@ -61,7 +61,7 @@ class RolesRepository
 	 */
 	public function findByParent(int $parent): array|RolesEntity|null
 	{
-		return $this->discover(RolesEntity::PRIMARY, $parent)
+		return $this->find(RolesEntity::PRIMARY, $parent)
 			->execute()->setRowClass(RolesEntity::class)
 			->fetch();
 	}
@@ -84,7 +84,8 @@ class RolesRepository
 	 */
 	public function getRoles(): array
 	{
-		return $this->all()->where(RolesEntity::NAME, '!= ?', Conf::ROLE_GUEST)
+		return $this->read('*')
+			->where(RolesEntity::NAME, '!= ?', Conf::ROLE_GUEST)
 			->fetchPairs(RolesEntity::PRIMARY, RolesEntity::NAME);
 	}
 
@@ -96,7 +97,21 @@ class RolesRepository
 	 */
 	public function getRolesAll(): array
 	{
-		return $this->all()->where(RolesEntity::NAME, '!= ?', Conf::ROLE_GUEST)
+		return $this->read('*')
+			->where(RolesEntity::NAME, '!= ?', Conf::ROLE_GUEST)
+			->execute()->setRowClass(RolesEntity::class)->fetchAll();
+	}
+
+
+	/**
+	 * @return array[]|Row[]
+	 * @throws AttributeDetectionException
+	 * @throws Exception
+	 */
+	public function getAllRolesForPermissions(): array
+	{
+		return $this->read('*')
+			->where(RolesEntity::NAME, '!= ?', Conf::ROLE_ADMIN)
 			->execute()->setRowClass(RolesEntity::class)->fetchAll();
 	}
 
@@ -106,7 +121,8 @@ class RolesRepository
 	 */
 	public function getRolesPairs(): array
 	{
-		return $this->all()->where(RolesEntity::NAME, ' != ?', Conf::ROLE_ADMIN)
+		return $this->read('*')
+			->where(RolesEntity::NAME, ' != ?', Conf::ROLE_ADMIN)
 			->fetchPairs(RolesEntity::NAME, RolesEntity::NAME);
 	}
 
@@ -117,7 +133,7 @@ class RolesRepository
 	 */
 	public function findParent(int $id): array|RolesEntity|Row|null
 	{
-		$row = $this->discover(RolesEntity::PARENT, $id)->fetch();
+		$row = $this->find(RolesEntity::PARENT, $id)->fetch();
 		if ($row) {
 			throw new NotAllowedChange(
 				'The record can not be deleted, you must first delete the records that are associated with it.',
@@ -147,8 +163,9 @@ class RolesRepository
 	 * @throws Exception
 	 * @throws AttributeDetectionException
 	 */
-	public function save(RolesData $data): Result|int|null
+	public function remove(int $id): Result|int|null
 	{
-		return $this->put($data->toArrayUpper());
+		return $this->delete(RolesEntity::PRIMARY, $id)
+			->execute();
 	}
 }

@@ -13,11 +13,12 @@ use Drago;
 
 class AccessEntity extends Drago\Database\EntityOracle
 {
-	public const TABLE = 'USERS';
-	public const PRIMARY = 'ID';
-	public const USERNAME = 'USERNAME';
-	public const EMAIL = 'EMAIL';
-	public const PASSWORD = 'PASSWORD';
+	public const string
+		TABLE = 'USERS',
+		PRIMARY = 'ID',
+		USERNAME = 'USERNAME',
+		EMAIL = 'EMAIL',
+		PASSWORD = 'PASSWORD';
 
 	public ?int $id;
 	public string $username;

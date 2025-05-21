@@ -13,10 +13,11 @@ use Drago;
 
 class RolesData extends Drago\Utils\ExtraArrayHash
 {
-	public const ID = 'id';
-	public const NAME = 'name';
-	public const PARENT = 'parent';
-	public const DESCRIPTION = 'description';
+	public const string
+		ID = 'id',
+		NAME = 'name',
+		PARENT = 'parent',
+		DESCRIPTION = 'description';
 
 	public ?int $id;
 	public string $name;

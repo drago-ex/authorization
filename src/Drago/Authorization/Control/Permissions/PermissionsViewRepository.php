@@ -15,16 +15,16 @@ use Dibi\Fluent;
 use Drago\Attr\AttributeDetectionException;
 use Drago\Attr\Table;
 use Drago\Authorization\Conf;
-use Drago\Database\Repository;
+use Drago\Database\Database;
 
 
 #[Table(PermissionsViewEntity::TABLE)]
 class PermissionsViewRepository
 {
-	use Repository;
+	use Database;
 
 	public function __construct(
-		protected Connection $db,
+		protected Connection $connection,
 	) {
 	}
 
@@ -34,7 +34,7 @@ class PermissionsViewRepository
 	 */
 	public function getAll(): Fluent
 	{
-		return $this->all()
+		return $this->read('*')
 			->where(PermissionsViewEntity::ROLE, '!= ?', Conf::ROLE_ADMIN);
 	}
 

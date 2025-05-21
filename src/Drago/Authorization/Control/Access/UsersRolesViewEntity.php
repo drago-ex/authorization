@@ -13,10 +13,11 @@ use Drago;
 
 class UsersRolesViewEntity extends Drago\Database\EntityOracle
 {
-	public const TABLE = 'USERS_ROLES_VIEW';
-	public const USER_ID = 'USER_ID';
-	public const USERNAME = 'USERNAME';
-	public const ROLE = 'ROLE';
+	public const string
+		TABLE = 'USERS_ROLES_VIEW',
+		USER_ID = 'USER_ID',
+		USERNAME = 'USERNAME',
+		ROLE = 'ROLE';
 
 	public ?int $user_id = null;
 	public ?string $username = null;

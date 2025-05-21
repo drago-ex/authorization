@@ -13,6 +13,7 @@ use App\Authorization\Control\ComponentTemplate;
 use Contributte\Datagrid\Column\Action\Confirmation\StringConfirmation;
 use Contributte\Datagrid\Datagrid;
 use Contributte\Datagrid\Exception\DatagridException;
+use Dibi\DriverException;
 use Dibi\Exception;
 use Drago\Application\UI\Alert;
 use Drago\Attr\AttributeDetectionException;
@@ -24,9 +25,7 @@ use Drago\Authorization\FluentWithClassDataSource;
 use Nette\Application\AbortException;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
-use Nette\SmartObject;
 use Throwable;
-use Tracy\Debugger;
 
 
 /**
@@ -34,7 +33,6 @@ use Tracy\Debugger;
  */
 class AccessControl extends Component implements Base
 {
-	use SmartObject;
 	use Factory;
 
 	public string $snippetFactory = 'access';
@@ -78,7 +76,7 @@ class AccessControl extends Component implements Base
 
 
 	/**
-	 * @throws AttributeDetectionException
+	 * @throws AttributeDetectionException|Exception
 	 */
 	protected function createComponentFactory(): Form
 	{
@@ -111,7 +109,7 @@ class AccessControl extends Component implements Base
 		$form->addMultiSelect(UsersRolesData::DEPARTMENT_ID, 'Department', $departments);
 
 		$form->addHidden(UsersRolesData::ID)
-			->addRule($form::INTEGER)
+			->addRule($form::Integer)
 			->setNullable();
 
 		$form->addSubmit('send', 'Send');
@@ -121,7 +119,7 @@ class AccessControl extends Component implements Base
 
 
 	/**
-	 * @throws AbortException
+	 * @throws AbortException|DriverException
 	 */
 	public function success(Form $form, UsersRolesData $data): void
 	{
@@ -147,7 +145,7 @@ class AccessControl extends Component implements Base
 
 			foreach ($data->department_id as $item) {
 				$userDepartmentEntity->department_id = $item;
-				$this->usersDepartmentsRepository->put($userDepartmentEntity->toArrayUpper());
+				$this->usersDepartmentsRepository->save($userDepartmentEntity);
 			}
 
 			$this->usersRolesRepository->getDb()->commit();
@@ -169,7 +167,6 @@ class AccessControl extends Component implements Base
 			}
 
 		} catch (Throwable $e) {
-			Debugger::barDump($e);
 			$this->usersRolesRepository->getDb()->rollback();
 			$message = match ($e->getCode()) {
 				1 => 'The user already has this role assigned.',
@@ -256,7 +253,7 @@ class AccessControl extends Component implements Base
 		foreach ($records as $record) {
 			$entity->user_id = $record->user_id;
 			$entity->role_id = $record->role_id;
-			$this->usersRolesRepository->delete($entity);
+			$this->usersRolesRepository->deleteRole($entity);
 		}
 
 		$this->getPresenter()->flashMessage(

@@ -11,19 +11,18 @@ namespace Drago\Authorization\Control\Access;
 
 use Dibi\Connection;
 use Dibi\Exception;
-use Dibi\Result;
 use Drago\Attr\AttributeDetectionException;
 use Drago\Attr\Table;
-use Drago\Database\Repository;
+use Drago\Database\Database;
 
 
 #[Table(DepartmentsEntity::TABLE)]
 class DepartmentsRepository
 {
-	use Repository;
+	use Database;
 
 	public function __construct(
-		protected Connection $db,
+		protected Connection $connection,
 	) {
 	}
 
@@ -34,7 +33,7 @@ class DepartmentsRepository
 	 */
 	public function getAll(): array
 	{
-		return $this->all()->execute()
+		return $this->read('*')->execute()
 			->setRowClass(UsersDepartmentsEntity::class)
 			->fetchPairs('id', 'name');
 	}

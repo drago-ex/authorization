@@ -13,9 +13,10 @@ use Drago;
 
 class UsersRolesEntity extends Drago\Database\EntityOracle
 {
-	public const TABLE = 'USERS_ROLES';
-	public const ROLE_ID = 'ROLE_ID';
-	public const USER_ID = 'USER_ID';
+	public const string
+		TABLE = 'USERS_ROLES',
+		ROLE_ID = 'ROLE_ID',
+		USER_ID = 'USER_ID';
 
 	public int $role_id;
 	public int $user_id;

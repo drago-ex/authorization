@@ -13,16 +13,16 @@ use Dibi\Connection;
 use Dibi\Exception;
 use Drago\Attr\AttributeDetectionException;
 use Drago\Attr\Table;
-use Drago\Database\Repository;
+use Drago\Database\Database;
 
 
 #[Table(PermissionsRolesViewEntity::TABLE)]
 class PermissionsRolesViewRepository
 {
-	use Repository;
+	use Database;
 
 	public function __construct(
-		protected Connection $db,
+		protected Connection $connection,
 	) {
 	}
 
@@ -34,7 +34,7 @@ class PermissionsRolesViewRepository
 	 */
 	public function getAll(): array
 	{
-		return $this->all()->execute()
+		return $this->read('*')->execute()
 			->setRowClass(PermissionsRolesViewEntity::class)
 			->fetchAll();
 	}

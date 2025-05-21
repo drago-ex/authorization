@@ -87,14 +87,12 @@ class PermissionsControl extends Component implements Base
 
 	/**
 	 * @throws AttributeDetectionException
+	 * @throws Exception
 	 */
 	protected function createComponentFactory(): Form
 	{
 		$form = $this->create();
-		$role = $this->rolesRepository->all()
-			->where(RolesEntity::NAME, '!= ?', Conf::ROLE_ADMIN)
-			->execute()->setRowClass(RolesEntity::class)->fetchAll();
-
+		$role = $this->rolesRepository->getAllRolesForPermissions();
 		$roles = [];
 
 		/**
@@ -111,14 +109,14 @@ class PermissionsControl extends Component implements Base
 			->setPrompt('Select role')
 			->setRequired();
 
-		$resources = $this->resourcesRepository->all()
+		$resources = $this->resourcesRepository->read('*')
 			->fetchPairs(ResourcesEntity::PRIMARY, ResourcesEntity::NAME);
 
 		$form->addSelect(PermissionsData::RESOURCE_ID, 'Resource', $resources)
 			->setPrompt('Select resource')
 			->setRequired();
 
-		$privileges = $this->privilegesRepository->all()
+		$privileges = $this->privilegesRepository->read('*')
 			->fetchPairs(PrivilegesEntity::PRIMARY, PrivilegesEntity::NAME);
 
 		$form->addSelect(PermissionsData::PRIVILEGE_ID, 'Actions and signals', $privileges)
@@ -135,7 +133,7 @@ class PermissionsControl extends Component implements Base
 			->setRequired();
 
 		$form->addHidden(PermissionsData::ID)
-			->addRule($form::INTEGER)
+			->addRule($form::Integer)
 			->setNullable();
 
 		$form->addSubmit('send', 'Send');
@@ -253,7 +251,7 @@ class PermissionsControl extends Component implements Base
 			$entity->id = $id;
 			$entity->allowed = $value;
 
-			$this->permissionsRepository->put($entity->toArrayUpper());
+			$this->permissionsRepository->save($entity);
 			$message = 'Authorization has been changed.';
 			$this->getPresenter()->flashMessage($message, Alert::Info);
 

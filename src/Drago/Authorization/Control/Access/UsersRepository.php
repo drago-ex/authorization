@@ -13,14 +13,13 @@ use Dibi\Connection;
 use Dibi\Row;
 use Drago\Attr\AttributeDetectionException;
 use Drago\Attr\Table;
-use Drago\Authorization\Conf;
-use Drago\Database\Repository;
+use Drago\Database\Database;
 
 
 #[Table(AccessEntity::TABLE, AccessEntity::PRIMARY)]
 class UsersRepository
 {
-	use Repository;
+	use Database;
 
 	public function __construct(
 		protected Connection $db,
@@ -33,7 +32,7 @@ class UsersRepository
 	 */
 	public function getAllUsers(): array
 	{
-		return $this->db->select('id, username')->from($this->getTable())
+		return $this->read('id, username')
 			->fetchPairs(AccessEntity::PRIMARY, AccessEntity::USERNAME);
 	}
 
