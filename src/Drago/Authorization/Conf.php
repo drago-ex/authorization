@@ -18,9 +18,10 @@ final class Conf
 	/**
 	 * Default role.
 	 */
-	public const string RoleGuest = 'guest';
-	public const string RoleMember = 'member';
-	public const string RoleAdmin = 'admin';
+	public const string
+		RoleGuest = 'guest',
+		RoleMember = 'member',
+		RoleAdmin = 'admin';
 
 	/**
 	 * Option to specify privileges for all actions and signals.
