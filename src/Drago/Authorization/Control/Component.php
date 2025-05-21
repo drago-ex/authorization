@@ -153,7 +153,7 @@ abstract class Component extends UI\ExtraControl
 
 
 	/**
-	 * Redraw the factory with success message.
+	 * Redraw the factory with a success message.
 	 */
 	public function redrawSuccessFactory(): void
 	{
