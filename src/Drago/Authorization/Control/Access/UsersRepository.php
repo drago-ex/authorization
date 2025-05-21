@@ -22,7 +22,7 @@ class UsersRepository
 	use Database;
 
 	public function __construct(
-		protected Connection $db,
+		protected Connection $connection,
 	) {
 	}
 
