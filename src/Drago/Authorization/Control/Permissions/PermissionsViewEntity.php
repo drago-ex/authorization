@@ -18,23 +18,14 @@ use Drago;
  */
 class PermissionsViewEntity extends Drago\Database\Entity
 {
-	/** The table name in the database */
-	public const string Table = 'permissions_view';
-
-	/** The primary key column name */
-	public const string PrimaryKey = 'id';
-
-	/** The column name for the resource */
-	public const string ColumnResource = 'resource';
-
-	/** The column name for the privilege */
-	public const string ColumnPrivilege = 'privilege';
-
-	/** The column name for the role */
-	public const string ColumnRole = 'role';
-
-	/** The column name for the permission status (allowed/denied) */
-	public const string ColumnAllowed = 'allowed';
+	// Constants defining table and column names
+	public const string
+		Table = 'permissions_view',
+		PrimaryKey = 'id',
+		ColumnResource = 'resource',
+		ColumnPrivilege = 'privilege',
+		ColumnRole = 'role',
+		ColumnAllowed = 'allowed';
 
 	/** The unique identifier for the permission entry */
 	public int $id;

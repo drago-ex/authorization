@@ -18,13 +18,12 @@ use Drago;
  */
 class PermissionsRolesViewEntity extends Drago\Database\Entity
 {
-	// Table name in the database
-	public const string Table = 'permissions_roles_view';
-
-	// Column names in the table
-	public const string PrimaryKey = 'id';
-	public const string ColumnName = 'name';
-	public const string ColumnParent = 'parent';
+	// Constants defining table and column names
+	public const string
+		Table = 'permissions_roles_view',
+		PrimaryKey = 'id',
+		ColumnName = 'name',
+		ColumnParent = 'parent';
 
 	/** Role ID */
 	public int $id;

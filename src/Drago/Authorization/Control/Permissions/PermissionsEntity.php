@@ -21,11 +21,12 @@ class PermissionsEntity extends Drago\Database\Entity
 	// Trait for mapping permissions-related data
 	use PermissionsMapper;
 
-	// Constants defining table and column names for permissions
-	public const string Table = 'permissions';
-	public const string PrimaryKey = 'id';
-	public const string ColumnRoleId = 'role_id';
-	public const string ColumnResourceId = 'resource_id';
-	public const string ColumnPrivilegeId = 'privilege_id';
-	public const string ColumnAllowed = 'allowed';
+	// Constants defining table and column names
+	public const string
+		Table = 'permissions',
+		PrimaryKey = 'id',
+		ColumnRoleId = 'role_id',
+		ColumnResourceId = 'resource_id',
+		ColumnPrivilegeId = 'privilege_id',
+		ColumnAllowed = 'allowed';
 }

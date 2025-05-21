@@ -17,14 +17,11 @@ use Drago;
  */
 class AccessEntity extends Drago\Database\Entity
 {
-	/** The name of the database table */
-	public const string Table = 'users';
-
-	/** The primary key column name */
-	public const string PrimaryKey = 'id';
-
-	/** The column name for the username */
-	public const string ColumnUsername = 'username';
+	// Constants defining table and column names
+	public const string
+		Table = 'users',
+		PrimaryKey = 'id',
+		ColumnUsername = 'username';
 
 	/** The user ID (nullable) */
 	public ?int $id;

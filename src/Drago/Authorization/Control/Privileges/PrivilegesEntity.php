@@ -19,7 +19,9 @@ class PrivilegesEntity extends Drago\Database\Entity
 {
 	use PrivilegesMapper;
 
-	public const string Table = 'privileges';
-	public const string PrimaryKey = 'id';
-	public const string ColumnName = 'name';
+	// Constants defining table and column names
+	public const string
+		Table = 'privileges',
+		PrimaryKey = 'id',
+		ColumnName = 'name';
 }

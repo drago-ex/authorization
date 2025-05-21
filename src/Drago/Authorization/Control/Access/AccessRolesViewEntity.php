@@ -17,13 +17,12 @@ use Drago;
  */
 class AccessRolesViewEntity extends Drago\Database\Entity
 {
-	// Table name in the database
-	public const string Table = 'users_roles_view';
-
-	// Column names in the table
-	public const string ColumnUserId = 'user_id';
-	public const string ColumnUsername = 'username';
-	public const string ColumnRole = 'role';
+	// Constants defining table and column names
+	public const string
+		Table = 'users_roles_view',
+		ColumnUserId = 'user_id',
+		ColumnUsername = 'username',
+		ColumnRole = 'role';
 
 	public ?int $user_id = null;
 	public ?string $username = null;

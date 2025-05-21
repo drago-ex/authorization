@@ -17,14 +17,11 @@ use Drago;
  */
 class AccessRolesEntity extends Drago\Database\Entity
 {
-	// Constant for the table name
-	public const string Table = 'users_roles';
-
-	// Constant for the column name representing the role ID
-	public const string ColumnRoleId = 'role_id';
-
-	// Constant for the column name representing the user ID
-	public const string ColumnUserId = 'user_id';
+	// Constants defining table and column names
+	public const string
+		Table = 'users_roles',
+		ColumnRoleId = 'role_id',
+		ColumnUserId = 'user_id';
 
 	public int $role_id;
 	public int $user_id;

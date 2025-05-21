@@ -20,9 +20,10 @@ class RolesEntity extends Entity
 {
 	use RolesMapper;
 
-	// Define table and column names as constants
-	public const string Table = 'roles';
-	public const string PrimaryKey = 'id';
-	public const string ColumnName = 'name';
-	public const string ColumnParent = 'parent';
+	// Constants defining table and column names
+	public const string
+		Table = 'roles',
+		PrimaryKey = 'id',
+		ColumnName = 'name',
+		ColumnParent = 'parent';
 }
