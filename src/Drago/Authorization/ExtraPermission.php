@@ -48,7 +48,7 @@ class ExtraPermission
 	{
 		$acl = new Permission;
 		try {
-			// If ACL is not cached, create it.
+			// If the ACL is not cached, create it.
 			if (!$this->cache->load(Conf::Cache)) {
 				$roles = $this->rolesRepository
 					->read('*')
