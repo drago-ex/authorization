@@ -102,6 +102,6 @@ class UsersRolesRepository
 
 	public function getDb(): Connection
 	{
-		return $this->db;
+		return $this->connection;
 	}
 }
