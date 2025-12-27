@@ -9,10 +9,11 @@ It provides an easy-to-use solution for managing roles, resources, and permissio
 [![CodeFactor](https://www.codefactor.io/repository/github/drago-ex/authorization/badge)](https://www.codefactor.io/repository/github/drago-ex/authorization)
 [![Coverage Status](https://coveralls.io/repos/github/drago-ex/authorization/badge.svg?branch=master)](https://coveralls.io/github/drago-ex/authorization?branch=master)
 
-## Technology
-- PHP 8.3 or higher
+## Requirements
+- PHP >= 8.3
+- Nette Framework
+- Composer
 - Bootstrap
-- composer
 
 ## Installation
 ```
