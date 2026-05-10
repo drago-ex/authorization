@@ -23,7 +23,7 @@ use Drago\Database\ExtraFluent;
  * Repository for interacting with the roles data in the database.
  * Provides methods to fetch, update, and manage roles.
  *
- * @extends Database<RolesEntity>
+ * @use Database<RolesEntity>
  */
 #[Table(RolesEntity::Table, RolesEntity::PrimaryKey, class: RolesEntity::class)]
 class RolesRepository

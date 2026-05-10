@@ -28,6 +28,9 @@ abstract class Component extends UI\ExtraControl
 {
 	use SmartObject;
 
+	private const string Offcanvas = 'offcanvas';
+	private const string Modal = 'modal';
+
 	#[Parameter]
 	public int $id = 0;
 
@@ -57,6 +60,12 @@ abstract class Component extends UI\ExtraControl
 		$template->uniqueComponentModal = $this->getUniqueIdComponent(self::Modal);
 		$template->deleteItems = $this->deleteItems;
 		return $template;
+	}
+
+
+	private function getUniqueIdComponent(string $type): string
+	{
+		return sprintf('%s-%s', $this->getUniqueId(), $type);
 	}
 
 

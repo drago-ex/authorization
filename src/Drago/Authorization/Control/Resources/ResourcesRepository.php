@@ -18,7 +18,7 @@ use Drago\Database\ExtraFluent;
 
 /**
  * Repository for accessing resources in the database.
- * @extends Database<ResourcesEntity>
+ * @use Database<ResourcesEntity>
  */
 #[Table(ResourcesEntity::Table, ResourcesEntity::PrimaryKey, class: ResourcesEntity::class)]
 class ResourcesRepository

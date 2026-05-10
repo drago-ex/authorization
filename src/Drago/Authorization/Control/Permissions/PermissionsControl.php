@@ -56,7 +56,6 @@ class PermissionsControl extends Component implements Base
 		private readonly PrivilegesRepository $privilegesRepository,
 		private readonly PermissionsRepository $permissionsRepository,
 		private readonly PermissionsViewRepository $permissionsViewRepository,
-		private readonly PermissionsRolesViewRepository $permissionsRolesViewRepository,
 	) {
 	}
 
@@ -296,8 +295,7 @@ class PermissionsControl extends Component implements Base
 		$expirationCol = $grid->addColumnStatus('allowed', 'Permission')
 			->setSortable();
 
-		$expirationCol->setCaret(false)
-			->addOption(0, 'Denied')
+		$expirationCol->addOption(0, 'Denied')
 			->setClass('btn-warning')
 			->endOption()
 			->addOption(1, 'Allowed')

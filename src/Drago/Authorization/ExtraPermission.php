@@ -54,9 +54,15 @@ class ExtraPermission
 					->read('*')
 					->recordAll();
 
-				foreach ($roles as $role) {
-					$parent = $this->rolesRepository->findByParent($role->parent);
-					$acl->addRole($role->name, $parent->name ?? null);
+				if ($roles === []) {
+					$acl->addRole(Conf::RoleGuest);
+					$acl->addRole(Conf::RoleMember, Conf::RoleGuest);
+					$acl->addRole(Conf::RoleAdmin, Conf::RoleMember);
+				} else {
+					foreach ($roles as $role) {
+						$parent = $this->rolesRepository->findByParent($role->parent);
+						$acl->addRole($role->name, $parent->name ?? null);
+					}
 				}
 
 				$resources = $this->resourcesRepository
@@ -92,9 +98,14 @@ class ExtraPermission
 				$acl = $this->cache->load(Conf::Cache);
 			}
 		} catch (DriverException $e) {
-			// Handle database connection or query issues
-			// You could log this exception or handle it differently depending on your needs.
-			// For now, we leave it as not implemented.
+			$acl->addRole(Conf::RoleGuest);
+			$acl->addRole(Conf::RoleMember, Conf::RoleGuest);
+			$acl->addRole(Conf::RoleAdmin, Conf::RoleMember);
+			$acl->addResource('Backend:Admin');
+			$acl->addResource('Backend:Permissions');
+			$acl->addResource('Backend:Sign');
+			$acl->addResource('Front:Home');
+			$acl->allow(Conf::RoleAdmin);
 		}
 
 		return $acl;

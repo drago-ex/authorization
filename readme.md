@@ -1,12 +1,12 @@
-## Drago Authorization
+# Drago Authorization
+
 Drago Authorization is a simple and dynamic access control list (ACL) management system built on top of the Nette Framework.
 It provides an easy-to-use solution for managing roles, resources, and permissions, with built-in support for PHP 8.3 or higher.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://raw.githubusercontent.com/drago-ex/authorization/master/license)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/drago-ex/authorization/blob/master/license)
 [![PHP version](https://badge.fury.io/ph/drago-ex%2Fauthorization.svg)](https://badge.fury.io/ph/drago-ex%2Fauthorization)
 [![Tests](https://github.com/drago-ex/authorization/actions/workflows/tests.yml/badge.svg)](https://github.com/drago-ex/authorization/actions/workflows/tests.yml)
 [![Coding Style](https://github.com/drago-ex/authorization/actions/workflows/coding-style.yml/badge.svg)](https://github.com/drago-ex/authorization/actions/workflows/coding-style.yml)
-[![CodeFactor](https://www.codefactor.io/repository/github/drago-ex/authorization/badge)](https://www.codefactor.io/repository/github/drago-ex/authorization)
 [![Coverage Status](https://coveralls.io/repos/github/drago-ex/authorization/badge.svg?branch=master)](https://coveralls.io/github/drago-ex/authorization?branch=master)
 
 ## Requirements
@@ -27,7 +27,8 @@ extensions:
 	- Drago\Authorization\DI\AuthorizationExtension
 ```
 
-# Usage
+## Examples
+
 ## Use Trait in Base Presenter for Access Control
 You can use the `Authorization` trait in your base presenter to manage access control and redirect users to the login page if needed.
 
@@ -38,14 +39,14 @@ use Drago\Authorization\Authorization
 private string $loginLink = ':Module:Presenter:';
 ```
 
-## UUse Trait in Presenter for Access Control Settings
+## Use Trait in Presenter for Access Control Settings
 In each presenter, use the `AuthorizationControl` trait to manage authorization control.
 ```php
 use Drago\Authorization\Control\AuthorizationControl
 ```
 
 ## Component Creation and Configuration
-Here’s how to create and configure the main components for managing roles, permissions, and resources:
+Here's how to create and configure the main components for managing roles, permissions, and resources:
 ```php
 // Minimum configuration to create components.
 

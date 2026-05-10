@@ -18,7 +18,7 @@ use Drago\Database\Database;
 
 /**
  * Repository for managing user roles in the system.
- * @extends Database<AccessRolesEntity>
+ * @use Database<AccessRolesEntity>
  */
 #[Table(AccessRolesEntity::Table, class: AccessRolesEntity::class)]
 class AccessRolesRepository
