@@ -90,7 +90,7 @@ class PermissionsControl extends Component implements Base
 		$roles = [];
 
 		foreach ($role as $item) {
-		    \assert($item instanceof RolesEntity);
+			\assert($item instanceof RolesEntity);
 			$roles[$item->id] = $item->name;
 			if ($item->description) {
 				$roles[$item->id] .= ' (' . $item->description . ')';
