@@ -20,6 +20,7 @@ use Nette\SmartObject;
 abstract class Component extends UI\ExtraControl
 {
 	use SmartObject;
+	use \Drago\Component\Component;
 
 	public string $openComponentType = 'offcanvas';
 	public ?string $templateControl = null;

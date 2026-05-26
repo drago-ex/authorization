@@ -52,21 +52,15 @@ class ResourcesControl extends Component implements Base
 		$template = $this->template;
 		$template->setFile($this->templateControl ?: __DIR__ . '/Resources.latte');
 		$template->setTranslator($this->translator);
-		$template->uniqueComponentId = $this->getUniqueComponent($this->openComponentType);
+		$template->uniqueComponentId = $this->getUniqueIdComponent($this->openComponentType);
 		$template->render();
-	}
-
-
-	public function getUniqueComponent(string $type): string
-	{
-		return $this->getUniqueIdComponent($type);
 	}
 
 
 	public function handleClickOpen(): void
 	{
 		if ($this->isAjax()) {
-			$component = $this->getUniqueComponent($this->openComponentType);
+			$component = $this->getUniqueIdComponent($this->openComponentType);
 			$this->getPresenter()->payload->{$this->openComponentType} = $component;
 			$this->redrawControl($this->snippetFactory);
 		}
@@ -105,7 +99,7 @@ class ResourcesControl extends Component implements Base
 
 			if ($this->isAjax()) {
 				if ($data->id) {
-					$this->getPresenter()->payload->close = 'close';
+					$this->closeComponent();
 				}
 				$this->getPresenter()->redrawControl($this->snippetMessage);
 				$this->redrawControl($this->snippetFactory);
@@ -148,7 +142,7 @@ class ResourcesControl extends Component implements Base
 		$buttonSend->setCaption('Edit');
 
 		if ($this->isAjax()) {
-			$component = $this->getUniqueComponent($this->openComponentType);
+			$component = $this->getUniqueIdComponent($this->openComponentType);
 			$this->getPresenter()->payload->{$this->openComponentType} = $component;
 			$this->redrawControl($this->snippetFactory);
 
@@ -211,7 +205,7 @@ class ResourcesControl extends Component implements Base
 		$data = new FluentWithClassDataSource($this->resourcesRepository->getAll(), 'ID', ResourcesEntity::class);
 		$grid->setDataSource($data);
 		$grid->setAutoSubmit(false);
-		$grid->setStrictSessionFilterValues(false);
+		$grid->setStrictStorageFilterValues(false);
 
 		if ($this->translator) {
 			$grid->setTranslator($this->translator);

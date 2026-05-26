@@ -54,21 +54,15 @@ class AccessControl extends Component implements Base
 		$template = $this->template;
 		$template->setFile($this->templateControl ?: __DIR__ . '/Access.latte');
 		$template->setTranslator($this->translator);
-		$template->uniqueComponentId = $this->getUniqueComponent($this->openComponentType);
+		$template->uniqueComponentId = $this->getUniqueIdComponent($this->openComponentType);
 		$template->render();
-	}
-
-
-	public function getUniqueComponent(string $type): string
-	{
-		return $this->getUniqueIdComponent($type);
 	}
 
 
 	public function handleClickOpen(): void
 	{
 		if ($this->isAjax()) {
-			$component = $this->getUniqueComponent($this->openComponentType);
+			$component = $this->getUniqueIdComponent($this->openComponentType);
 			$this->getPresenter()->payload->{$this->openComponentType} = $component;
 			$this->redrawControl($this->snippetFactory);
 		}
@@ -155,7 +149,7 @@ class AccessControl extends Component implements Base
 
 			if ($this->isAjax()) {
 				if ($data->user_id) {
-					$this->getPresenter()->payload->close = 'close';
+					$this->closeComponent();
 				}
 				$this->getPresenter()->redrawControl($this->snippetMessage);
 				$this->redrawControl($this->snippetFactory);
@@ -227,7 +221,7 @@ class AccessControl extends Component implements Base
 		$formUserId->setHtmlAttribute('data-locked');
 
 		if ($this->isAjax()) {
-			$component = $this->getUniqueComponent($this->openComponentType);
+			$component = $this->getUniqueIdComponent($this->openComponentType);
 			$this->getPresenter()->payload->{$this->openComponentType} = $component;
 			$this->redrawControl($this->snippetFactory);
 
@@ -282,7 +276,7 @@ class AccessControl extends Component implements Base
 		$grid->setPrimaryKey('user_id');
 		$grid->setDataSource($data);
 		$grid->setAutoSubmit(false);
-		$grid->setStrictSessionFilterValues(false);
+		$grid->setStrictStorageFilterValues(false);
 
 		if ($this->translator) {
 			$grid->setTranslator($this->translator);
