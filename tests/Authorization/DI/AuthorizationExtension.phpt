@@ -103,4 +103,4 @@ class TestAuthorizationExtension extends TestCase
 	}
 }
 
-new TestAuthorizationExtension($container)->run();
+(new TestAuthorizationExtension($container))->run();
