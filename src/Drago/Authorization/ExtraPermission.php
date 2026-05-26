@@ -45,7 +45,7 @@ class ExtraPermission
 					$acl->addRole(Conf::RoleAdmin, Conf::RoleMember);
 				} else {
 					foreach ($roles as $role) {
-						$parent = $this->rolesRepository->findByParent($role->parent);
+						$parent = $this->rolesRepository->findByParent((int) $role->parent);
 						$acl->addRole($role->name, $parent->name ?? null);
 					}
 				}

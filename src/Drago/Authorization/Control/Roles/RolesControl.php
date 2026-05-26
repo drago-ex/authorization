@@ -17,6 +17,7 @@ use Nette\Application\Attributes\Requires;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
 use Nette\Forms\Controls\SelectBox;
+use Nette\Forms\Controls\SubmitButton;
 use Nette\SmartObject;
 use Throwable;
 
@@ -56,12 +57,17 @@ class RolesControl extends Component implements Base
 	{
 		$form = $this->createDelete($this->id);
 		$form->addSubmit('confirm', 'Confirm')
-			->onClick[] = $this->delete(...);
+			->onClick[] = function (SubmitButton $button): void {
+				$form = $button->getForm();
+				if ($form instanceof Form) {
+					$this->delete($form, $form->getValues());
+				}
+			};
 		return $form;
 	}
 
 
-	private function delete(Form $form, \stdClass $data): void
+	private function delete(Form $form, object $data): void
 	{
 		try {
 			$this->rolesRepository->delete(RolesEntity::PrimaryKey, $data->id)->execute();
@@ -70,9 +76,7 @@ class RolesControl extends Component implements Base
 			$this->closeComponent();
 			$this->redrawDeleteFactoryAll();
 		} catch (Throwable $e) {
-			$e->getCode();
-			$message = 'Unknown status code.';
-			$this->flashMessageOnPresenter($message, Alert::Warning);
+			$this->flashMessageOnPresenter('Unknown status code.', Alert::Warning);
 			$this->redrawMessageOnPresenter();
 		}
 	}
@@ -87,6 +91,7 @@ class RolesControl extends Component implements Base
 			->setHtmlAttribute('autocomplete', 'off')
 			->setRequired();
 
+		$roles = [];
 		if ($this->getSignal()) {
 			foreach ($this->rolesRepository->getRoles() as $key => $item) {
 				if ($this->id !== $key) {
@@ -95,7 +100,7 @@ class RolesControl extends Component implements Base
 			}
 		}
 
-		$form->addSelect(RolesEntity::ColumnParent, 'Parent', $roles ?? $this->rolesRepository->getRoles())
+		$form->addSelect(RolesEntity::ColumnParent, 'Parent', $roles !== [] ? $roles : $this->rolesRepository->getRoles())
 			->setPrompt('Select parent')
 			->setRequired();
 
@@ -104,19 +109,21 @@ class RolesControl extends Component implements Base
 			->setNullable();
 
 		$form->addSubmit('send', 'Send');
-		$form->onSuccess[] = $this->success(...);
+		$form->onSuccess[] = function (Form $form, object $data): void {
+			$this->success($form, $data);
+		};
 		return $form;
 	}
 
 
-	private function success(Form $form, RolesData $data): void
+	private function success(Form $form, object $data): void
 	{
 		try {
-			if ($data->id !== null && $data->id < $data->parent) {
+			if (isset($data->id, $data->parent) && $data->id !== null && (int) $data->id < (int) $data->parent) {
 				throw new \Exception('It is not allowed to select a higher parent.');
 			}
 
-			$this->rolesRepository->save($data->toArray());
+			$this->rolesRepository->save((array) $data);
 			$this->cache->remove(Conf::Cache);
 
 			$parent = $this['factory']['parent'];
@@ -124,10 +131,10 @@ class RolesControl extends Component implements Base
 				$parent->setItems($this->rolesRepository->getRoles());
 			}
 
-			$message = $data->id ? 'Role updated.' : 'The role was inserted.';
+			$message = isset($data->id) ? 'Role updated.' : 'The role was inserted.';
 			$this->flashMessageOnPresenter($message, Alert::Success);
 
-			if ($data->id) {
+			if (isset($data->id)) {
 				$this->closeComponent();
 			}
 
@@ -152,25 +159,26 @@ class RolesControl extends Component implements Base
 	public function handleEdit(int $id): void
 	{
 		$items = $this->rolesRepository->get($id)->record();
-		$items ?: $this->error();
+		\assert($items instanceof RolesEntity || $items === null);
+		if ($items !== null) {
+			try {
+				if ($this->rolesRepository->isAllowed($items->name)) {
+					$form = $this['factory'];
+					$form->setDefaults($items);
 
-		try {
-			if ($this->rolesRepository->isAllowed($items->name)) {
-				$form = $this['factory'];
-				$form->setDefaults($items);
+					$buttonSend = $this->getFormComponent($form, 'send');
+					$buttonSend?->setCaption('Edit');
+					$this->offCanvasComponent();
+				}
+			} catch (NotAllowedChange $e) {
+				$message = match ($e->getCode()) {
+					1001 => 'The role is not allowed to be updated.',
+					default => 'Unknown status code.',
+				};
 
-				$buttonSend = $this->getFormComponent($form, 'send');
-				$buttonSend->setCaption('Edit');
-				$this->offCanvasComponent();
+				$this->flashMessageOnPresenter($message, Alert::Warning);
+				$this->redrawMessageOnPresenter();
 			}
-		} catch (NotAllowedChange $e) {
-			$message = match ($e->getCode()) {
-				1001 => 'The role is not allowed to be updated.',
-				default => 'Unknown status code.',
-			};
-
-			$this->flashMessageOnPresenter($message, Alert::Warning);
-			$this->redrawMessageOnPresenter();
 		}
 	}
 
@@ -180,23 +188,24 @@ class RolesControl extends Component implements Base
 	public function handleDelete(int $id): void
 	{
 		$items = $this->rolesRepository->get($id)->record();
-		$items ?: $this->error();
+		\assert($items instanceof RolesEntity || $items === null);
+		if ($items !== null && $items->id !== null) {
+			try {
+				$parent = $this->rolesRepository->findParent($items->id);
+				if (!$parent && $this->rolesRepository->isAllowed($items->name)) {
+					$this->deleteItems = $items->name;
+					$this->modalComponent();
+				}
+			} catch (Throwable $e) {
+				$message = match ($e->getCode()) {
+					1001 => 'The role is not allowed to be deleted.',
+					1002 => 'The role cannot be deleted because it is bound to another role.',
+					default => 'Unknown status code.',
+				};
 
-		try {
-			$parent = $this->rolesRepository->findParent($items->id);
-			if (!$parent && $this->rolesRepository->isAllowed($items->name)) {
-				$this->deleteItems = $items->name;
-				$this->modalComponent();
+				$this->flashMessageOnPresenter($message, Alert::Warning);
+				$this->redrawMessageOnPresenter();
 			}
-		} catch (Throwable $e) {
-			$message = match ($e->getCode()) {
-				1001 => 'The role is not allowed to be deleted.',
-				1002 => 'The role cannot be deleted because it is bound to another role.',
-				default => 'Unknown status code.',
-			};
-
-			$this->flashMessageOnPresenter($message, Alert::Warning);
-			$this->redrawMessageOnPresenter();
 		}
 	}
 
@@ -220,9 +229,11 @@ class RolesControl extends Component implements Base
 			->setSortable()
 			->setRenderer(function (Row|RolesEntity $item): ?string {
 				$parentId = $item instanceof RolesEntity
-					? $item->parent
+					? (int) $item->parent
 					: (int) ($item['parent'] ?? 0);
-				return $this->rolesRepository->findByParent($parentId)?->name;
+
+				$parent = $this->rolesRepository->findByParent($parentId);
+				return $parent instanceof RolesEntity ? $parent->name : null;
 			})
 			->setFilterText();
 

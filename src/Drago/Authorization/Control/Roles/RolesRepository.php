@@ -25,7 +25,10 @@ class RolesRepository
 	}
 
 
-	/** Fetch all roles from the database, ordered by the primary key. */
+	/**
+	 * Fetch all roles from the database, ordered by the primary key.
+	 * @return ExtraFluent<RolesEntity>
+	 */
 	public function getAll(): ExtraFluent
 	{
 		return $this->read('*')
@@ -33,15 +36,23 @@ class RolesRepository
 	}
 
 
-	/** Find a role by its parent ID. */
+	/**
+	 * Find a role by its parent ID.
+	 * @return array<string, mixed>|RolesEntity|null
+	 */
 	public function findByParent(int $parent): array|RolesEntity|null
 	{
-		return $this->find(RolesEntity::PrimaryKey, $parent)
+		/** @var array<string, mixed>|RolesEntity|null $record */
+		$record = $this->find(RolesEntity::PrimaryKey, $parent)
 			->record();
+		return $record;
 	}
 
 
-	/** Fetch all roles excluding the admin role. */
+	/**
+	 * Fetch all roles excluding the admin role.
+	 * @return array<int, string>
+	 */
 	public function getRoles(): array
 	{
 		return $this->read('*')
@@ -50,7 +61,10 @@ class RolesRepository
 	}
 
 
-	/** Fetch all roles in a key-value pair format, excluding the admin role. */
+	/**
+	 * Fetch all roles in a key-value pair format, excluding the admin role.
+	 * @return array<string, string>
+	 */
 	public function getRolesPairs(): array
 	{
 		return $this->read('*')
@@ -59,9 +73,13 @@ class RolesRepository
 	}
 
 
-	/** Find the parent of a role by its ID. */
+	/**
+	 * Find the parent of a role by its ID.
+	 * @return array<string, mixed>|RolesEntity|null
+	 */
 	public function findParent(int $id): array|RolesEntity|null
 	{
+		/** @var array<string, mixed>|RolesEntity|null $row */
 		$row = $this->find(RolesEntity::ColumnParent, $id)->fetch();
 		if ($row) {
 			throw new NotAllowedChange(

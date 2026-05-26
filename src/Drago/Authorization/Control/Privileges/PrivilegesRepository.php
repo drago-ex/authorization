@@ -25,7 +25,10 @@ class PrivilegesRepository
 	}
 
 
-	/** Returns all privileges, excluding the "all" privilege. */
+	/**
+	 * Returns all privileges, excluding the "all" privilege.
+	 * @return ExtraFluent<PrivilegesEntity>
+	 */
 	public function getAll(): ExtraFluent
 	{
 		return $this->read('*')

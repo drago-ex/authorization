@@ -24,7 +24,10 @@ class PermissionsViewRepository
 	}
 
 
-	/** Retrieves all permissions from the database excluding admin roles. */
+	/**
+	 * Retrieves all permissions from the database excluding admin roles.
+	 * @return ExtraFluent<PermissionsViewEntity>
+	 */
 	public function getAll(): ExtraFluent
 	{
 		return $this->read('*')

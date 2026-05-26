@@ -22,7 +22,10 @@ class AccessRolesRepository
 	}
 
 
-	/** Fetch all roles for a specific user. */
+	/**
+	 * Fetch all roles for a specific user.
+	 * @return list<AccessRolesEntity>
+	 */
 	public function getUserRoles(int $userId): array
 	{
 		return $this->find(AccessRolesEntity::ColumnUserId, $userId)

@@ -14,6 +14,7 @@ use Drago\Authorization\Control\Roles\RolesEntity;
 use Drago\Authorization\Control\Roles\RolesRepository;
 use Nette\Application\Attributes\Requires;
 use Nette\Application\UI\Form;
+use Nette\Forms\Controls\SubmitButton;
 use Nette\Security\User;
 use Nette\SmartObject;
 use Throwable;
@@ -60,13 +61,18 @@ class AccessControl extends Component implements Base
 	{
 		$form = $this->createDelete($this->id);
 		$form->addSubmit('confirm', 'Confirm')
-			->onClick[] = $this->delete(...);
+			->onClick[] = function (SubmitButton $button): void {
+				$form = $button->getForm();
+				if ($form instanceof Form) {
+					$this->delete($form, $form->getValues());
+				}
+			};
 		return $form;
 	}
 
 
 	/** Deletes user access. */
-	public function delete(Form $form, \stdClass $data): void
+	public function delete(Form $form, object $data): void
 	{
 		try {
 			$this->accessRolesRepository
@@ -90,16 +96,20 @@ class AccessControl extends Component implements Base
 		$form = $this->create();
 		$users = $this->accessRepository->getAllUsers();
 
+		$user = null;
 		if ($this->getSignal()) {
 			$user = $this->accessRepository->getUserById($this->id);
 		}
 
-		$form->addSelect(AccessRolesEntity::ColumnUserId, 'User', $user ?? $users)
+		/** @var array<int, string>|null $items */
+		$items = is_array($user) ? $user : $users;
+
+		$form->addSelect(AccessRolesEntity::ColumnUserId, 'User', $items)
 			->setPrompt('Select user')
 			->setRequired();
 
 		$roles = $this->rolesRepository->read('*')
-			->where(RolesEntity::ColumnName, '!= ?', Conf::RoleGuest);
+			->where(RolesEntity::ColumnName, '!= ?', Conf::RoleAdmin);
 
 		if (!$this->user->isInRole(Conf::RoleAdmin)) {
 			$roles->and(RolesEntity::ColumnName, '!= ?', Conf::RoleAdmin);
@@ -115,39 +125,45 @@ class AccessControl extends Component implements Base
 			->setNullable();
 
 		$form->addSubmit('send', 'Send');
-		$form->onSuccess[] = $this->success(...);
+		$form->onSuccess[] = function (Form $form, object $data): void {
+			$this->success($form, $data);
+		};
 		return $form;
 	}
 
 
-	private function success(Form $form, AccessRolesData $data): void
+	private function success(Form $form, object $data): void
 	{
 		try {
 			$entity = new AccessRolesEntity;
-			$entity->user_id = $data->user_id;
+			if (isset($data->user_id)) {
+				$entity->user_id = (int) $data->user_id;
+			}
 
 			$this->accessRolesRepository
 				->getConnection()
 				->begin();
 
-			if ($data->id) {
+			if (isset($data->id)) {
 				$this->accessRolesRepository
-					->delete(AccessRolesEntity::ColumnUserId, $data->user_id)
+					->delete(AccessRolesEntity::ColumnUserId, (int) $data->user_id)
 					->execute();
 			}
 
-			foreach ($data->role_id as $item) {
-				$entity->role_id = $item;
-				$repository = $this->accessRolesRepository;
-				$repository->getConnection()
-					->insert($repository->getTableName(), $entity->toArray())
-					->execute();
+			if (isset($data->role_id) && is_iterable($data->role_id)) {
+				foreach ($data->role_id as $item) {
+					$entity->role_id = (int) $item;
+					$repository = $this->accessRolesRepository;
+					$repository->getConnection()
+						->insert($repository->getTableName(), $entity->toArray())
+						->execute();
+				}
 			}
 
 			$this->accessRolesRepository->getConnection()->commit();
-			$this->flashMessageOnPresenter($data->id ? 'Roles updated.' : 'Role assigned.', Alert::Success);
+			$this->flashMessageOnPresenter(isset($data->id) ? 'Roles updated.' : 'Role assigned.', Alert::Success);
 
-			if ($data->user_id) {
+			if (isset($data->user_id)) {
 				$this->closeComponent();
 			}
 
@@ -170,21 +186,21 @@ class AccessControl extends Component implements Base
 	public function handleEdit(int $id): void
 	{
 		$items = $this->accessRolesRepository->getUserRoles($id);
-		$items ?: $this->error();
+		if ($items !== []) {
+			$userId = $items[0]->user_id ?? null;
+			$roleId = array_column($items, 'role_id');
 
-		$userId = $items[0]->user_id ?? null;
-		$roleId = array_column($items, 'role_id');
+			$form = $this['factory'];
+			$form->setDefaults([
+				AccessRolesEntity::ColumnUserId => $userId,
+				AccessRolesEntity::ColumnRoleId => $roleId,
+				AccessRolesData::Id => $userId,
+			]);
 
-		$form = $this['factory'];
-		$form->setDefaults([
-			AccessRolesEntity::ColumnUserId => $userId,
-			AccessRolesEntity::ColumnRoleId => $roleId,
-			AccessRolesData::Id => $userId,
-		]);
-
-		$this->getFormComponent($form, 'send')->setCaption('Edit');
-		$this->getFormComponent($form, 'user_id')->setHtmlAttribute('data-locked');
-		$this->offCanvasComponent();
+			$this->getFormComponent($form, 'send')?->setCaption('Edit');
+			$this->getFormComponent($form, 'user_id')?->setHtmlAttribute('data-locked');
+			$this->offCanvasComponent();
+		}
 	}
 
 
@@ -193,14 +209,18 @@ class AccessControl extends Component implements Base
 	public function handleDelete(int $id): void
 	{
 		$items = $this->accessRolesRepository->find(AccessRolesEntity::ColumnUserId, $id)->record();
-		$items ?: $this->error();
+		\assert($items instanceof AccessRolesEntity || $items === null);
+		if ($items !== null) {
+			$user = $this->accessRolesViewRepository
+				->find(AccessRolesViewEntity::ColumnUserId, $items->user_id)
+				->record();
+			\assert($user instanceof AccessRolesViewEntity || $user === null);
 
-		$user = $this->accessRolesViewRepository
-			->find(AccessRolesViewEntity::ColumnUserId, $items->user_id)
-			->record();
-
-		$this->deleteItems = $user->username;
-		$this->modalComponent();
+			if ($user !== null) {
+				$this->deleteItems = $user->username;
+				$this->modalComponent();
+			}
+		}
 	}
 
 

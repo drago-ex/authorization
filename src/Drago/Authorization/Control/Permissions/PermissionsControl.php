@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control\Permissions;
 
 use App\Authorization\Control\ComponentTemplate;
+use Dibi\Exception;
 use Drago\Application\UI\Alert;
 use Drago\Authorization\Conf;
 use Drago\Authorization\Control\Base;
@@ -20,6 +21,7 @@ use Drago\Authorization\Control\Roles\RolesRepository;
 use Nette\Application\Attributes\Requires;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
+use Nette\Forms\Controls\SubmitButton;
 use Nette\SmartObject;
 use Throwable;
 
@@ -66,13 +68,18 @@ class PermissionsControl extends Component implements Base
 	{
 		$form = $this->createDelete($this->id);
 		$form->addSubmit('confirm', 'Confirm')
-			->onClick[] = $this->delete(...);
+			->onClick[] = function (SubmitButton $button): void {
+				$form = $button->getForm();
+				if ($form instanceof Form) {
+					$this->delete($form, $form->getValues());
+				}
+			};
 		return $form;
 	}
 
 
 	/** Deletes a permission and updates the cache. */
-	public function delete(Form $form, \stdClass $data): void
+	public function delete(Form $form, object $data): void
 	{
 		try {
 			$this->permissionsRepository
@@ -132,21 +139,23 @@ class PermissionsControl extends Component implements Base
 			->setNullable();
 
 		$form->addSubmit('send', 'Send');
-		$form->onSuccess[] = $this->success(...);
+		$form->onSuccess[] = function (Form $form, object $data): void {
+			$this->success($form, $data);
+		};
 		return $form;
 	}
 
 
-	private function success(Form $form, PermissionsData $data): void
+	private function success(Form $form, object $data): void
 	{
 		try {
 			$this->permissionsRepository->save($data->toArray());
 			$this->cache->remove(Conf::Cache);
 
-			$message = $data->id ? 'Permission was updated.' : 'Permission added.';
+			$message = isset($data->id) ? 'Permission was updated.' : 'Permission added.';
 			$this->flashMessageOnPresenter($message, Alert::Success);
 
-			if ($data->id) {
+			if (isset($data->id)) {
 				$this->closeComponent();
 			}
 
@@ -170,32 +179,37 @@ class PermissionsControl extends Component implements Base
 	public function handleEdit(int $id): void
 	{
 		$items = $this->permissionsRepository->get($id)->record();
-		$items ?: $this->error();
-
-		if ($this->getSignal()) {
+		\assert($items instanceof PermissionsEntity || $items === null);
+		if ($items !== null && $this->getSignal()) {
 			$form = $this['factory'];
 			$form->setDefaults($items);
 
 			$buttonSend = $this->getFormComponent($form, 'send');
-			$buttonSend->setCaption('Edit');
+			$buttonSend?->setCaption('Edit');
 			$this->offCanvasComponent();
 		}
 	}
 
 
-	/** Handles the delete action for a permission. */
+	/**
+	 * Handles the delete action for a permission.
+	 * @throws Exception
+	 */
 	#[Requires(ajax: true)]
 	public function handleDelete(int $id): void
 	{
 		$items = $this->permissionsRepository->get($id)->record();
-		$items ?: $this->error();
+		\assert($items instanceof PermissionsEntity || $items === null);
+		if ($items !== null) {
+			$permissions = $this->rolesRepository
+				->find(RolesEntity::PrimaryKey, $items->role_id)
+				->record();
 
-		$permissions = $this->rolesRepository
-			->find(RolesEntity::PrimaryKey, $items->role_id)
-			->record();
-
-		$this->deleteItems = $permissions->name;
-		$this->modalComponent();
+			if ($permissions instanceof RolesEntity) {
+				$this->deleteItems = $permissions->name;
+				$this->modalComponent();
+			}
+		}
 	}
 
 

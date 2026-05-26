@@ -23,7 +23,10 @@ class ResourcesRepository
 	}
 
 
-	/** Retrieves all resources from the database. */
+	/**
+	 * Retrieves all resources from the database.
+	 * @return ExtraFluent<ResourcesEntity>
+	 */
 	public function getAll(): ExtraFluent
 	{
 		return $this->read('*')

@@ -23,7 +23,10 @@ class PanelCookie
 	}
 
 
-	/** Saves the provided role items in the session section. */
+	/**
+	 * Saves the provided role items in the session section.
+	 * @param array<int, string> $items
+	 */
 	public function save(array $items): void
 	{
 		$this->sessionSection->set($this->section, $items);

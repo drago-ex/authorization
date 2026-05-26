@@ -18,5 +18,7 @@ class AccessRolesViewEntity extends Drago\Database\Entity
 
 	public ?int $user_id = null;
 	public ?string $username = null;
+
+	/** @var string|list<string>|null */
 	public string|array|null $role = null;
 }

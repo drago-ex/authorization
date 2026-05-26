@@ -14,6 +14,7 @@ use Drago\Authorization\Control\Factory;
 use Nette\Application\Attributes\Requires;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
+use Nette\Forms\Controls\SubmitButton;
 use Throwable;
 
 
@@ -54,13 +55,18 @@ class ResourcesControl extends Component implements Base
 	{
 		$form = $this->createDelete($this->id);
 		$form->addSubmit('confirm', 'Confirm')
-			->onClick[] = $this->delete(...);
+			->onClick[] = function (SubmitButton $button): void {
+				$form = $button->getForm();
+				if ($form instanceof Form) {
+					$this->delete($form, $form->getValues());
+				}
+			};
 		return $form;
 	}
 
 
 	/** Deletes a resource and shows the result in a flash message. */
-	public function delete(Form $form, \stdClass $data): void
+	public function delete(Form $form, object $data): void
 	{
 		try {
 			$this->resourcesRepository
@@ -97,21 +103,23 @@ class ResourcesControl extends Component implements Base
 			->setNullable();
 
 		$form->addSubmit('send', 'Send');
-		$form->onSuccess[] = $this->success(...);
+		$form->onSuccess[] = function (Form $form, object $data): void {
+			$this->success($form, $data);
+		};
 		return $form;
 	}
 
 
-	private function success(Form $form, ResourcesData $data): void
+	private function success(Form $form, object $data): void
 	{
 		try {
-			$this->resourcesRepository->save($data->toArray());
+			$this->resourcesRepository->save((array) $data);
 			$this->cache->remove(Conf::Cache);
 
-			$message = $data->id ? 'Resource updated.' : 'Resource inserted.';
+			$message = isset($data->id) ? 'Resource updated.' : 'Resource inserted.';
 			$this->flashMessageOnPresenter($message, Alert::Success);
 
-			if ($data->id) {
+			if (isset($data->id)) {
 				$this->closeComponent();
 			}
 			$this->redrawSuccessFactory();
@@ -134,14 +142,15 @@ class ResourcesControl extends Component implements Base
 	public function handleEdit(int $id): void
 	{
 		$items = $this->resourcesRepository->get($id)->record();
-		$items ?: $this->error();
+		\assert($items instanceof ResourcesEntity || $items === null);
+		if ($items !== null) {
+			$form = $this['factory'];
+			$form->setDefaults($items);
 
-		$form = $this['factory'];
-		$form->setDefaults($items);
-
-		$buttonSend = $this->getFormComponent($form, 'send');
-		$buttonSend->setCaption('Edit');
-		$this->offCanvasComponent();
+			$buttonSend = $this->getFormComponent($form, 'send');
+			$buttonSend?->setCaption('Edit');
+			$this->offCanvasComponent();
+		}
 	}
 
 
@@ -150,10 +159,11 @@ class ResourcesControl extends Component implements Base
 	public function handleDelete(int $id): void
 	{
 		$items = $this->resourcesRepository->get($id)->record();
-		$items ?: $this->error();
-
-		$this->deleteItems = $items->name;
-		$this->modalComponent();
+		\assert($items instanceof ResourcesEntity || $items === null);
+		if ($items !== null) {
+			$this->deleteItems = $items->name;
+			$this->modalComponent();
+		}
 	}
 
 

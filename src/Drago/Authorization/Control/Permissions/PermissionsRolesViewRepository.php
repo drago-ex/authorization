@@ -22,7 +22,10 @@ class PermissionsRolesViewRepository
 	}
 
 
-	/** Fetches all records from the 'permissions_roles_view' table. */
+	/**
+	 * Fetches all records from the 'permissions_roles_view' table.
+	 * @return list<PermissionsRolesViewEntity>
+	 */
 	public function getAll(): array
 	{
 		return $this->read('*')

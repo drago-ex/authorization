@@ -15,6 +15,7 @@ use Drago\Database\Database;
 #[Table(AccessEntity::Table, AccessEntity::PrimaryKey)]
 class AccessRepository
 {
+	/** @use Database<AccessEntity> */
 	use Database;
 
 	public function __construct(
@@ -23,7 +24,10 @@ class AccessRepository
 	}
 
 
-	/** Fetch all users excluding admin role. */
+	/**
+	 * Fetch all users excluding admin role.
+	 * @return array<int, string>
+	 */
 	public function getAllUsers(): array
 	{
 		return $this->getConnection()
@@ -36,7 +40,10 @@ class AccessRepository
 	}
 
 
-	/** Fetch a user by their ID. */
+	/**
+	 * Fetch a user by their ID.
+	 * @return array<int, string>|Row|null
+	 */
 	public function getUserById(int $id): array|Row|null
 	{
 		return $this->get($id)->fetchPairs(

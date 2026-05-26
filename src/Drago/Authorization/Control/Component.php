@@ -19,6 +19,9 @@ abstract class Component extends UI\ExtraControl
 	private const string Offcanvas = 'offcanvas';
 	private const string Modal = 'modal';
 
+
+	public string $snippetFactory;
+
 	#[Parameter]
 	public int $id = 0;
 

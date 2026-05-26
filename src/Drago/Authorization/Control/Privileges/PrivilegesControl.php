@@ -14,6 +14,7 @@ use Drago\Authorization\NotAllowedChange;
 use Nette\Application\Attributes\Requires;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
+use Nette\Forms\Controls\SubmitButton;
 use Nette\SmartObject;
 use Throwable;
 
@@ -56,12 +57,17 @@ class PrivilegesControl extends Component implements Base
 	{
 		$form = $this->createDelete($this->id);
 		$form->addSubmit('confirm', 'Confirm')
-			->onClick[] = $this->delete(...);
+			->onClick[] = function (SubmitButton $button): void {
+				$form = $button->getForm();
+				if ($form instanceof Form) {
+					$this->delete($form, $form->getValues());
+				}
+			};
 		return $form;
 	}
 
 
-	public function delete(Form $form, \stdClass $data): void
+	public function delete(Form $form, object $data): void
 	{
 		try {
 			$this->privilegesRepository
@@ -98,21 +104,23 @@ class PrivilegesControl extends Component implements Base
 			->setNullable();
 
 		$form->addSubmit('send', 'Send');
-		$form->onSuccess[] = $this->success(...);
+		$form->onSuccess[] = function (Form $form, object $data): void {
+			$this->success($form, $data);
+		};
 		return $form;
 	}
 
 
-	private function success(Form $form, PrivilegesData $data): void
+	private function success(Form $form, object $data): void
 	{
 		try {
-			$this->privilegesRepository->save($data->toArray());
+			$this->privilegesRepository->save((array) $data);
 			$this->cache->remove(Conf::Cache);
 
-			$message = $data->id ? 'Privilege updated.' : 'Privilege inserted.';
+			$message = isset($data->id) ? 'Privilege updated.' : 'Privilege inserted.';
 			$this->flashMessageOnPresenter($message, Alert::Success);
 
-			if ($data->id) {
+			if (isset($data->id)) {
 				$this->closeComponent();
 			}
 			$this->redrawSuccessFactory();
@@ -135,26 +143,27 @@ class PrivilegesControl extends Component implements Base
 	public function handleEdit(int $id): void
 	{
 		$items = $this->privilegesRepository->get($id)->record();
-		$items ?: $this->error();
+		\assert($items instanceof PrivilegesEntity || $items === null);
+		if ($items !== null) {
+			try {
+				if ($this->privilegesRepository->isAllowed($items->name)) {
+					$form = $this['factory'];
+					$form->setDefaults($items);
 
-		try {
-			if ($this->privilegesRepository->isAllowed($items->name)) {
-				$form = $this['factory'];
-				$form->setDefaults($items);
+					$buttonSend = $this->getFormComponent($form, 'send');
+					$buttonSend?->setCaption('Edit');
+					$this->offCanvasComponent();
+				}
 
-				$buttonSend = $this->getFormComponent($form, 'send');
-				$buttonSend->setCaption('Edit');
-				$this->offCanvasComponent();
+			} catch (NotAllowedChange $e) {
+				$message = match ($e->getCode()) {
+					1001 => 'The privilege is not allowed to be updated.',
+					default => 'Unknown status code.',
+				};
+
+				$this->flashMessageOnPresenter($message, Alert::Warning);
+				$this->redrawMessageOnPresenter();
 			}
-
-		} catch (NotAllowedChange $e) {
-			$message = match ($e->getCode()) {
-				1001 => 'The privilege is not allowed to be updated.',
-				default => 'Unknown status code.',
-			};
-
-			$this->flashMessageOnPresenter($message, Alert::Warning);
-			$this->redrawMessageOnPresenter();
 		}
 	}
 
@@ -164,22 +173,23 @@ class PrivilegesControl extends Component implements Base
 	public function handleDelete(int $id): void
 	{
 		$items = $this->privilegesRepository->get($id)->record();
-		$items ?: $this->error();
+		\assert($items instanceof PrivilegesEntity || $items === null);
+		if ($items !== null) {
+			try {
+				if ($this->privilegesRepository->isAllowed($items->name)) {
+					$this->deleteItems = $items->name;
+					$this->modalComponent();
+				}
 
-		try {
-			if ($this->privilegesRepository->isAllowed($items->name)) {
-				$this->deleteItems = $items->name;
-				$this->modalComponent();
+			} catch (Throwable $e) {
+				$message = match ($e->getCode()) {
+					1001 => 'The privilege is not allowed to be deleted.',
+					default => 'Unknown status code.',
+				};
+
+				$this->flashMessageOnPresenter($message, Alert::Warning);
+				$this->redrawMessageOnPresenter();
 			}
-
-		} catch (Throwable $e) {
-			$message = match ($e->getCode()) {
-				1001 => 'The privilege is not allowed to be deleted.',
-				default => 'Unknown status code.',
-			};
-
-			$this->flashMessageOnPresenter($message, Alert::Warning);
-			$this->redrawMessageOnPresenter();
 		}
 	}
 
