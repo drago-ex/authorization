@@ -89,10 +89,8 @@ class PermissionsControl extends Component implements Base
 		$role = $this->rolesRepository->getAllRolesForPermissions();
 		$roles = [];
 
-		/**
-		 * @var RolesEntity  $item
-		 */
 		foreach ($role as $item) {
+		    \assert($item instanceof RolesEntity);
 			$roles[$item->id] = $item->name;
 			if ($item->description) {
 				$roles[$item->id] .= ' (' . $item->description . ')';

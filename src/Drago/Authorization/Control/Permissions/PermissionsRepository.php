@@ -14,9 +14,7 @@ use Dibi\Exception;
 use Dibi\Result;
 use Drago\Attr\AttributeDetectionException;
 use Drago\Attr\Table;
-use Drago\Authorization\Control\Privileges\PrivilegesEntity;
 use Drago\Database\Database;
-use Drago\Database\ExtraFluent;
 
 
 #[Table(PermissionsEntity::TABLE, PermissionsEntity::PRIMARY)]
