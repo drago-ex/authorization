@@ -1,16 +1,10 @@
 <?php
 
-/**
- * Drago Extension
- * Package built on Nette Framework
- */
-
 declare(strict_types=1);
 
 namespace Drago\Authorization;
 
 use Dibi\DriverException;
-use Dibi\Exception;
 use Drago\Authorization\Control\Permissions\PermissionsViewRepository;
 use Drago\Authorization\Control\Resources\ResourcesRepository;
 use Drago\Authorization\Control\Roles\RolesRepository;
@@ -18,12 +12,9 @@ use Nette\Caching\Cache;
 use Nette\Security\Authorizator;
 use Nette\Security\Permission;
 use Nette\SmartObject;
-use Throwable;
 
 
-/**
- * Manages user permissions.
- */
+/** Manages user permissions. */
 class ExtraPermission
 {
 	use SmartObject;
@@ -37,13 +28,7 @@ class ExtraPermission
 	}
 
 
-	/**
-	 * Creates the permissions based on roles, resources, and permissions from the database.
-	 *
-	 * @throws Exception
-	 * @throws Throwable
-	 * @return Permission The configured ACL permission object.
-	 */
+	/** Creates the permissions based on roles, resources, and permissions from the database. */
 	public function create(): Permission
 	{
 		$acl = new Permission;

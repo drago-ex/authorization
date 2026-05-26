@@ -1,19 +1,10 @@
 <?php
 
-/**
- * Drago Extension
- * Package built on Nette Framework
- */
-
 declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Access;
 
-use Contributte\Datagrid\Exception\DatagridException;
-use Dibi\DriverException;
-use Dibi\Exception;
 use Drago\Application\UI\Alert;
-use Drago\Attr\AttributeDetectionException;
 use Drago\Authorization\Conf;
 use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
@@ -28,9 +19,7 @@ use Nette\SmartObject;
 use Throwable;
 
 
-/**
- * Manages user role assignments and access control.
- */
+/** Manages user role assignments and access control. */
 class AccessControl extends Component implements Base
 {
 	use SmartObject;
@@ -49,9 +38,7 @@ class AccessControl extends Component implements Base
 	}
 
 
-	/**
-	 * Renders the access control template.
-	 */
+	/** Renders the access control template. */
 	public function render(): void
 	{
 		$template = $this->createRender();
@@ -60,9 +47,7 @@ class AccessControl extends Component implements Base
 	}
 
 
-	/**
-	 * Opens the component offcanvas.
-	 */
+	/** Opens the component offcanvas. */
 	#[Requires(ajax: true)]
 	public function handleClickOpenComponent(): void
 	{
@@ -70,9 +55,7 @@ class AccessControl extends Component implements Base
 	}
 
 
-	/**
-	 * Creates the delete form for user access.
-	 */
+	/** Creates the delete form for user access. */
 	protected function createComponentDelete(): Form
 	{
 		$form = $this->createDelete($this->id);
@@ -82,9 +65,7 @@ class AccessControl extends Component implements Base
 	}
 
 
-	/**
-	 * Deletes user access.
-	 */
+	/** Deletes user access. */
 	public function delete(Form $form, \stdClass $data): void
 	{
 		try {
@@ -103,10 +84,7 @@ class AccessControl extends Component implements Base
 	}
 
 
-	/**
-	 * Creates the form for assigning roles to a user.
-	 * @throws AttributeDetectionException
-	 */
+	/** Creates the form for assigning roles to a user. */
 	protected function createComponentFactory(): Form
 	{
 		$form = $this->create();
@@ -133,6 +111,7 @@ class AccessControl extends Component implements Base
 
 		$form->addHidden(AccessRolesData::Id)
 			->addRule($form::Integer)
+			->setHtmlAttribute('data-locked')
 			->setNullable();
 
 		$form->addSubmit('send', 'Send');
@@ -141,10 +120,6 @@ class AccessControl extends Component implements Base
 	}
 
 
-	/**
-	 * Handles role assignment success.
-	 * @throws DriverException
-	 */
 	private function success(Form $form, AccessRolesData $data): void
 	{
 		try {
@@ -190,9 +165,7 @@ class AccessControl extends Component implements Base
 	}
 
 
-	/**
-	 * Edits user roles by ID.
-	 */
+	/** Edits user roles by ID. */
 	#[Requires(ajax: true)]
 	public function handleEdit(int $id): void
 	{
@@ -215,11 +188,7 @@ class AccessControl extends Component implements Base
 	}
 
 
-	/**
-	 * Deletes user roles by ID.
-	 * @throws AttributeDetectionException
-	 * @throws Exception
-	 */
+	/** Deletes user roles by ID. */
 	#[Requires(ajax: true)]
 	public function handleDelete(int $id): void
 	{
@@ -235,11 +204,7 @@ class AccessControl extends Component implements Base
 	}
 
 
-	/**
-	 * Creates the user roles data grid.
-	 * @throws DatagridException
-	 * @throws AttributeDetectionException
-	 */
+	/** Creates the user roles data grid. */
 	protected function createComponentGrid(string $name): DatagridComponent
 	{
 		$grid = new DatagridComponent($this, $name);

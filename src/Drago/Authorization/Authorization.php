@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Drago Extension
- * Package built on Nette Framework
- */
-
 declare(strict_types=1);
 
 namespace Drago\Authorization;
@@ -13,21 +8,10 @@ use Nette\Application\UI\Presenter;
 use Nette\Security\User;
 
 
-/**
- * @property-read string $loginLink
- */
+/** @property-read string $loginLink */
 trait Authorization
 {
-	/**
-	 * Checks for requirements such as authorization.
-	 *
-	 * This method checks if the user is allowed to access the current action and signal.
-	 * If the user is not authorized, they will either be redirected to the login page
-	 * or receive a "Forbidden" error.
-	 *
-	 * @param Presenter $presenter The presenter object
-	 * @param User $user The user object responsible for authorization checks
-	 */
+	/** Checks for requirements such as authorization. */
 	public function injectAuthorization(Presenter $presenter, User $user): void
 	{
 		$presenter->onStartup[] = function () use ($presenter, $user) {

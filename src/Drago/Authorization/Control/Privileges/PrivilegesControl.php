@@ -1,51 +1,32 @@
 <?php
 
-/**
- * Drago Extension
- * Package built on Nette Framework
- */
-
 declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Privileges;
 
-use Contributte\Datagrid\Exception\DatagridException;
-use Dibi\Exception;
 use Drago\Application\UI\Alert;
-use Drago\Attr\AttributeDetectionException;
 use Drago\Authorization\Conf;
 use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
 use Drago\Authorization\Control\DatagridComponent;
 use Drago\Authorization\Control\Factory;
 use Drago\Authorization\NotAllowedChange;
-use Nette\Application\AbortException;
 use Nette\Application\Attributes\Requires;
-use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
 use Nette\SmartObject;
 use Throwable;
 
 
-/**
- * Privileges control class responsible for managing privileges and their CRUD operations.
- */
+/** Privileges control class responsible for managing privileges and their CRUD operations. */
 class PrivilegesControl extends Component implements Base
 {
 	use SmartObject;
 	use Factory;
 
-	/** @var string A snippet factory identifier for this component */
 	public string $snippetFactory = 'privileges';
 
 
-	/**
-	 * Constructor to inject the necessary dependencies.
-	 *
-	 * @param Cache $cache Cache service used to clear the cache when necessary
-	 * @param PrivilegesRepository $privilegesRepository The repository used for managing privileges
-	 */
 	public function __construct(
 		private readonly Cache $cache,
 		private readonly PrivilegesRepository $privilegesRepository,
@@ -53,9 +34,7 @@ class PrivilegesControl extends Component implements Base
 	}
 
 
-	/**
-	 * Renders the template for the privileges control.
-	 */
+	/** Renders the template for the privileges control. */
 	public function render(): void
 	{
 		$template = $this->createRender();
@@ -64,9 +43,7 @@ class PrivilegesControl extends Component implements Base
 	}
 
 
-	/**
-	 * Opens the component off-canvas (used in AJAX requests).
-	 */
+	/** Opens the component off-canvas (used in AJAX requests). */
 	#[Requires(ajax: true)]
 	public function handleClickOpenComponent(): void
 	{
@@ -74,9 +51,7 @@ class PrivilegesControl extends Component implements Base
 	}
 
 
-	/**
-	 * Creates the delete confirmation form.
-	 */
+	/** Creates the delete confirmation form. */
 	protected function createComponentDelete(): Form
 	{
 		$form = $this->createDelete($this->id);
@@ -86,12 +61,6 @@ class PrivilegesControl extends Component implements Base
 	}
 
 
-	/**
-	 * Deletes a privilege based on the provided form data.
-	 *
-	 * @param Form $form The form used for deletion
-	 * @param \stdClass $data The data of the privilege to be deleted
-	 */
 	public function delete(Form $form, \stdClass $data): void
 	{
 		try {
@@ -115,11 +84,7 @@ class PrivilegesControl extends Component implements Base
 	}
 
 
-	/**
-	 * Creates the form for adding or editing privileges.
-	 *
-	 * @return Form The form used for creating or editing privileges
-	 */
+	/** Creates the form for adding or editing privileges. */
 	protected function createComponentFactory(): Form
 	{
 		$form = $this->create();
@@ -138,14 +103,6 @@ class PrivilegesControl extends Component implements Base
 	}
 
 
-	/**
-	 * Handles the success event after the privilege form is submitted.
-	 *
-	 * @param Form $form The form used for adding or editing privileges
-	 * @param PrivilegesData $data The data submitted through the form
-	 *
-	 * @throws AbortException If the operation should be aborted
-	 */
 	private function success(Form $form, PrivilegesData $data): void
 	{
 		try {
@@ -173,16 +130,7 @@ class PrivilegesControl extends Component implements Base
 	}
 
 
-	/**
-	 * Handles the editing of a privilege by pre-filling the form with existing data.
-	 *
-	 * @param int $id The ID of the privilege to be edited
-	 *
-	 * @throws AbortException If the operation should be aborted
-	 * @throws AttributeDetectionException If there are attribute detection errors
-	 * @throws BadRequestException If the request is invalid
-	 * @throws Exception If there is a database error
-	 */
+	/** Handles the editing of a privilege by pre-filling the form with existing data. */
 	#[Requires(ajax: true)]
 	public function handleEdit(int $id): void
 	{
@@ -211,16 +159,7 @@ class PrivilegesControl extends Component implements Base
 	}
 
 
-	/**
-	 * Handles the deletion of a privilege by verifying permissions and showing a modal confirmation.
-	 *
-	 * @param int $id The ID of the privilege to be deleted
-	 *
-	 * @throws AbortException If the operation should be aborted
-	 * @throws AttributeDetectionException If there are attribute detection errors
-	 * @throws BadRequestException If the request is invalid
-	 * @throws Exception If there is a database error
-	 */
+	/** Handles the deletion of a privilege. */
 	#[Requires(ajax: true)]
 	public function handleDelete(int $id): void
 	{
@@ -245,16 +184,7 @@ class PrivilegesControl extends Component implements Base
 	}
 
 
-	/**
-	 * Creates the data grid for listing privileges.
-	 *
-	 * @param string $name The name of the grid
-	 *
-	 * @return DatagridComponent The data grid component for privileges
-	 *
-	 * @throws AttributeDetectionException If there are attribute detection errors
-	 * @throws DataGridException If there is a problem with the grid configuration
-	 */
+	/** Creates the data grid for listing privileges. */
 	protected function createComponentGrid(string $name): DatagridComponent
 	{
 		$grid = new DatagridComponent($this, $name);

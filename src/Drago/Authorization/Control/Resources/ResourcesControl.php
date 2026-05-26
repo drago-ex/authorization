@@ -1,37 +1,23 @@
 <?php
 
-/**
- * Drago Extension
- * Package built on Nette Framework
- */
-
 declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Resources;
 
 use App\Authorization\Control\ComponentTemplate;
-use Contributte\Datagrid\Exception\DatagridException;
-use Dibi\Exception;
 use Drago\Application\UI\Alert;
-use Drago\Attr\AttributeDetectionException;
 use Drago\Authorization\Conf;
 use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
 use Drago\Authorization\Control\DatagridComponent;
 use Drago\Authorization\Control\Factory;
-use Nette\Application\AbortException;
 use Nette\Application\Attributes\Requires;
-use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
 use Throwable;
 
 
-/**
- * This control manages resources: allows adding, editing, deleting, and viewing resources.
- *
- * @property-read ComponentTemplate $template
- */
+/** @property-read ComponentTemplate $template */
 class ResourcesControl extends Component implements Base
 {
 	use Factory;
@@ -39,12 +25,6 @@ class ResourcesControl extends Component implements Base
 	public string $snippetFactory = 'resources';
 
 
-	/**
-	 * Constructor for ResourcesControl.
-	 *
-	 * @param Cache $cache
-	 * @param ResourcesRepository $resourcesRepository
-	 */
 	public function __construct(
 		private readonly Cache $cache,
 		private readonly ResourcesRepository $resourcesRepository,
@@ -52,9 +32,7 @@ class ResourcesControl extends Component implements Base
 	}
 
 
-	/**
-	 * Renders the template for the resources control.
-	 */
+	/** Renders the template for the resources control. */
 	public function render(): void
 	{
 		$template = $this->createRender();
@@ -63,9 +41,7 @@ class ResourcesControl extends Component implements Base
 	}
 
 
-	/**
-	 * Handles the AJAX request to open the component.
-	 */
+	/** Handles the AJAX request to open the component. */
 	#[Requires(ajax: true)]
 	public function handleClickOpenComponent(): void
 	{
@@ -73,9 +49,7 @@ class ResourcesControl extends Component implements Base
 	}
 
 
-	/**
-	 * Creates the delete form.
-	 */
+	/** Creates the delete form. */
 	protected function createComponentDelete(): Form
 	{
 		$form = $this->createDelete($this->id);
@@ -85,9 +59,7 @@ class ResourcesControl extends Component implements Base
 	}
 
 
-	/**
-	 * Deletes a resource and shows the result in a flash message.
-	 */
+	/** Deletes a resource and shows the result in a flash message. */
 	public function delete(Form $form, \stdClass $data): void
 	{
 		try {
@@ -111,9 +83,7 @@ class ResourcesControl extends Component implements Base
 	}
 
 
-	/**
-	 * Creates the form to add or edit a resource.
-	 */
+	/** Creates the form to add or edit a resource. */
 	protected function createComponentFactory(): Form
 	{
 		$form = $this->create();
@@ -132,11 +102,6 @@ class ResourcesControl extends Component implements Base
 	}
 
 
-	/**
-	 * Handles the success of the add/edit form, saving the resource.
-	 *
-	 * @throws AbortException
-	 */
 	private function success(Form $form, ResourcesData $data): void
 	{
 		try {
@@ -164,14 +129,7 @@ class ResourcesControl extends Component implements Base
 	}
 
 
-	/**
-	 * Handles the AJAX request to edit a resource.
-	 *
-	 * @throws AbortException
-	 * @throws AttributeDetectionException
-	 * @throws BadRequestException
-	 * @throws Exception
-	 */
+	/** Handles the AJAX request to edit a resource. */
 	#[Requires(ajax: true)]
 	public function handleEdit(int $id): void
 	{
@@ -187,14 +145,7 @@ class ResourcesControl extends Component implements Base
 	}
 
 
-	/**
-	 * Handles the AJAX request to delete a resource.
-	 *
-	 * @throws AbortException
-	 * @throws AttributeDetectionException
-	 * @throws BadRequestException
-	 * @throws Exception
-	 */
+	/** Handles the AJAX request to delete a resource. */
 	#[Requires(ajax: true)]
 	public function handleDelete(int $id): void
 	{
@@ -206,12 +157,7 @@ class ResourcesControl extends Component implements Base
 	}
 
 
-	/**
-	 * Creates the grid component for displaying resources.
-	 *
-	 * @throws AttributeDetectionException
-	 * @throws DataGridException
-	 */
+	/** Creates the grid component for displaying resources. */
 	protected function createComponentGrid(string $name): DatagridComponent
 	{
 		$grid = new DatagridComponent($this, $name);

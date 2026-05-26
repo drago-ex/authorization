@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Drago Extension
- * Package built on Nette Framework
- */
-
 declare(strict_types=1);
 
 namespace Drago\Authorization\Control;
@@ -16,9 +11,7 @@ use Drago\Authorization\Control\Resources\ResourcesControl;
 use Drago\Authorization\Control\Roles\RolesControl;
 
 
-/**
- * Trait that provides the injection and management of various authorization controls.
- */
+/** Trait that provides the injection and management of various authorization controls. */
 trait AuthorizationControl
 {
 	public RolesControl $rolesControl;

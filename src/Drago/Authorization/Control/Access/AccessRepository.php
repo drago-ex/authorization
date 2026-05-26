@@ -1,25 +1,17 @@
 <?php
 
-/**
- * Drago Extension
- * Package built on Nette Framework
- */
-
 declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Access;
 
 use Dibi\Connection;
 use Dibi\Row;
-use Drago\Attr\AttributeDetectionException;
 use Drago\Attr\Table;
 use Drago\Authorization\Conf;
 use Drago\Database\Database;
 
 
-/**
- * Repository for accessing user-related data.
- */
+/** Repository for accessing user-related data. */
 #[Table(AccessEntity::Table, AccessEntity::PrimaryKey)]
 class AccessRepository
 {
@@ -31,10 +23,7 @@ class AccessRepository
 	}
 
 
-	/**
-	 * Fetch all users excluding admin role.
-	 * @throws AttributeDetectionException
-	 */
+	/** Fetch all users excluding admin role. */
 	public function getAllUsers(): array
 	{
 		return $this->getConnection()
@@ -47,10 +36,7 @@ class AccessRepository
 	}
 
 
-	/**
-	 * Fetch a user by their ID.
-	 * @throws AttributeDetectionException
-	 */
+	/** Fetch a user by their ID. */
 	public function getUserById(int $id): array|Row|null
 	{
 		return $this->get($id)->fetchPairs(

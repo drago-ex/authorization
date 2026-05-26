@@ -1,29 +1,19 @@
 <?php
 
-/**
- * Drago Extension
- * Package built on Nette Framework
- */
-
 declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Roles;
 
 use App\Authorization\Control\ComponentTemplate;
-use Contributte\Datagrid\Exception\DatagridException;
-use Dibi\Exception;
 use Dibi\Row;
 use Drago\Application\UI\Alert;
-use Drago\Attr\AttributeDetectionException;
 use Drago\Authorization\Conf;
 use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
 use Drago\Authorization\Control\DatagridComponent;
 use Drago\Authorization\Control\Factory;
 use Drago\Authorization\NotAllowedChange;
-use Nette\Application\AbortException;
 use Nette\Application\Attributes\Requires;
-use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
 use Nette\Forms\Controls\SelectBox;
@@ -31,12 +21,7 @@ use Nette\SmartObject;
 use Throwable;
 
 
-/**
- *  Manages roles in the authorization system, supporting creation, editing,
- *  deletion, and display of roles in a grid with AJAX actions.
- *
- * @property-read ComponentTemplate $template
- */
+/** @property-read ComponentTemplate $template */
 class RolesControl extends Component implements Base
 {
 	use SmartObject;
@@ -76,12 +61,6 @@ class RolesControl extends Component implements Base
 	}
 
 
-	/**
-	 * Deletes the selected role and clears the cache.
-	 * @param Form $form
-	 * @param \stdClass $data
-	 * @throws Throwable
-	 */
 	private function delete(Form $form, \stdClass $data): void
 	{
 		try {
@@ -99,10 +78,7 @@ class RolesControl extends Component implements Base
 	}
 
 
-	/**
-	 * Creates and returns the form for role creation/editing.
-	 * @throws AttributeDetectionException
-	 */
+	/** Creates and returns the form for role creation/editing. */
 	protected function createComponentFactory(): Form
 	{
 		$form = $this->create();
@@ -133,12 +109,6 @@ class RolesControl extends Component implements Base
 	}
 
 
-	/**
-	 * Success handler for role form submission.
-	 * @param Form $form
-	 * @param RolesData $data
-	 * @throws AbortException
-	 */
 	private function success(Form $form, RolesData $data): void
 	{
 		try {
@@ -177,13 +147,7 @@ class RolesControl extends Component implements Base
 	}
 
 
-	/**
-	 * Handles editing of a role.
-	 * @throws AbortException
-	 * @throws AttributeDetectionException
-	 * @throws BadRequestException
-	 * @throws Exception
-	 */
+	/** Edits user roles by ID. */
 	#[Requires(ajax: true)]
 	public function handleEdit(int $id): void
 	{
@@ -211,13 +175,7 @@ class RolesControl extends Component implements Base
 	}
 
 
-	/**
-	 * Handles deletion of a role.
-	 * @throws AbortException
-	 * @throws AttributeDetectionException
-	 * @throws BadRequestException
-	 * @throws Exception
-	 */
+	/** Deletes user roles by ID. */
 	#[Requires(ajax: true)]
 	public function handleDelete(int $id): void
 	{
@@ -243,11 +201,7 @@ class RolesControl extends Component implements Base
 	}
 
 
-	/**
-	 * Creates and configures a data grid for roles.
-	 * @throws AttributeDetectionException
-	 * @throws DataGridException
-	 */
+	/** Creates and configures a data grid for roles. */
 	protected function createComponentGrid(string $name): DatagridComponent
 	{
 		$grid = new DatagridComponent($this, $name);
