@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Drago Extension
- * Package built on Nette Framework
- */
-
 declare(strict_types=1);
 
 namespace Drago\Authorization\Tracy;
@@ -13,10 +8,7 @@ use Nette\Http\Session;
 use Nette\Http\SessionSection;
 
 
-/**
- * PanelCookie handles the session management for storing and retrieving role-related information.
- * It allows saving, loading, and removing role data in a session section.
- */
+/** Handles the session management for storing and retrieving role-related information. */
 class PanelCookie
 {
 	public string $section = 'roles';
@@ -26,7 +18,6 @@ class PanelCookie
 	public function __construct(
 		private readonly Session $session,
 	) {
-		// Initialize the session section for this class.
 		$this->sessionSection = $this->session
 			->getSection(self::class);
 	}
@@ -34,6 +25,7 @@ class PanelCookie
 
 	/**
 	 * Saves the provided role items in the session section.
+	 * @param array<int, string> $items
 	 */
 	public function save(array $items): void
 	{
@@ -41,20 +33,14 @@ class PanelCookie
 	}
 
 
-	/**
-	 * Loads the saved role items from the session section.
-	 *
-	 * @return mixed The saved role data or null if not set.
-	 */
+	/** Loads the saved role items from the session section. */
 	public function load(): mixed
 	{
 		return $this->sessionSection->get($this->section);
 	}
 
 
-	/**
-	 * Removes the role data from the session section.
-	 */
+	/** Removes the role data from the session section. */
 	public function remove(): void
 	{
 		$this->sessionSection->remove($this->section);

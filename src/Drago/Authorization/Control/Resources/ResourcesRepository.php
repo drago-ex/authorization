@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Drago Extension
- * Package built on Nette Framework
- */
-
 declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Resources;
@@ -16,13 +11,11 @@ use Drago\Database\Database;
 use Drago\Database\ExtraFluent;
 
 
-/**
- * Repository for accessing resources in the database.
- * @use Database<ResourcesEntity>
- */
+/** Repository for accessing resources in the database. */
 #[Table(ResourcesEntity::Table, ResourcesEntity::PrimaryKey, class: ResourcesEntity::class)]
 class ResourcesRepository
 {
+	/** @use Database<ResourcesEntity> */
 	use Database;
 
 	public function __construct(
@@ -33,9 +26,8 @@ class ResourcesRepository
 
 	/**
 	 * Retrieves all resources from the database.
-	 *
+	 * @return ExtraFluent<ResourcesEntity>
 	 * @throws AttributeDetectionException
-	 * @return ExtraFluent
 	 */
 	public function getAll(): ExtraFluent
 	{

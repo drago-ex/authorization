@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Drago Extension
- * Package built on Nette Framework
- */
-
 declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Privileges;
@@ -18,13 +13,11 @@ use Drago\Database\Database;
 use Drago\Database\ExtraFluent;
 
 
-/**
- * Repository class for managing Privileges entities.
- * Provides methods for fetching privileges and checking if a privilege is allowed to be changed.
- */
+/** Repository class for managing Privileges entities. */
 #[Table(PrivilegesEntity::Table, PrivilegesEntity::PrimaryKey, class: PrivilegesEntity::class)]
 class PrivilegesRepository
 {
+	/** @use Database<PrivilegesEntity> */
 	use Database;
 
 	public function __construct(
@@ -35,7 +28,7 @@ class PrivilegesRepository
 
 	/**
 	 * Returns all privileges, excluding the "all" privilege.
-	 *
+	 * @return ExtraFluent<PrivilegesEntity>
 	 * @throws AttributeDetectionException
 	 */
 	public function getAll(): ExtraFluent
@@ -46,10 +39,8 @@ class PrivilegesRepository
 	}
 
 
-	/**
-	 * Checks if the given privilege can be changed.
-	 *
-	 * @throws NotAllowedChange if the privilege is not allowed to be edited or deleted.
+	/** Checks if the given privilege can be changed.
+	 * @throws NotAllowedChange
 	 */
 	public function isAllowed(string $privilege): bool
 	{

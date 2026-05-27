@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Drago Extension
- * Package built on Nette Framework
- */
-
 declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Resources;
@@ -19,19 +14,14 @@ use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
 use Drago\Authorization\Control\DatagridComponent;
 use Drago\Authorization\Control\Factory;
-use Nette\Application\AbortException;
 use Nette\Application\Attributes\Requires;
-use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
+use Nette\Forms\Controls\SubmitButton;
 use Throwable;
 
 
-/**
- * This control manages resources: allows adding, editing, deleting, and viewing resources.
- *
- * @property-read ComponentTemplate $template
- */
+/** @property-read ComponentTemplate $template */
 class ResourcesControl extends Component implements Base
 {
 	use Factory;
@@ -39,12 +29,6 @@ class ResourcesControl extends Component implements Base
 	public string $snippetFactory = 'resources';
 
 
-	/**
-	 * Constructor for ResourcesControl.
-	 *
-	 * @param Cache $cache
-	 * @param ResourcesRepository $resourcesRepository
-	 */
 	public function __construct(
 		private readonly Cache $cache,
 		private readonly ResourcesRepository $resourcesRepository,
@@ -52,9 +36,7 @@ class ResourcesControl extends Component implements Base
 	}
 
 
-	/**
-	 * Renders the template for the resources control.
-	 */
+	/** Renders the template for the resources control. */
 	public function render(): void
 	{
 		$template = $this->createRender();
@@ -63,9 +45,7 @@ class ResourcesControl extends Component implements Base
 	}
 
 
-	/**
-	 * Handles the AJAX request to open the component.
-	 */
+	/** Handles the AJAX request to open the component. */
 	#[Requires(ajax: true)]
 	public function handleClickOpenComponent(): void
 	{
@@ -73,26 +53,28 @@ class ResourcesControl extends Component implements Base
 	}
 
 
-	/**
-	 * Creates the delete form.
-	 */
+	/** Creates the delete form. */
 	protected function createComponentDelete(): Form
 	{
 		$form = $this->createDelete($this->id);
 		$form->addSubmit('confirm', 'Confirm')
-			->onClick[] = $this->delete(...);
+			->onClick[] = function (SubmitButton $button): void {
+				$form = $button->getForm();
+				if ($form instanceof Form) {
+					$id = (int) $form->getValues()['id'];
+					$this->delete($form, $id);
+				}
+			};
 		return $form;
 	}
 
 
-	/**
-	 * Deletes a resource and shows the result in a flash message.
-	 */
-	public function delete(Form $form, \stdClass $data): void
+	/** Deletes a resource and shows the result in a flash message. */
+	public function delete(Form $form, int $id): void
 	{
 		try {
 			$this->resourcesRepository
-				->delete(ResourcesEntity::PrimaryKey, $data->id)
+				->delete(ResourcesEntity::PrimaryKey, $id)
 				->execute();
 
 			$this->cache->remove(Conf::Cache);
@@ -111,9 +93,7 @@ class ResourcesControl extends Component implements Base
 	}
 
 
-	/**
-	 * Creates the form to add or edit a resource.
-	 */
+	/** Creates the form to add or edit a resource. */
 	protected function createComponentFactory(): Form
 	{
 		$form = $this->create();
@@ -127,26 +107,23 @@ class ResourcesControl extends Component implements Base
 			->setNullable();
 
 		$form->addSubmit('send', 'Send');
-		$form->onSuccess[] = $this->success(...);
+		$form->onSuccess[] = function (Form $form, ResourcesValues $data): void {
+			$this->success($form, $data);
+		};
 		return $form;
 	}
 
 
-	/**
-	 * Handles the success of the add/edit form, saving the resource.
-	 *
-	 * @throws AbortException
-	 */
-	private function success(Form $form, ResourcesData $data): void
+	private function success(Form $form, ResourcesValues $data): void
 	{
 		try {
-			$this->resourcesRepository->save($data->toArray());
+			$this->resourcesRepository->save((array) $data);
 			$this->cache->remove(Conf::Cache);
 
-			$message = $data->id ? 'Resource updated.' : 'Resource inserted.';
+			$message = isset($data->id) ? 'Resource updated.' : 'Resource inserted.';
 			$this->flashMessageOnPresenter($message, Alert::Success);
 
-			if ($data->id) {
+			if (isset($data->id)) {
 				$this->closeComponent();
 			}
 			$this->redrawSuccessFactory();
@@ -164,53 +141,43 @@ class ResourcesControl extends Component implements Base
 	}
 
 
-	/**
-	 * Handles the AJAX request to edit a resource.
-	 *
-	 * @throws AbortException
+	/** Handles the AJAX request to edit a resource.
 	 * @throws AttributeDetectionException
-	 * @throws BadRequestException
 	 * @throws Exception
 	 */
 	#[Requires(ajax: true)]
 	public function handleEdit(int $id): void
 	{
 		$items = $this->resourcesRepository->get($id)->record();
-		$items ?: $this->error();
+		if ($items !== null) {
+			$form = $this['factory'];
+			$form->setDefaults($items);
 
-		$form = $this['factory'];
-		$form->setDefaults($items);
-
-		$buttonSend = $this->getFormComponent($form, 'send');
-		$buttonSend->setCaption('Edit');
-		$this->offCanvasComponent();
+			$buttonSend = $this->getFormComponent($form, 'send');
+			$buttonSend?->setCaption('Edit');
+			$this->offCanvasComponent();
+		}
 	}
 
 
-	/**
-	 * Handles the AJAX request to delete a resource.
-	 *
-	 * @throws AbortException
+	/** Handles the AJAX request to delete a resource.
 	 * @throws AttributeDetectionException
-	 * @throws BadRequestException
 	 * @throws Exception
 	 */
 	#[Requires(ajax: true)]
 	public function handleDelete(int $id): void
 	{
 		$items = $this->resourcesRepository->get($id)->record();
-		$items ?: $this->error();
-
-		$this->deleteItems = $items->name;
-		$this->modalComponent();
+		if ($items !== null) {
+			$this->deleteItems = $items->name;
+			$this->modalComponent();
+		}
 	}
 
 
-	/**
-	 * Creates the grid component for displaying resources.
-	 *
+	/** Creates the grid component for displaying resources.
+	 * @throws DatagridException
 	 * @throws AttributeDetectionException
-	 * @throws DataGridException
 	 */
 	protected function createComponentGrid(string $name): DatagridComponent
 	{

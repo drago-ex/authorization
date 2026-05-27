@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Drago Extension
- * Package built on Nette Framework
- */
-
 declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Permissions;
@@ -17,13 +12,11 @@ use Drago\Database\Database;
 use Drago\Database\ExtraFluent;
 
 
-/**
- * Repository for handling the 'permissions_view' table.
- * Provides methods for retrieving permissions, excluding admin roles.
- */
+/** Repository for handling the 'permissions_view' table. */
 #[Table(PermissionsViewEntity::Table, class: PermissionsViewEntity::class)]
 class PermissionsViewRepository
 {
+	/** @use Database<PermissionsViewEntity> */
 	use Database;
 
 	public function __construct(
@@ -34,9 +27,8 @@ class PermissionsViewRepository
 
 	/**
 	 * Retrieves all permissions from the database excluding admin roles.
-	 *
-	 * @throws AttributeDetectionException If attributes are incorrectly detected
-	 * @return ExtraFluent Fluent query builder for fetching the data
+	 * @return ExtraFluent<PermissionsViewEntity>
+	 * @throws AttributeDetectionException
 	 */
 	public function getAll(): ExtraFluent
 	{

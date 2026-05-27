@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Drago Extension
- * Package built on Nette Framework
- */
-
 declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Access;
@@ -17,12 +12,11 @@ use Drago\Authorization\Conf;
 use Drago\Database\Database;
 
 
-/**
- * Repository for accessing user-related data.
- */
+/** Repository for accessing user-related data. */
 #[Table(AccessEntity::Table, AccessEntity::PrimaryKey)]
 class AccessRepository
 {
+	/** @use Database<AccessEntity> */
 	use Database;
 
 	public function __construct(
@@ -33,6 +27,7 @@ class AccessRepository
 
 	/**
 	 * Fetch all users excluding admin role.
+	 * @return array<int, string>
 	 * @throws AttributeDetectionException
 	 */
 	public function getAllUsers(): array
@@ -49,6 +44,7 @@ class AccessRepository
 
 	/**
 	 * Fetch a user by their ID.
+	 * @return array<int, string>|Row|null
 	 * @throws AttributeDetectionException
 	 */
 	public function getUserById(int $id): array|Row|null

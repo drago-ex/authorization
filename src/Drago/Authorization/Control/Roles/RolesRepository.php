@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Drago Extension
- * Package built on Nette Framework
- */
-
 declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Roles;
@@ -19,15 +14,11 @@ use Drago\Database\Database;
 use Drago\Database\ExtraFluent;
 
 
-/**
- * Repository for interacting with the roles data in the database.
- * Provides methods to fetch, update, and manage roles.
- *
- * @use Database<RolesEntity>
- */
+/** Repository for interacting with the roles data in the database. */
 #[Table(RolesEntity::Table, RolesEntity::PrimaryKey, class: RolesEntity::class)]
 class RolesRepository
 {
+	/** @use Database<RolesEntity> */
 	use Database;
 
 	public function __construct(
@@ -38,7 +29,7 @@ class RolesRepository
 
 	/**
 	 * Fetch all roles from the database, ordered by the primary key.
-	 *
+	 * @return ExtraFluent<RolesEntity>
 	 * @throws AttributeDetectionException
 	 */
 	public function getAll(): ExtraFluent
@@ -50,12 +41,9 @@ class RolesRepository
 
 	/**
 	 * Find a role by its parent ID.
-	 *
-	 * @param int $parent Parent ID to search for.
-	 * @return array|RolesEntity|null The role(s) or null if not found.
-	 *
-	 * @throws Exception
+	 * @return array<string, mixed>|RolesEntity|null
 	 * @throws AttributeDetectionException
+	 * @throws Exception
 	 */
 	public function findByParent(int $parent): array|RolesEntity|null
 	{
@@ -66,9 +54,7 @@ class RolesRepository
 
 	/**
 	 * Fetch all roles excluding the admin role.
-	 *
-	 * @return array List of roles.
-	 *
+	 * @return array<int, string>
 	 * @throws AttributeDetectionException
 	 */
 	public function getRoles(): array
@@ -81,9 +67,7 @@ class RolesRepository
 
 	/**
 	 * Fetch all roles in a key-value pair format, excluding the admin role.
-	 *
-	 * @return array Key-value pairs of roles.
-	 *
+	 * @return array<string, string>
 	 * @throws AttributeDetectionException
 	 */
 	public function getRolesPairs(): array
@@ -96,16 +80,13 @@ class RolesRepository
 
 	/**
 	 * Find the parent of a role by its ID.
-	 * Throws an exception if there are records associated with this role.
-	 *
-	 * @param int $id The role ID to search for.
-	 * @return array|RolesEntity|null The parent role or null if not found.
-	 *
-	 * @throws NotAllowedChange If the role cannot be deleted due to associations.
+	 * @return array<string, mixed>|RolesEntity|null
 	 * @throws AttributeDetectionException
+	 * @throws NotAllowedChange
 	 */
 	public function findParent(int $id): array|RolesEntity|null
 	{
+		/** @var array<string, mixed>|RolesEntity|null $row */
 		$row = $this->find(RolesEntity::ColumnParent, $id)->fetch();
 		if ($row) {
 			throw new NotAllowedChange(
@@ -117,14 +98,8 @@ class RolesRepository
 	}
 
 
-	/**
-	 * Check if a role is allowed to be updated or deleted.
-	 * Throws an exception if not allowed.
-	 *
-	 * @param string $role The role to check.
-	 * @return bool True if the role can be edited or deleted, false otherwise.
-	 *
-	 * @throws NotAllowedChange If the role is not allowed to be edited or deleted.
+	/** Check if a role is allowed to be updated or deleted.
+	 * @throws NotAllowedChange
 	 */
 	public function isAllowed(string $role): bool
 	{

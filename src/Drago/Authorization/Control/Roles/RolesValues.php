@@ -15,7 +15,7 @@ use Drago;
 /**
  * Represents role data, extending ExtraArrayHash and utilizing the RolesMapper for mapping role attributes.
  */
-class RolesData extends Drago\Utils\ExtraArrayHash
+class RolesValues extends Drago\Utils\ExtraArrayHash
 {
 	use RolesMapper;
 }

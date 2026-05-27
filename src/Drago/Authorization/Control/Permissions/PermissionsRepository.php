@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Drago Extension
- * Package built on Nette Framework
- */
-
 declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Permissions;
@@ -14,14 +9,11 @@ use Drago\Attr\Table;
 use Drago\Database\Database;
 
 
-/**
- * Repository for CRUD operations on PermissionsEntity.
- *
- * @use Database<PermissionsEntity>
- */
+/** Repository for CRUD operations on PermissionsEntity. */
 #[Table(PermissionsEntity::Table, PermissionsEntity::PrimaryKey, class: PermissionsEntity::class)]
 class PermissionsRepository
 {
+	/** @use Database<PermissionsEntity> */
 	use Database;
 
 	public function __construct(

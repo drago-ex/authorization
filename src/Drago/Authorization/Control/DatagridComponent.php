@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Drago Extension
- * Package built on Nette Framework
- */
-
 declare(strict_types=1);
 
 namespace Drago\Authorization\Control;
@@ -17,10 +12,7 @@ use Contributte\Datagrid\Filter\FilterText;
 use Nette\ComponentModel\IContainer;
 
 
-/**
- * This class extends the Datagrid component to add custom actions and translations
- * for a more user-friendly data grid interface.
- */
+/** Datagrid component with custom actions and translations. */
 class DatagridComponent extends Datagrid
 {
 	public function __construct(
@@ -31,29 +23,22 @@ class DatagridComponent extends Datagrid
 	}
 
 
-	/**
-	 * Translates the given name.
-	 */
+	/** Translates the given name. */
 	public function translate(string $name): ?string
 	{
-		return $this->translator
-			?->translate($name);
+		$translate = $this->translator?->translate($name);
+		return $translate !== null ? (string) $translate : null;
 	}
 
 
-	/**
-	 * Translates the filter name.
-	 */
+	/** Translates the filter name. */
 	public function translateFilter(string $name): string
 	{
-		return $this->translator
-			?->translate($name) ?? $name;
+		return (string) ($this->translator?->translate($name) ?? $name);
 	}
 
 
-	/**
-	 * Adds a basic column with text filter.
-	 */
+	/** Adds a basic column with text filter. */
 	public function addColumnBase(string $key, string $name, ?string $column = null): FilterText
 	{
 		return $this->addColumnText($key, $name, $column)
@@ -64,6 +49,7 @@ class DatagridComponent extends Datagrid
 
 	/**
 	 * Adds an edit action.
+	 * @param array<string, mixed>|null $params
 	 * @throws DatagridException
 	 */
 	public function addActionEdit(string $key, string $name, ?string $href = null, ?array $params = null): Action
@@ -76,6 +62,7 @@ class DatagridComponent extends Datagrid
 
 	/**
 	 * Adds a delete action (base).
+	 * @param array<string, mixed>|null $params
 	 * @throws DatagridException
 	 */
 	public function addActionDeleteBase(string $key, string $name, ?string $href = null, ?array $params = null): Action
@@ -88,13 +75,14 @@ class DatagridComponent extends Datagrid
 
 	/**
 	 * Adds a delete action with confirmation.
+	 * @param array<string, mixed>|null $params
 	 * @throws DatagridException
 	 */
 	public function addActionDelete(string $key, string $name, ?string $href = null, ?array $params = null): Action
 	{
 		$confirm = 'Are you sure you want to delete the selected item?';
 		if ($this->translator) {
-			$confirm = $this->translate($confirm);
+			$confirm = $this->translate($confirm) ?? $confirm;
 		}
 
 		return $this->addAction($key, $name, $href, $params)

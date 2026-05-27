@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Drago Extension
- * Package built on Nette Framework
- */
-
 declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Permissions;
@@ -29,26 +24,20 @@ use Drago\Authorization\Control\Roles\RolesRepository;
 use Nette\Application\Attributes\Requires;
 use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
+use Nette\Forms\Controls\SubmitButton;
 use Nette\SmartObject;
 use Throwable;
 
 
-/**
- * Permissions control to manage roles and permissions
- * @property-read ComponentTemplate $template
- */
+/** @property-read ComponentTemplate $template */
 class PermissionsControl extends Component implements Base
 {
 	use SmartObject;
 	use Factory;
 
-	/** @var string Snippet factory identifier for rendering permissions */
 	public string $snippetFactory = 'permissions';
 
 
-	/**
-	 * Constructor for initializing repository dependencies and cache.
-	 */
 	public function __construct(
 		private readonly Cache $cache,
 		private readonly RolesRepository $rolesRepository,
@@ -60,9 +49,7 @@ class PermissionsControl extends Component implements Base
 	}
 
 
-	/**
-	 * Renders the permissions control.
-	 */
+	/** Renders the permissions control. */
 	public function render(): void
 	{
 		$template = $this->createRender();
@@ -71,9 +58,7 @@ class PermissionsControl extends Component implements Base
 	}
 
 
-	/**
-	 * Handles the click event to open the component via AJAX.
-	 */
+	/** Handles the click event to open the component via AJAX. */
 	#[Requires(ajax: true)]
 	public function handleClickOpenComponent(): void
 	{
@@ -81,28 +66,28 @@ class PermissionsControl extends Component implements Base
 	}
 
 
-	/**
-	 * Creates and returns the delete form.
-	 * The form is used to confirm and execute deletion of permissions.
-	 */
+	/** Creates and returns the delete form. */
 	protected function createComponentDelete(): Form
 	{
 		$form = $this->createDelete($this->id);
 		$form->addSubmit('confirm', 'Confirm')
-			->onClick[] = $this->delete(...);
+			->onClick[] = function (SubmitButton $button): void {
+				$form = $button->getForm();
+				if ($form instanceof Form) {
+					$id = (int) $form->getValues()['id'];
+					$this->delete($form, $id);
+				}
+			};
 		return $form;
 	}
 
 
-	/**
-	 * Deletes a permission and updates the cache.
-	 * Displays success or failure messages based on the operation result.
-	 */
-	public function delete(Form $form, \stdClass $data): void
+	/** Deletes a permission and updates the cache. */
+	public function delete(Form $form, int $id): void
 	{
 		try {
 			$this->permissionsRepository
-				->delete(PermissionsEntity::PrimaryKey, $data->id)
+				->delete(PermissionsEntity::PrimaryKey, $id)
 				->execute();
 
 			$this->cache->remove(Conf::Cache);
@@ -118,9 +103,8 @@ class PermissionsControl extends Component implements Base
 	}
 
 
-	/**
-	 * Creates the form for adding/editing permissions.
-	 * The form includes role, resource, privilege, and permission selections.
+	/** Creates the form for adding/editing permissions.
+	 * @throws AttributeDetectionException
 	 */
 	protected function createComponentFactory(): Form
 	{
@@ -161,25 +145,23 @@ class PermissionsControl extends Component implements Base
 			->setNullable();
 
 		$form->addSubmit('send', 'Send');
-		$form->onSuccess[] = $this->success(...);
+		$form->onSuccess[] = function (Form $form, PermissionsValues $data): void {
+			$this->success($form, $data);
+		};
 		return $form;
 	}
 
 
-	/**
-	 * Success handler after submitting the permissions form.
-	 * Saves the permission and provides feedback messages.
-	 */
-	private function success(Form $form, PermissionsData $data): void
+	private function success(Form $form, PermissionsValues $data): void
 	{
 		try {
-			$this->permissionsRepository->save($data->toArray());
+			$this->permissionsRepository->save($data);
 			$this->cache->remove(Conf::Cache);
 
-			$message = $data->id ? 'Permission was updated.' : 'Permission added.';
+			$message = isset($data->id) ? 'Permission was updated.' : 'Permission added.';
 			$this->flashMessageOnPresenter($message, Alert::Success);
 
-			if ($data->id) {
+			if (isset($data->id)) {
 				$this->closeComponent();
 			}
 
@@ -198,22 +180,20 @@ class PermissionsControl extends Component implements Base
 	}
 
 
-	/**
-	 * Handles the edit action for a permission.
-	 * Fetches the permission data and fills the form for editing.
+	/** Handles the edit action for a permission.
+	 * @throws AttributeDetectionException
+	 * @throws Exception
 	 */
 	#[Requires(ajax: true)]
 	public function handleEdit(int $id): void
 	{
 		$items = $this->permissionsRepository->get($id)->record();
-		$items ?: $this->error();
-
-		if ($this->getSignal()) {
+		if ($items !== null && $this->getSignal()) {
 			$form = $this['factory'];
 			$form->setDefaults($items);
 
 			$buttonSend = $this->getFormComponent($form, 'send');
-			$buttonSend->setCaption('Edit');
+			$buttonSend?->setCaption('Edit');
 			$this->offCanvasComponent();
 		}
 	}
@@ -221,28 +201,30 @@ class PermissionsControl extends Component implements Base
 
 	/**
 	 * Handles the delete action for a permission.
-	 * Confirms the deletion before proceeding.
-	 * @throws AttributeDetectionException
 	 * @throws Exception
+	 * @throws AttributeDetectionException
 	 */
 	#[Requires(ajax: true)]
 	public function handleDelete(int $id): void
 	{
 		$items = $this->permissionsRepository->get($id)->record();
-		$items ?: $this->error();
+		if ($items !== null) {
+			$permissions = $this->rolesRepository
+				->find(RolesEntity::PrimaryKey, $items->role_id)
+				->record();
 
-		$permissions = $this->rolesRepository
-			->find(RolesEntity::PrimaryKey, $items->role_id)
-			->record();
-
-		$this->deleteItems = $permissions->name;
-		$this->modalComponent();
+			if ($permissions instanceof RolesEntity) {
+				$this->deleteItems = $permissions->name;
+				$this->modalComponent();
+			}
+		}
 	}
 
 
 	/**
 	 * Changes the permission status (Allow/Deny).
-	 * Updates the permission in the repository and redraws the grid.
+	 * @throws AttributeDetectionException
+	 * @throws Exception
 	 */
 	public function statusChange(string $id, string $value): void
 	{
@@ -262,9 +244,7 @@ class PermissionsControl extends Component implements Base
 	}
 
 
-	/**
-	 * Creates a grid component for displaying the permissions.
-	 * The grid includes columns for role, resource, privilege, and permission status.
+	/** Creates a grid component for displaying the permissions.
 	 * @throws AttributeDetectionException
 	 * @throws DatagridColumnStatusException
 	 * @throws DatagridException

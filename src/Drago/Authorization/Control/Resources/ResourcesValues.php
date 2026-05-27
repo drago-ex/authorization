@@ -16,7 +16,7 @@ use Drago;
  * Data container for resources.
  * Extends ExtraArrayHash and uses ResourcesMapper for mapping properties.
  */
-class ResourcesData extends Drago\Utils\ExtraArrayHash
+class ResourcesValues extends Drago\Utils\ExtraArrayHash
 {
 	use ResourcesMapper;
 }
