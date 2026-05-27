@@ -10,4 +10,6 @@ class TraitStub
 {
 	use Authorization;
 	use AuthorizationControl;
+
+	public string $loginLink = '';
 }

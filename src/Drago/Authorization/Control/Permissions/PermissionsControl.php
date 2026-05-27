@@ -155,7 +155,7 @@ class PermissionsControl extends Component implements Base
 	private function success(Form $form, PermissionsValues $data): void
 	{
 		try {
-			$this->permissionsRepository->save($data->toArray());
+			$this->permissionsRepository->save($data);
 			$this->cache->remove(Conf::Cache);
 
 			$message = isset($data->id) ? 'Permission was updated.' : 'Permission added.';

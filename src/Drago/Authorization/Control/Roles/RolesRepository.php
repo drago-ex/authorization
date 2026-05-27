@@ -47,11 +47,8 @@ class RolesRepository
 	 */
 	public function findByParent(int $parent): array|RolesEntity|null
 	{
-		/** @var array<string, mixed>|RolesEntity|null $record */
-		$record = $this->find(RolesEntity::PrimaryKey, $parent)
+		return $this->find(RolesEntity::PrimaryKey, $parent)
 			->record();
-
-		return $record;
 	}
 
 

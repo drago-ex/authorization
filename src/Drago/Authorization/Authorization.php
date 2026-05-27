@@ -8,11 +8,9 @@ use Nette\Application\UI\Presenter;
 use Nette\Security\User;
 
 
+/** @property string $loginLink */
 trait Authorization
 {
-	public string $loginLink;
-
-
 	/** Checks for requirements such as authorization. */
 	public function injectAuthorization(Presenter $presenter, User $user): void
 	{
