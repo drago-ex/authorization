@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control\Roles;
 
 use App\Authorization\Control\ComponentTemplate;
+use Contributte\Datagrid\Exception\DatagridException;
+use Dibi\Exception;
 use Dibi\Row;
 use Drago\Application\UI\Alert;
+use Drago\Attr\AttributeDetectionException;
 use Drago\Authorization\Conf;
 use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
@@ -60,21 +63,23 @@ class RolesControl extends Component implements Base
 			->onClick[] = function (SubmitButton $button): void {
 				$form = $button->getForm();
 				if ($form instanceof Form) {
-					$this->delete($form, $form->getValues());
+					$id = (int) $form->getValues()['id'];
+					$this->delete($form, $id);
 				}
 			};
 		return $form;
 	}
 
 
-	private function delete(Form $form, object $data): void
+	private function delete(Form $form, int $id): void
 	{
 		try {
-			$this->rolesRepository->delete(RolesEntity::PrimaryKey, $data->id)->execute();
+			$this->rolesRepository->delete(RolesEntity::PrimaryKey, $id)->execute();
 			$this->cache->remove(Conf::Cache);
 			$this->flashMessageOnPresenter('Role deleted.');
 			$this->closeComponent();
 			$this->redrawDeleteFactoryAll();
+
 		} catch (Throwable $e) {
 			$this->flashMessageOnPresenter('Unknown status code.', Alert::Warning);
 			$this->redrawMessageOnPresenter();
@@ -82,7 +87,9 @@ class RolesControl extends Component implements Base
 	}
 
 
-	/** Creates and returns the form for role creation/editing. */
+	/** Creates and returns the form for role creation/editing.
+	 * @throws AttributeDetectionException
+	 */
 	protected function createComponentFactory(): Form
 	{
 		$form = $this->create();
@@ -109,17 +116,17 @@ class RolesControl extends Component implements Base
 			->setNullable();
 
 		$form->addSubmit('send', 'Send');
-		$form->onSuccess[] = function (Form $form, object $data): void {
+		$form->onSuccess[] = function (Form $form, RolesValues $data): void {
 			$this->success($form, $data);
 		};
 		return $form;
 	}
 
 
-	private function success(Form $form, object $data): void
+	private function success(Form $form, RolesValues $data): void
 	{
 		try {
-			if (isset($data->id, $data->parent) && $data->id !== null && (int) $data->id < (int) $data->parent) {
+			if (isset($data->id, $data->parent) && (int) $data->id < (int) $data->parent) {
 				throw new \Exception('It is not allowed to select a higher parent.');
 			}
 
@@ -154,12 +161,15 @@ class RolesControl extends Component implements Base
 	}
 
 
-	/** Edits user roles by ID. */
+	/**
+	 * Edits user roles by ID.
+	 * @throws AttributeDetectionException
+	 * @throws Exception
+	 */
 	#[Requires(ajax: true)]
 	public function handleEdit(int $id): void
 	{
 		$items = $this->rolesRepository->get($id)->record();
-		\assert($items instanceof RolesEntity || $items === null);
 		if ($items !== null) {
 			try {
 				if ($this->rolesRepository->isAllowed($items->name)) {
@@ -183,12 +193,14 @@ class RolesControl extends Component implements Base
 	}
 
 
-	/** Deletes user roles by ID. */
+	/** Deletes user roles by ID.
+	 * @throws AttributeDetectionException
+	 * @throws Exception
+	 */
 	#[Requires(ajax: true)]
 	public function handleDelete(int $id): void
 	{
 		$items = $this->rolesRepository->get($id)->record();
-		\assert($items instanceof RolesEntity || $items === null);
 		if ($items !== null && $items->id !== null) {
 			try {
 				$parent = $this->rolesRepository->findParent($items->id);
@@ -210,7 +222,10 @@ class RolesControl extends Component implements Base
 	}
 
 
-	/** Creates and configures a data grid for roles. */
+	/** Creates and configures a data grid for roles.
+	 * @throws AttributeDetectionException
+	 * @throws DatagridException
+	 */
 	protected function createComponentGrid(string $name): DatagridComponent
 	{
 		$grid = new DatagridComponent($this, $name);

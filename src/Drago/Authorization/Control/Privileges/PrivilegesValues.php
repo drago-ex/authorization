@@ -15,7 +15,7 @@ use Drago;
 /**
  * Class representing the data structure for privileges.
  */
-class PrivilegesData extends Drago\Utils\ExtraArrayHash
+class PrivilegesValues extends Drago\Utils\ExtraArrayHash
 {
 	use PrivilegesMapper;
 }

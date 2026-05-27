@@ -6,6 +6,7 @@ namespace Drago\Authorization\Control\Access;
 
 use Dibi\Connection;
 use Dibi\Fluent;
+use Drago\Attr\AttributeDetectionException;
 use Drago\Attr\Table;
 use Drago\Authorization\Conf;
 use Drago\Database\Database;
@@ -24,7 +25,9 @@ class AccessRolesViewRepository
 	}
 
 
-	/** Fetches all users, their usernames, and the roles associated with them. */
+	/** Fetches all users, their usernames, and the roles associated with them.
+	 * @throws AttributeDetectionException
+	 */
 	public function getAllUsers(): Fluent
 	{
 		return $this->getConnection()

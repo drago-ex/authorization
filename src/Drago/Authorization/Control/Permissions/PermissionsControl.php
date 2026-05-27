@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control\Permissions;
 
 use App\Authorization\Control\ComponentTemplate;
+use Contributte\Datagrid\Exception\DatagridColumnStatusException;
+use Contributte\Datagrid\Exception\DatagridException;
 use Dibi\Exception;
 use Drago\Application\UI\Alert;
+use Drago\Attr\AttributeDetectionException;
 use Drago\Authorization\Conf;
 use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
@@ -71,7 +74,8 @@ class PermissionsControl extends Component implements Base
 			->onClick[] = function (SubmitButton $button): void {
 				$form = $button->getForm();
 				if ($form instanceof Form) {
-					$this->delete($form, $form->getValues());
+					$id = (int) $form->getValues()['id'];
+					$this->delete($form, $id);
 				}
 			};
 		return $form;
@@ -79,11 +83,11 @@ class PermissionsControl extends Component implements Base
 
 
 	/** Deletes a permission and updates the cache. */
-	public function delete(Form $form, object $data): void
+	public function delete(Form $form, int $id): void
 	{
 		try {
 			$this->permissionsRepository
-				->delete(PermissionsEntity::PrimaryKey, $data->id)
+				->delete(PermissionsEntity::PrimaryKey, $id)
 				->execute();
 
 			$this->cache->remove(Conf::Cache);
@@ -99,7 +103,9 @@ class PermissionsControl extends Component implements Base
 	}
 
 
-	/** Creates the form for adding/editing permissions. */
+	/** Creates the form for adding/editing permissions.
+	 * @throws AttributeDetectionException
+	 */
 	protected function createComponentFactory(): Form
 	{
 		$form = $this->create();
@@ -139,14 +145,14 @@ class PermissionsControl extends Component implements Base
 			->setNullable();
 
 		$form->addSubmit('send', 'Send');
-		$form->onSuccess[] = function (Form $form, object $data): void {
+		$form->onSuccess[] = function (Form $form, PermissionsValues $data): void {
 			$this->success($form, $data);
 		};
 		return $form;
 	}
 
 
-	private function success(Form $form, object $data): void
+	private function success(Form $form, PermissionsValues $data): void
 	{
 		try {
 			$this->permissionsRepository->save($data->toArray());
@@ -174,12 +180,14 @@ class PermissionsControl extends Component implements Base
 	}
 
 
-	/** Handles the edit action for a permission. */
+	/** Handles the edit action for a permission.
+	 * @throws AttributeDetectionException
+	 * @throws Exception
+	 */
 	#[Requires(ajax: true)]
 	public function handleEdit(int $id): void
 	{
 		$items = $this->permissionsRepository->get($id)->record();
-		\assert($items instanceof PermissionsEntity || $items === null);
 		if ($items !== null && $this->getSignal()) {
 			$form = $this['factory'];
 			$form->setDefaults($items);
@@ -194,12 +202,12 @@ class PermissionsControl extends Component implements Base
 	/**
 	 * Handles the delete action for a permission.
 	 * @throws Exception
+	 * @throws AttributeDetectionException
 	 */
 	#[Requires(ajax: true)]
 	public function handleDelete(int $id): void
 	{
 		$items = $this->permissionsRepository->get($id)->record();
-		\assert($items instanceof PermissionsEntity || $items === null);
 		if ($items !== null) {
 			$permissions = $this->rolesRepository
 				->find(RolesEntity::PrimaryKey, $items->role_id)
@@ -213,7 +221,11 @@ class PermissionsControl extends Component implements Base
 	}
 
 
-	/** Changes the permission status (Allow/Deny). */
+	/**
+	 * Changes the permission status (Allow/Deny).
+	 * @throws AttributeDetectionException
+	 * @throws Exception
+	 */
 	public function statusChange(string $id, string $value): void
 	{
 		$id = (int) $id;
@@ -232,7 +244,11 @@ class PermissionsControl extends Component implements Base
 	}
 
 
-	/** Creates a grid component for displaying the permissions. */
+	/** Creates a grid component for displaying the permissions.
+	 * @throws AttributeDetectionException
+	 * @throws DatagridColumnStatusException
+	 * @throws DatagridException
+	 */
 	protected function createComponentGrid(string $name): DatagridComponent
 	{
 		$grid = new DatagridComponent($this, $name);

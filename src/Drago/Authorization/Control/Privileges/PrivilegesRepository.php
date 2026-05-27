@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control\Privileges;
 
 use Dibi\Connection;
+use Drago\Attr\AttributeDetectionException;
 use Drago\Attr\Table;
 use Drago\Authorization\Conf;
 use Drago\Authorization\NotAllowedChange;
@@ -28,6 +29,7 @@ class PrivilegesRepository
 	/**
 	 * Returns all privileges, excluding the "all" privilege.
 	 * @return ExtraFluent<PrivilegesEntity>
+	 * @throws AttributeDetectionException
 	 */
 	public function getAll(): ExtraFluent
 	{
@@ -37,7 +39,9 @@ class PrivilegesRepository
 	}
 
 
-	/** Checks if the given privilege can be changed. */
+	/** Checks if the given privilege can be changed.
+	 * @throws NotAllowedChange
+	 */
 	public function isAllowed(string $privilege): bool
 	{
 		if ($privilege === Conf::PrivilegeAll) {

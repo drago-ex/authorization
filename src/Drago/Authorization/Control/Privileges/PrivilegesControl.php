@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Privileges;
 
+use Contributte\Datagrid\Exception\DatagridException;
+use Dibi\Exception;
 use Drago\Application\UI\Alert;
+use Drago\Attr\AttributeDetectionException;
 use Drago\Authorization\Conf;
 use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
@@ -60,18 +63,19 @@ class PrivilegesControl extends Component implements Base
 			->onClick[] = function (SubmitButton $button): void {
 				$form = $button->getForm();
 				if ($form instanceof Form) {
-					$this->delete($form, $form->getValues());
+					$id = (int) $form->getValues()['id'];
+					$this->delete($form, $id);
 				}
 			};
 		return $form;
 	}
 
 
-	public function delete(Form $form, object $data): void
+	public function delete(Form $form, int $id): void
 	{
 		try {
 			$this->privilegesRepository
-				->delete(PrivilegesEntity::PrimaryKey, $data->id)
+				->delete(PrivilegesEntity::PrimaryKey, $id)
 				->execute();
 
 			$this->cache->remove(Conf::Cache);
@@ -104,14 +108,14 @@ class PrivilegesControl extends Component implements Base
 			->setNullable();
 
 		$form->addSubmit('send', 'Send');
-		$form->onSuccess[] = function (Form $form, object $data): void {
+		$form->onSuccess[] = function (Form $form, PrivilegesValues $data): void {
 			$this->success($form, $data);
 		};
 		return $form;
 	}
 
 
-	private function success(Form $form, object $data): void
+	private function success(Form $form, PrivilegesValues $data): void
 	{
 		try {
 			$this->privilegesRepository->save((array) $data);
@@ -138,12 +142,14 @@ class PrivilegesControl extends Component implements Base
 	}
 
 
-	/** Handles the editing of a privilege by pre-filling the form with existing data. */
+	/** Handles the editing of a privilege by pre-filling the form with existing data.
+	 * @throws AttributeDetectionException
+	 * @throws Exception
+	 */
 	#[Requires(ajax: true)]
 	public function handleEdit(int $id): void
 	{
 		$items = $this->privilegesRepository->get($id)->record();
-		\assert($items instanceof PrivilegesEntity || $items === null);
 		if ($items !== null) {
 			try {
 				if ($this->privilegesRepository->isAllowed($items->name)) {
@@ -168,12 +174,14 @@ class PrivilegesControl extends Component implements Base
 	}
 
 
-	/** Handles the deletion of a privilege. */
+	/** Handles the deletion of a privilege.
+	 * @throws AttributeDetectionException
+	 * @throws Exception
+	 */
 	#[Requires(ajax: true)]
 	public function handleDelete(int $id): void
 	{
 		$items = $this->privilegesRepository->get($id)->record();
-		\assert($items instanceof PrivilegesEntity || $items === null);
 		if ($items !== null) {
 			try {
 				if ($this->privilegesRepository->isAllowed($items->name)) {
@@ -194,7 +202,10 @@ class PrivilegesControl extends Component implements Base
 	}
 
 
-	/** Creates the data grid for listing privileges. */
+	/** Creates the data grid for listing privileges.
+	 * @throws DatagridException
+	 * @throws AttributeDetectionException
+	 */
 	protected function createComponentGrid(string $name): DatagridComponent
 	{
 		$grid = new DatagridComponent($this, $name);

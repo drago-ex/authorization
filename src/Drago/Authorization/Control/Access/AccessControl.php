@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Access;
 
+use Contributte\Datagrid\Exception\DatagridException;
+use Dibi\DriverException;
+use Dibi\Exception;
 use Drago\Application\UI\Alert;
+use Drago\Attr\AttributeDetectionException;
 use Drago\Authorization\Conf;
 use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
@@ -64,7 +68,8 @@ class AccessControl extends Component implements Base
 			->onClick[] = function (SubmitButton $button): void {
 				$form = $button->getForm();
 				if ($form instanceof Form) {
-					$this->delete($form, $form->getValues());
+					$id = (int) $form->getValues()['id'];
+					$this->delete($form, $id);
 				}
 			};
 		return $form;
@@ -72,11 +77,11 @@ class AccessControl extends Component implements Base
 
 
 	/** Deletes user access. */
-	public function delete(Form $form, object $data): void
+	public function delete(Form $form, int $id): void
 	{
 		try {
 			$this->accessRolesRepository
-				->delete(AccessRolesEntity::ColumnUserId, $data->id)
+				->delete(AccessRolesEntity::ColumnUserId, $id)
 				->execute();
 
 			$this->flashMessageOnPresenter('Access deleted.');
@@ -90,7 +95,9 @@ class AccessControl extends Component implements Base
 	}
 
 
-	/** Creates the form for assigning roles to a user. */
+	/** Creates the form for assigning roles to a user.
+	 * @throws AttributeDetectionException
+	 */
 	protected function createComponentFactory(): Form
 	{
 		$form = $this->create();
@@ -101,7 +108,7 @@ class AccessControl extends Component implements Base
 			$user = $this->accessRepository->getUserById($this->id);
 		}
 
-		/** @var array<int, string>|null $items */
+		/** @var array<int, string> $items */
 		$items = is_array($user) ? $user : $users;
 
 		$form->addSelect(AccessRolesEntity::ColumnUserId, 'User', $items)
@@ -119,20 +126,21 @@ class AccessControl extends Component implements Base
 		$form->addMultiSelect(AccessRolesEntity::ColumnRoleId, 'Select roles', $roles)
 			->setRequired();
 
-		$form->addHidden(AccessRolesData::Id)
+		$form->addHidden(AccessRolesValues::Id)
 			->addRule($form::Integer)
 			->setHtmlAttribute('data-locked')
 			->setNullable();
 
 		$form->addSubmit('send', 'Send');
-		$form->onSuccess[] = function (Form $form, object $data): void {
+		$form->onSuccess[] = function (Form $form, AccessRolesValues $data): void {
 			$this->success($form, $data);
 		};
 		return $form;
 	}
 
 
-	private function success(Form $form, object $data): void
+	/** @throws DriverException */
+	private function success(Form $form, AccessRolesValues $data): void
 	{
 		try {
 			$entity = new AccessRolesEntity;
@@ -150,7 +158,7 @@ class AccessControl extends Component implements Base
 					->execute();
 			}
 
-			if (isset($data->role_id) && is_iterable($data->role_id)) {
+			if (isset($data->role_id)) {
 				foreach ($data->role_id as $item) {
 					$entity->role_id = (int) $item;
 					$repository = $this->accessRolesRepository;
@@ -181,7 +189,11 @@ class AccessControl extends Component implements Base
 	}
 
 
-	/** Edits user roles by ID. */
+	/**
+	 * Edits user roles by ID.
+	 * @throws AttributeDetectionException
+	 * @throws Exception
+	 */
 	#[Requires(ajax: true)]
 	public function handleEdit(int $id): void
 	{
@@ -194,7 +206,7 @@ class AccessControl extends Component implements Base
 			$form->setDefaults([
 				AccessRolesEntity::ColumnUserId => $userId,
 				AccessRolesEntity::ColumnRoleId => $roleId,
-				AccessRolesData::Id => $userId,
+				AccessRolesValues::Id => $userId,
 			]);
 
 			$this->getFormComponent($form, 'send')?->setCaption('Edit');
@@ -204,17 +216,18 @@ class AccessControl extends Component implements Base
 	}
 
 
-	/** Deletes user roles by ID. */
+	/** Deletes user roles by ID.
+	 * @throws AttributeDetectionException
+	 * @throws Exception
+	 */
 	#[Requires(ajax: true)]
 	public function handleDelete(int $id): void
 	{
 		$items = $this->accessRolesRepository->find(AccessRolesEntity::ColumnUserId, $id)->record();
-		\assert($items instanceof AccessRolesEntity || $items === null);
 		if ($items !== null) {
 			$user = $this->accessRolesViewRepository
 				->find(AccessRolesViewEntity::ColumnUserId, $items->user_id)
 				->record();
-			\assert($user instanceof AccessRolesViewEntity || $user === null);
 
 			if ($user !== null) {
 				$this->deleteItems = $user->username;
@@ -224,7 +237,11 @@ class AccessControl extends Component implements Base
 	}
 
 
-	/** Creates the user roles data grid. */
+	/**
+	 * Creates the user roles data grid.
+	 * @throws AttributeDetectionException
+	 * @throws DatagridException
+	 */
 	protected function createComponentGrid(string $name): DatagridComponent
 	{
 		$grid = new DatagridComponent($this, $name);

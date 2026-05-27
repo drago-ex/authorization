@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control\Permissions;
 
 use Dibi\Connection;
+use Dibi\Exception;
+use Drago\Attr\AttributeDetectionException;
 use Drago\Attr\Table;
 use Drago\Database\Database;
 
@@ -24,7 +26,9 @@ class PermissionsRolesViewRepository
 
 	/**
 	 * Fetches all records from the 'permissions_roles_view' table.
-	 * @return list<PermissionsRolesViewEntity>
+	 * @return array<PermissionsRolesViewEntity>
+	 * @throws AttributeDetectionException
+	 * @throws Exception
 	 */
 	public function getAll(): array
 	{

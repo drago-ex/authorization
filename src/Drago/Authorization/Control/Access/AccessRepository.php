@@ -6,6 +6,7 @@ namespace Drago\Authorization\Control\Access;
 
 use Dibi\Connection;
 use Dibi\Row;
+use Drago\Attr\AttributeDetectionException;
 use Drago\Attr\Table;
 use Drago\Authorization\Conf;
 use Drago\Database\Database;
@@ -27,6 +28,7 @@ class AccessRepository
 	/**
 	 * Fetch all users excluding admin role.
 	 * @return array<int, string>
+	 * @throws AttributeDetectionException
 	 */
 	public function getAllUsers(): array
 	{
@@ -43,6 +45,7 @@ class AccessRepository
 	/**
 	 * Fetch a user by their ID.
 	 * @return array<int, string>|Row|null
+	 * @throws AttributeDetectionException
 	 */
 	public function getUserById(int $id): array|Row|null
 	{

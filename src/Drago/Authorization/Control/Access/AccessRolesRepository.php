@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control\Access;
 
 use Dibi\Connection;
+use Dibi\Exception;
+use Drago\Attr\AttributeDetectionException;
 use Drago\Attr\Table;
 use Drago\Database\Database;
 
@@ -24,7 +26,9 @@ class AccessRolesRepository
 
 	/**
 	 * Fetch all roles for a specific user.
-	 * @return list<AccessRolesEntity>
+	 * @return array<int, object{user_id:int, role_id:int}>
+	 * @throws AttributeDetectionException
+	 * @throws Exception
 	 */
 	public function getUserRoles(int $userId): array
 	{

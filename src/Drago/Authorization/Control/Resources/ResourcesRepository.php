@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control\Resources;
 
 use Dibi\Connection;
+use Drago\Attr\AttributeDetectionException;
 use Drago\Attr\Table;
 use Drago\Database\Database;
 use Drago\Database\ExtraFluent;
@@ -26,6 +27,7 @@ class ResourcesRepository
 	/**
 	 * Retrieves all resources from the database.
 	 * @return ExtraFluent<ResourcesEntity>
+	 * @throws AttributeDetectionException
 	 */
 	public function getAll(): ExtraFluent
 	{

@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control\Resources;
 
 use App\Authorization\Control\ComponentTemplate;
+use Contributte\Datagrid\Exception\DatagridException;
+use Dibi\Exception;
 use Drago\Application\UI\Alert;
+use Drago\Attr\AttributeDetectionException;
 use Drago\Authorization\Conf;
 use Drago\Authorization\Control\Base;
 use Drago\Authorization\Control\Component;
@@ -58,7 +61,8 @@ class ResourcesControl extends Component implements Base
 			->onClick[] = function (SubmitButton $button): void {
 				$form = $button->getForm();
 				if ($form instanceof Form) {
-					$this->delete($form, $form->getValues());
+					$id = (int) $form->getValues()['id'];
+					$this->delete($form, $id);
 				}
 			};
 		return $form;
@@ -66,11 +70,11 @@ class ResourcesControl extends Component implements Base
 
 
 	/** Deletes a resource and shows the result in a flash message. */
-	public function delete(Form $form, object $data): void
+	public function delete(Form $form, int $id): void
 	{
 		try {
 			$this->resourcesRepository
-				->delete(ResourcesEntity::PrimaryKey, $data->id)
+				->delete(ResourcesEntity::PrimaryKey, $id)
 				->execute();
 
 			$this->cache->remove(Conf::Cache);
@@ -103,14 +107,14 @@ class ResourcesControl extends Component implements Base
 			->setNullable();
 
 		$form->addSubmit('send', 'Send');
-		$form->onSuccess[] = function (Form $form, object $data): void {
+		$form->onSuccess[] = function (Form $form, ResourcesValues $data): void {
 			$this->success($form, $data);
 		};
 		return $form;
 	}
 
 
-	private function success(Form $form, object $data): void
+	private function success(Form $form, ResourcesValues $data): void
 	{
 		try {
 			$this->resourcesRepository->save((array) $data);
@@ -137,12 +141,14 @@ class ResourcesControl extends Component implements Base
 	}
 
 
-	/** Handles the AJAX request to edit a resource. */
+	/** Handles the AJAX request to edit a resource.
+	 * @throws AttributeDetectionException
+	 * @throws Exception
+	 */
 	#[Requires(ajax: true)]
 	public function handleEdit(int $id): void
 	{
 		$items = $this->resourcesRepository->get($id)->record();
-		\assert($items instanceof ResourcesEntity || $items === null);
 		if ($items !== null) {
 			$form = $this['factory'];
 			$form->setDefaults($items);
@@ -154,12 +160,14 @@ class ResourcesControl extends Component implements Base
 	}
 
 
-	/** Handles the AJAX request to delete a resource. */
+	/** Handles the AJAX request to delete a resource.
+	 * @throws AttributeDetectionException
+	 * @throws Exception
+	 */
 	#[Requires(ajax: true)]
 	public function handleDelete(int $id): void
 	{
 		$items = $this->resourcesRepository->get($id)->record();
-		\assert($items instanceof ResourcesEntity || $items === null);
 		if ($items !== null) {
 			$this->deleteItems = $items->name;
 			$this->modalComponent();
@@ -167,7 +175,10 @@ class ResourcesControl extends Component implements Base
 	}
 
 
-	/** Creates the grid component for displaying resources. */
+	/** Creates the grid component for displaying resources.
+	 * @throws DatagridException
+	 * @throws AttributeDetectionException
+	 */
 	protected function createComponentGrid(string $name): DatagridComponent
 	{
 		$grid = new DatagridComponent($this, $name);

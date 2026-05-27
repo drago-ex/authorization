@@ -8,7 +8,7 @@ use Drago;
 
 
 /** Data class for Access roles. */
-class AccessRolesData extends Drago\Utils\ExtraArrayHash
+class AccessRolesValues extends Drago\Utils\ExtraArrayHash
 {
 	public const string Id = 'id';
 
