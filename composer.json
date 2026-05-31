@@ -19,7 +19,8 @@
 		"drago-ex/database": "^3.0",
 		"drago-ex/application": "^2.0",
 		"drago-ex/utils": "^2.0",
-		"ublaboo/datagrid": "dev-master"
+		"ublaboo/datagrid": "dev-master",
+	  	"drago-ex/translator": "^1.0"
 	},
 	"require-dev": {
 		"nette/tester": "^2.5",
