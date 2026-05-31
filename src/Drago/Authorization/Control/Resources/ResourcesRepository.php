@@ -15,7 +15,7 @@ use Drago\Database\ExtraFluent;
 #[Table(ResourcesEntity::Table, ResourcesEntity::PrimaryKey, class: ResourcesEntity::class)]
 class ResourcesRepository
 {
-	/** @use Database<ResourcesEntity> */
+	/** @phpstan-use Database<ResourcesEntity> */
 	use Database;
 
 	public function __construct(

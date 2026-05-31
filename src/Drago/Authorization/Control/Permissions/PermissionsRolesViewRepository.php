@@ -15,7 +15,7 @@ use Drago\Database\Database;
 #[Table(PermissionsRolesViewEntity::Table, class: PermissionsRolesViewEntity::class)]
 class PermissionsRolesViewRepository
 {
-	/** @use Database<PermissionsRolesViewEntity> */
+	/** @phpstan-use Database<PermissionsRolesViewEntity> */
 	use Database;
 
 	public function __construct(

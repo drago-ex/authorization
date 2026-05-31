@@ -13,7 +13,7 @@ use Drago\Database\Database;
 #[Table(PermissionsEntity::Table, PermissionsEntity::PrimaryKey, class: PermissionsEntity::class)]
 class PermissionsRepository
 {
-	/** @use Database<PermissionsEntity> */
+	/** @phpstan-use Database<PermissionsEntity> */
 	use Database;
 
 	public function __construct(

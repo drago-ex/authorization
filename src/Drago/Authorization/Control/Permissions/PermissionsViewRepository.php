@@ -16,7 +16,7 @@ use Drago\Database\ExtraFluent;
 #[Table(PermissionsViewEntity::Table, class: PermissionsViewEntity::class)]
 class PermissionsViewRepository
 {
-	/** @use Database<PermissionsViewEntity> */
+	/** @phpstan-use Database<PermissionsViewEntity> */
 	use Database;
 
 	public function __construct(

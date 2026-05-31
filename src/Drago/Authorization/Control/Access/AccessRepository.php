@@ -16,7 +16,7 @@ use Drago\Database\Database;
 #[Table(AccessEntity::Table, AccessEntity::PrimaryKey)]
 class AccessRepository
 {
-	/** @use Database<AccessEntity> */
+	/** @phpstan-use Database<AccessEntity> */
 	use Database;
 
 	public function __construct(

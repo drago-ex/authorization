@@ -16,7 +16,7 @@ use Drago\Database\Database;
 #[Table(AccessRolesViewEntity::Table, class: AccessRolesViewEntity::class)]
 class AccessRolesViewRepository
 {
-	/** @use Database<AccessRolesViewEntity> */
+	/** @phpstan-use Database<AccessRolesViewEntity> */
 	use Database;
 
 	public function __construct(

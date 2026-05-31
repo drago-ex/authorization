@@ -17,7 +17,7 @@ use Drago\Database\ExtraFluent;
 #[Table(PrivilegesEntity::Table, PrivilegesEntity::PrimaryKey, class: PrivilegesEntity::class)]
 class PrivilegesRepository
 {
-	/** @use Database<PrivilegesEntity> */
+	/** @phpstan-use Database<PrivilegesEntity> */
 	use Database;
 
 	public function __construct(
