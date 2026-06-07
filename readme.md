@@ -32,7 +32,7 @@ extensions:
 You can use the `Authorization` trait in your base presenter to manage access control and redirect users to the login page if needed.
 
 ```php
-use Drago\Authorization\Authorization
+use Drago\Authorization\Authorization;
 
 // Redirect to a specific login presenter or module
 private string $loginLink = ':Module:Presenter:';
@@ -41,7 +41,7 @@ private string $loginLink = ':Module:Presenter:';
 ## Use Trait in Presenter for Access Control Settings
 In each presenter, use the `AuthorizationControl` trait to manage authorization control.
 ```php
-use Drago\Authorization\Control\AuthorizationControl
+use Drago\Authorization\Control\AuthorizationControl;
 ```
 
 ## Component Creation and Configuration
