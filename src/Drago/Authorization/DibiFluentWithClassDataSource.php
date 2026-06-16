@@ -31,6 +31,14 @@ class FluentWithClassDataSource extends DibiFluentDataSource
 	}
 
 
+	private function fetch(): array {
+		// Ensure that order by is always set on unique key
+		// Oracle can shuffle records between pages
+		$this->dataSource->orderBy($this->primaryKey);
+		return $this->dataSource->execute()->setRowClass($this->rowClass)->fetchAll();
+	}
+
+
 	/**
 	 * @throws Exception
 	 */
@@ -38,7 +46,7 @@ class FluentWithClassDataSource extends DibiFluentDataSource
 	{
 		return $this->data !== []
 			? $this->data
-			: $this->dataSource->execute()->setRowClass($this->rowClass)->fetchAll();
+			: $this->fetch();
 	}
 
 
@@ -48,7 +56,7 @@ class FluentWithClassDataSource extends DibiFluentDataSource
 	public function limit(int $offset, int $limit): IDataSource
 	{
 		$this->dataSource->limit($limit)->offset($offset);
-		$this->data = $this->dataSource->execute()->setRowClass($this->rowClass)->fetchAll();
+		$this->data = $this->fetch();
 		return $this;
 	}
 
