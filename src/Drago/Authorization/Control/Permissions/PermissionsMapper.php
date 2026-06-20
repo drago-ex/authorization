@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Drago\Authorization\Control\Permissions;
 
 
-/** Trait used for mapping permissions data. */
 trait PermissionsMapper
 {
 	public ?int $id;

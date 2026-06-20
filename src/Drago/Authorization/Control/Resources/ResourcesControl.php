@@ -36,7 +36,6 @@ class ResourcesControl extends Component implements Base
 	}
 
 
-	/** Renders the template for the resources control. */
 	public function render(): void
 	{
 		$template = $this->createRender();
@@ -45,7 +44,6 @@ class ResourcesControl extends Component implements Base
 	}
 
 
-	/** Handles the AJAX request to open the component. */
 	#[Requires(ajax: true)]
 	public function handleClickOpenComponent(): void
 	{
@@ -53,7 +51,6 @@ class ResourcesControl extends Component implements Base
 	}
 
 
-	/** Creates the delete form. */
 	protected function createComponentDelete(): Form
 	{
 		$form = $this->createDelete($this->id);
@@ -69,7 +66,6 @@ class ResourcesControl extends Component implements Base
 	}
 
 
-	/** Deletes a resource and shows the result in a flash message. */
 	public function delete(Form $form, int $id): void
 	{
 		try {
@@ -93,7 +89,6 @@ class ResourcesControl extends Component implements Base
 	}
 
 
-	/** Creates the form to add or edit a resource. */
 	protected function createComponentFactory(): Form
 	{
 		$form = $this->create();

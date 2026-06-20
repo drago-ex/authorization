@@ -14,7 +14,6 @@ use Drago\Database\Database;
 use Drago\Database\ExtraFluent;
 
 
-/** Repository for interacting with the roles data in the database. */
 #[Table(RolesEntity::Table, RolesEntity::PrimaryKey, class: RolesEntity::class)]
 class RolesRepository
 {
@@ -40,7 +39,7 @@ class RolesRepository
 
 
 	/**
-	 * Find a role by its parent ID.
+	 * Finds a role by its parent ID.
 	 * @return array<string, mixed>|RolesEntity|null
 	 * @throws AttributeDetectionException
 	 * @throws Exception
@@ -79,14 +78,14 @@ class RolesRepository
 
 
 	/**
-	 * Find the parent of a role by its ID.
+	 * Finds the parent of a role by its ID.
 	 * @return array<string, mixed>|RolesEntity|null
 	 * @throws AttributeDetectionException
 	 * @throws NotAllowedChange
 	 */
 	public function findParent(int $id): array|RolesEntity|null
 	{
-		/** @var array<string, mixed>|RolesEntity|null $row */
+		/** @temp array<string, mixed>|RolesEntity|null $row */
 		$row = $this->find(RolesEntity::ColumnParent, $id)->fetch();
 		if ($row) {
 			throw new NotAllowedChange(

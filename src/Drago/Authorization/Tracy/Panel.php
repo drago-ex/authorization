@@ -14,7 +14,6 @@ use Tracy\Debugger;
 use Tracy\IBarPanel;
 
 
-/** Tracy Debugger panel for managing and displaying role switching. */
 class Panel implements IBarPanel
 {
 	use SmartObject;
@@ -43,7 +42,6 @@ class Panel implements IBarPanel
 	}
 
 
-	/** Returns the HTML for the tab in the Tracy Debugger bar. */
 	public function getTab(): string
 	{
 		$html = '<span title="Role switch">';
@@ -58,7 +56,6 @@ class Panel implements IBarPanel
 	}
 
 
-	/** Returns the HTML for the panel content in the Tracy Debugger. */
 	public function getPanel(): string
 	{
 		ob_start();

@@ -7,7 +7,6 @@ namespace Drago\Authorization\Control\Permissions;
 use Drago;
 
 
-/** Entity representing a record in the 'permissions_view' table. */
 class PermissionsViewEntity extends Drago\Database\Entity
 {
 	public const string

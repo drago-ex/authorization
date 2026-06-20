@@ -11,7 +11,6 @@ use Drago\Authorization\Control\Resources\ResourcesControl;
 use Drago\Authorization\Control\Roles\RolesControl;
 
 
-/** Trait that provides the injection and management of various authorization controls. */
 trait AuthorizationControl
 {
 	public RolesControl $rolesControl;

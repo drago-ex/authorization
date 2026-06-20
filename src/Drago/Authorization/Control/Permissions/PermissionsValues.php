@@ -12,12 +12,7 @@ namespace Drago\Authorization\Control\Permissions;
 use Drago;
 
 
-/**
- * Data class for permissions.
- * Extends ExtraArrayHash to map permissions data.
- */
 class PermissionsValues extends Drago\Utils\ExtraArrayHash
 {
-	// Trait for mapping permissions-related data
 	use PermissionsMapper;
 }

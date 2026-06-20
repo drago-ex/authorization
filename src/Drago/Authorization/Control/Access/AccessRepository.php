@@ -12,7 +12,6 @@ use Drago\Authorization\Conf;
 use Drago\Database\Database;
 
 
-/** Repository for accessing user-related data. */
 #[Table(AccessEntity::Table, AccessEntity::PrimaryKey)]
 class AccessRepository
 {

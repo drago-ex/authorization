@@ -15,7 +15,6 @@ class AuthorizationExtension extends CompilerExtension
 	private mixed $panel;
 
 
-	/** Register services to the container. */
 	public function loadConfiguration(): void
 	{
 		$builder = $this->getContainerBuilder();
@@ -32,7 +31,6 @@ class AuthorizationExtension extends CompilerExtension
 	}
 
 
-	/** Adjustments before compilation. */
 	public function afterCompile(ClassType $class): void
 	{
 		$init = $class->getMethods()['initialize'];

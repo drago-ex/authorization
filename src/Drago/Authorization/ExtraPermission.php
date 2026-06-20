@@ -14,7 +14,6 @@ use Nette\Security\Permission;
 use Nette\SmartObject;
 
 
-/** Manages user permissions. */
 class ExtraPermission
 {
 	use SmartObject;
@@ -28,7 +27,6 @@ class ExtraPermission
 	}
 
 
-	/** Creates the permissions based on roles, resources, and permissions from the database. */
 	public function create(): Permission
 	{
 		$acl = new Permission;

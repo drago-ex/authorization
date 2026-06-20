@@ -7,7 +7,6 @@ namespace Drago\Authorization\Control\Access;
 use Drago;
 
 
-/** Data class for Access roles. */
 class AccessRolesValues extends Drago\Utils\ExtraArrayHash
 {
 	public const string Id = 'id';

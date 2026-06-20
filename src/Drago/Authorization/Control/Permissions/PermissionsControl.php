@@ -49,7 +49,6 @@ class PermissionsControl extends Component implements Base
 	}
 
 
-	/** Renders the permissions control. */
 	public function render(): void
 	{
 		$template = $this->createRender();
@@ -58,7 +57,6 @@ class PermissionsControl extends Component implements Base
 	}
 
 
-	/** Handles the click event to open the component via AJAX. */
 	#[Requires(ajax: true)]
 	public function handleClickOpenComponent(): void
 	{
@@ -66,7 +64,6 @@ class PermissionsControl extends Component implements Base
 	}
 
 
-	/** Creates and returns the delete form. */
 	protected function createComponentDelete(): Form
 	{
 		$form = $this->createDelete($this->id);
@@ -82,7 +79,6 @@ class PermissionsControl extends Component implements Base
 	}
 
 
-	/** Deletes a permission and updates the cache. */
 	public function delete(Form $form, int $id): void
 	{
 		try {

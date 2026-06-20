@@ -7,7 +7,6 @@ namespace Drago\Authorization\Control\Access;
 use Drago;
 
 
-/** Entity representing a user role view in the system. */
 class AccessRolesViewEntity extends Drago\Database\Entity
 {
 	public const string

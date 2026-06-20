@@ -11,7 +11,6 @@ use Drago\Attr\Table;
 use Drago\Database\Database;
 
 
-/** Repository for retrieving data from the 'permissions_roles_view' table. */
 #[Table(PermissionsRolesViewEntity::Table, class: PermissionsRolesViewEntity::class)]
 class PermissionsRolesViewRepository
 {

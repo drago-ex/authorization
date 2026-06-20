@@ -13,7 +13,6 @@ use Drago\Database\Database;
 use Drago\Database\ExtraFluent;
 
 
-/** Repository class for managing Privileges entities. */
 #[Table(PrivilegesEntity::Table, PrivilegesEntity::PrimaryKey, class: PrivilegesEntity::class)]
 class PrivilegesRepository
 {

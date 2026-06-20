@@ -7,7 +7,6 @@ namespace Drago\Authorization\Control\Permissions;
 use Drago;
 
 
-/** Represents the data structure for the permissions roles view. */
 class PermissionsRolesViewEntity extends Drago\Database\Entity
 {
 	public const string

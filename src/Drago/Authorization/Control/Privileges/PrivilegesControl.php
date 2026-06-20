@@ -22,7 +22,6 @@ use Nette\SmartObject;
 use Throwable;
 
 
-/** Privileges control class responsible for managing privileges and their CRUD operations. */
 class PrivilegesControl extends Component implements Base
 {
 	use SmartObject;
@@ -38,7 +37,6 @@ class PrivilegesControl extends Component implements Base
 	}
 
 
-	/** Renders the template for the privileges control. */
 	public function render(): void
 	{
 		$template = $this->createRender();
@@ -47,7 +45,6 @@ class PrivilegesControl extends Component implements Base
 	}
 
 
-	/** Opens the component off-canvas (used in AJAX requests). */
 	#[Requires(ajax: true)]
 	public function handleClickOpenComponent(): void
 	{
@@ -55,7 +52,6 @@ class PrivilegesControl extends Component implements Base
 	}
 
 
-	/** Creates the delete confirmation form. */
 	protected function createComponentDelete(): Form
 	{
 		$form = $this->createDelete($this->id);
@@ -94,7 +90,6 @@ class PrivilegesControl extends Component implements Base
 	}
 
 
-	/** Creates the form for adding or editing privileges. */
 	protected function createComponentFactory(): Form
 	{
 		$form = $this->create();

@@ -9,7 +9,6 @@ use Drago\Attr\Table;
 use Drago\Database\Database;
 
 
-/** Repository for CRUD operations on PermissionsEntity. */
 #[Table(PermissionsEntity::Table, PermissionsEntity::PrimaryKey, class: PermissionsEntity::class)]
 class PermissionsRepository
 {

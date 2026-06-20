@@ -11,7 +11,6 @@ use Nette\Security\User;
 /** @property string $loginLink */
 trait Authorization
 {
-	/** Checks for requirements such as authorization. */
 	public function injectAuthorization(Presenter $presenter, User $user): void
 	{
 		$presenter->onStartup[] = function () use ($presenter, $user) {

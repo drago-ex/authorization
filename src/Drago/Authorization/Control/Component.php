@@ -25,22 +25,17 @@ abstract class Component extends UI\ExtraControl
 	#[Parameter]
 	public int $id = 0;
 
-	/** Custom control template */
 	public ?string $templateControl = null;
 
-	/** Custom grid template. */
 	public ?string $templateGrid = null;
 
-	/** Delete item name. */
 	public ?string $deleteItems = null;
 
-	/** Base snippets. */
 	protected string $snippetMessage = 'message';
 	protected string $snippetDeleteItem = 'delete';
 	protected string $snippetDeleteTitle = 'title';
 
 
-	/** Creates and prepares the template for rendering. */
 	public function createRender(): Template
 	{
 		$template = $this->template;
@@ -58,7 +53,6 @@ abstract class Component extends UI\ExtraControl
 	}
 
 
-	/** Calls the offcanvas component. */
 	public function offCanvasComponent(): void
 	{
 		$component = $this->getUniqueIdComponent(self::Offcanvas);
@@ -67,7 +61,6 @@ abstract class Component extends UI\ExtraControl
 	}
 
 
-	/** Calls the modal component. */
 	public function modalComponent(): void
 	{
 		$component = $this->getUniqueIdComponent(self::Modal);
@@ -82,7 +75,6 @@ abstract class Component extends UI\ExtraControl
 	}
 
 
-	/** Closes modal or offcanvas component. */
 	public function closeComponent(): void
 	{
 		$this->getPresenter()->payload
@@ -90,7 +82,6 @@ abstract class Component extends UI\ExtraControl
 	}
 
 
-	/** Flash a message on the presenter. */
 	public function flashMessageOnPresenter(string|\stdClass|\Stringable $message, string $type = 'info'): void
 	{
 		$this->getPresenter()
@@ -98,7 +89,6 @@ abstract class Component extends UI\ExtraControl
 	}
 
 
-	/** Redraws the snippet message on the presenter. */
 	public function redrawMessageOnPresenter(): void
 	{
 		$this->getPresenter()
@@ -106,7 +96,6 @@ abstract class Component extends UI\ExtraControl
 	}
 
 
-	/** Redraw the delete factory snippet. */
 	public function redrawDeleteFactory(): void
 	{
 		$this->redrawControl($this->snippetDeleteItem);
@@ -116,7 +105,6 @@ abstract class Component extends UI\ExtraControl
 	}
 
 
-	/** Redraw the grid component. */
 	public function redrawGrid(): void
 	{
 		$grid = $this['grid'];
@@ -125,7 +113,6 @@ abstract class Component extends UI\ExtraControl
 	}
 
 
-	/** Redraw all necessary parts after a delete action. */
 	public function redrawDeleteFactoryAll(): void
 	{
 		$this->redrawDeleteFactory();
@@ -134,7 +121,6 @@ abstract class Component extends UI\ExtraControl
 	}
 
 
-	/** Redraw the factory with a success message. */
 	public function redrawSuccessFactory(): void
 	{
 		$this->redrawMessageOnPresenter();

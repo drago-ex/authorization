@@ -12,7 +12,6 @@ use Drago\Database\Database;
 use Drago\Database\ExtraFluent;
 
 
-/** Repository for handling the 'permissions_view' table. */
 #[Table(PermissionsViewEntity::Table, class: PermissionsViewEntity::class)]
 class PermissionsViewRepository
 {

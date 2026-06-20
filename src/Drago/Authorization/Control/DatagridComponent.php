@@ -12,7 +12,6 @@ use Contributte\Datagrid\Filter\FilterText;
 use Nette\ComponentModel\IContainer;
 
 
-/** Datagrid component with custom actions and translations. */
 class DatagridComponent extends Datagrid
 {
 	public function __construct(
@@ -23,7 +22,6 @@ class DatagridComponent extends Datagrid
 	}
 
 
-	/** Translates the given name. */
 	public function translate(string $name): ?string
 	{
 		$translate = $this->translator?->translate($name);
@@ -31,14 +29,12 @@ class DatagridComponent extends Datagrid
 	}
 
 
-	/** Translates the filter name. */
 	public function translateFilter(string $name): string
 	{
 		return (string) ($this->translator?->translate($name) ?? $name);
 	}
 
 
-	/** Adds a basic column with text filter. */
 	public function addColumnBase(string $key, string $name, ?string $column = null): FilterText
 	{
 		return $this->addColumnText($key, $name, $column)

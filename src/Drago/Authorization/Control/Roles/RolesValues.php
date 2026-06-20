@@ -12,9 +12,6 @@ namespace Drago\Authorization\Control\Roles;
 use Drago;
 
 
-/**
- * Represents role data, extending ExtraArrayHash and utilizing the RolesMapper for mapping role attributes.
- */
 class RolesValues extends Drago\Utils\ExtraArrayHash
 {
 	use RolesMapper;

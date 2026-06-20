@@ -24,7 +24,6 @@ use Nette\SmartObject;
 use Throwable;
 
 
-/** Manages user role assignments and access control. */
 class AccessControl extends Component implements Base
 {
 	use SmartObject;
@@ -43,7 +42,6 @@ class AccessControl extends Component implements Base
 	}
 
 
-	/** Renders the access control template. */
 	public function render(): void
 	{
 		$template = $this->createRender();
@@ -52,7 +50,6 @@ class AccessControl extends Component implements Base
 	}
 
 
-	/** Opens the component offcanvas. */
 	#[Requires(ajax: true)]
 	public function handleClickOpenComponent(): void
 	{
@@ -60,7 +57,6 @@ class AccessControl extends Component implements Base
 	}
 
 
-	/** Creates the delete form for user access. */
 	protected function createComponentDelete(): Form
 	{
 		$form = $this->createDelete($this->id);
@@ -76,7 +72,6 @@ class AccessControl extends Component implements Base
 	}
 
 
-	/** Deletes user access. */
 	public function delete(Form $form, int $id): void
 	{
 		try {
@@ -108,7 +103,7 @@ class AccessControl extends Component implements Base
 			$user = $this->accessRepository->getUserById($this->id);
 		}
 
-		/** @var array<int, string> $items */
+		/** @temp array<int, string> $items */
 		$items = is_array($user) ? $user : $users;
 
 		$form->addSelect(AccessRolesEntity::ColumnUserId, 'User', $items)

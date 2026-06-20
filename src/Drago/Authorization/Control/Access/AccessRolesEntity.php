@@ -7,7 +7,6 @@ namespace Drago\Authorization\Control\Access;
 use Drago;
 
 
-/** Entity class for user roles in the system. */
 class AccessRolesEntity extends Drago\Database\Entity
 {
 	public const string

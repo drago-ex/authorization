@@ -7,7 +7,6 @@ namespace Drago\Authorization\Control\Privileges;
 use Drago;
 
 
-/** This class represents a privilege entity mapped to the 'privileges' table. */
 class PrivilegesEntity extends Drago\Database\Entity
 {
 	use PrivilegesMapper;

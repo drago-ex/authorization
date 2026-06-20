@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Drago\Authorization;
 
 
-/** Default setting for ACL. */
 final class Conf
 {
 	public const string
@@ -16,7 +15,6 @@ final class Conf
 	/** Option to specify privileges for all actions and signals. */
 	public const string PrivilegeAll = '*';
 
-	/** Acl cache. */
 	public const string Cache = 'drago.aclCache';
 
 

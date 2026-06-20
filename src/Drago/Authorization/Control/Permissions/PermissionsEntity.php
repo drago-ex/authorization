@@ -7,7 +7,6 @@ namespace Drago\Authorization\Control\Permissions;
 use Drago;
 
 
-/** Entity class for managing permission records. */
 class PermissionsEntity extends Drago\Database\Entity
 {
 	use PermissionsMapper;

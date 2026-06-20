@@ -8,7 +8,6 @@ use Nette\Http\Session;
 use Nette\Http\SessionSection;
 
 
-/** Handles the session management for storing and retrieving role-related information. */
 class PanelCookie
 {
 	public string $section = 'roles';
@@ -33,14 +32,12 @@ class PanelCookie
 	}
 
 
-	/** Loads the saved role items from the session section. */
 	public function load(): mixed
 	{
 		return $this->sessionSection->get($this->section);
 	}
 
 
-	/** Removes the role data from the session section. */
 	public function remove(): void
 	{
 		$this->sessionSection->remove($this->section);
