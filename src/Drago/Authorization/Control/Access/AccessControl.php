@@ -103,7 +103,7 @@ class AccessControl extends Component implements Base
 			$user = $this->accessRepository->getUserById($this->id);
 		}
 
-		/** @temp array<int, string> $items */
+		/** @var array<int, string> $items */
 		$items = is_array($user) ? $user : $users;
 
 		$form->addSelect(AccessRolesEntity::ColumnUserId, 'User', $items)

@@ -85,7 +85,7 @@ class RolesRepository
 	 */
 	public function findParent(int $id): array|RolesEntity|null
 	{
-		/** @temp array<string, mixed>|RolesEntity|null $row */
+		/** @var array<string, mixed>|RolesEntity|null $row */
 		$row = $this->find(RolesEntity::ColumnParent, $id)->fetch();
 		if ($row) {
 			throw new NotAllowedChange(

@@ -21,10 +21,10 @@
 		<div style="background-color: #eee; padding: 8px; border-radius: 3px">
 			<?php use Nette\Security\User; ?>
 			<?php use Nette\Security\Permission; ?>
-			<?php /**@temp User $user */ ?>
+			<?php /**@var User $user */ ?>
 			<?php if ($user->isLoggedIn() === true): ?>
 				<form>
-					<?php /**@temp Permission $permission */ ?>
+					<?php /**@var Permission $permission */ ?>
 					<?php foreach ($permission->getRoles() as $role): ?>
 						<label>
 							<input type="checkbox" <?php if ($user->isInRole($role)): ?>checked="checked" <?php endif; ?>name="rolesList[]" value="<?php echo $role; ?>">
