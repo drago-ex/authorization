@@ -79,13 +79,13 @@ class AccessControl extends Component implements Base
 				->delete(AccessRolesEntity::ColumnUserId, $id)
 				->execute();
 
-			$this->flashMessageOnPresenter('Access deleted.');
+			$this->addFlashMessage('Access deleted.');
 			$this->closeComponent();
 			$this->redrawDeleteFactoryAll();
 
 		} catch (Throwable $e) {
-			$this->flashMessageOnPresenter('Unknown status code.', Alert::Warning);
-			$this->redrawMessageOnPresenter();
+			$this->addFlashMessage('Unknown status code.', Alert::Warning);
+			$this->addRedraw($this->snippetMessage);
 		}
 	}
 
@@ -164,7 +164,7 @@ class AccessControl extends Component implements Base
 			}
 
 			$this->accessRolesRepository->getConnection()->commit();
-			$this->flashMessageOnPresenter(isset($data->id) ? 'Roles updated.' : 'Role assigned.', Alert::Success);
+			$this->addFlashMessage(isset($data->id) ? 'Roles updated.' : 'Role assigned.', Alert::Success);
 
 			if (isset($data->user_id)) {
 				$this->closeComponent();

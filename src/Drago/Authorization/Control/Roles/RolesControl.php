@@ -76,13 +76,13 @@ class RolesControl extends Component implements Base
 		try {
 			$this->rolesRepository->delete(RolesEntity::PrimaryKey, $id)->execute();
 			$this->cache->remove(Conf::Cache);
-			$this->flashMessageOnPresenter('Role deleted.');
+			$this->addFlashMessage('Role deleted.');
 			$this->closeComponent();
 			$this->redrawDeleteFactoryAll();
 
 		} catch (Throwable $e) {
-			$this->flashMessageOnPresenter('Unknown status code.', Alert::Warning);
-			$this->redrawMessageOnPresenter();
+			$this->addFlashMessage('Unknown status code.', Alert::Warning);
+			$this->addRedraw($this->snippetMessage);
 		}
 	}
 
@@ -139,7 +139,7 @@ class RolesControl extends Component implements Base
 			}
 
 			$message = isset($data->id) ? 'Role updated.' : 'The role was inserted.';
-			$this->flashMessageOnPresenter($message, Alert::Success);
+			$this->addFlashMessage($message, Alert::Success);
 
 			if (isset($data->id)) {
 				$this->closeComponent();
@@ -186,8 +186,8 @@ class RolesControl extends Component implements Base
 					default => 'Unknown status code.',
 				};
 
-				$this->flashMessageOnPresenter($message, Alert::Warning);
-				$this->redrawMessageOnPresenter();
+				$this->addFlashMessage($message, Alert::Warning);
+				$this->addRedraw($this->snippetMessage);
 			}
 		}
 	}
@@ -215,8 +215,8 @@ class RolesControl extends Component implements Base
 					default => 'Unknown status code.',
 				};
 
-				$this->flashMessageOnPresenter($message, Alert::Warning);
-				$this->redrawMessageOnPresenter();
+				$this->addFlashMessage($message, Alert::Warning);
+				$this->addRedraw($this->snippetMessage);
 			}
 		}
 	}

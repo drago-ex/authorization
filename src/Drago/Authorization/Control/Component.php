@@ -56,7 +56,7 @@ abstract class Component extends UI\ExtraControl
 	public function offCanvasComponent(): void
 	{
 		$component = $this->getUniqueIdComponent(self::Offcanvas);
-		$this->getPresenter()->payload->{self::Offcanvas} = $component;
+		$this->setPayload(self::Offcanvas, $component);
 		$this->redrawControl($this->snippetFactory);
 	}
 
@@ -64,7 +64,7 @@ abstract class Component extends UI\ExtraControl
 	public function modalComponent(): void
 	{
 		$component = $this->getUniqueIdComponent(self::Modal);
-		$this->getPresenter()->payload->{self::Modal} = $component;
+		$this->setPayload(self::Modal, $component);
 		$this->redrawControl($this->snippetDeleteItem);
 
 		if ($this->templateControl) {
@@ -77,22 +77,7 @@ abstract class Component extends UI\ExtraControl
 
 	public function closeComponent(): void
 	{
-		$this->getPresenter()->payload
-			->close = 'close';
-	}
-
-
-	public function flashMessageOnPresenter(string|\stdClass|\Stringable $message, string $type = 'info'): void
-	{
-		$this->getPresenter()
-			->flashMessage($message, $type);
-	}
-
-
-	public function redrawMessageOnPresenter(): void
-	{
-		$this->getPresenter()
-			->redrawControl($this->snippetMessage);
+		$this->setPayload('close', 'close');
 	}
 
 
@@ -116,14 +101,14 @@ abstract class Component extends UI\ExtraControl
 	public function redrawDeleteFactoryAll(): void
 	{
 		$this->redrawDeleteFactory();
-		$this->redrawMessageOnPresenter();
+		$this->addRedraw($this->snippetMessage);
 		$this->redrawGrid();
 	}
 
 
 	public function redrawSuccessFactory(): void
 	{
-		$this->redrawMessageOnPresenter();
+		$this->addRedraw($this->snippetMessage);
 		$this->redrawControl($this->snippetFactory);
 		$this->redrawGrid();
 	}

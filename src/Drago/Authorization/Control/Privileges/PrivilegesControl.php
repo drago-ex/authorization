@@ -75,7 +75,7 @@ class PrivilegesControl extends Component implements Base
 				->execute();
 
 			$this->cache->remove(Conf::Cache);
-			$this->flashMessageOnPresenter('Privilege deleted.');
+			$this->addFlashMessage('Privilege deleted.');
 			$this->closeComponent();
 			$this->redrawDeleteFactoryAll();
 
@@ -84,8 +84,8 @@ class PrivilegesControl extends Component implements Base
 				1451 => 'The privilege can not be deleted, you must first delete the records that are associated with it.',
 				default => 'Unknown status code.',
 			};
-			$this->flashMessageOnPresenter($message, Alert::Warning);
-			$this->redrawMessageOnPresenter();
+			$this->addFlashMessage($message, Alert::Warning);
+			$this->addRedraw($this->snippetMessage);
 		}
 	}
 
@@ -117,7 +117,7 @@ class PrivilegesControl extends Component implements Base
 			$this->cache->remove(Conf::Cache);
 
 			$message = isset($data->id) ? 'Privilege updated.' : 'Privilege inserted.';
-			$this->flashMessageOnPresenter($message, Alert::Success);
+			$this->addFlashMessage($message, Alert::Success);
 
 			if (isset($data->id)) {
 				$this->closeComponent();
@@ -162,8 +162,8 @@ class PrivilegesControl extends Component implements Base
 					default => 'Unknown status code.',
 				};
 
-				$this->flashMessageOnPresenter($message, Alert::Warning);
-				$this->redrawMessageOnPresenter();
+				$this->addFlashMessage($message, Alert::Warning);
+				$this->addRedraw($this->snippetMessage);
 			}
 		}
 	}
@@ -190,8 +190,8 @@ class PrivilegesControl extends Component implements Base
 					default => 'Unknown status code.',
 				};
 
-				$this->flashMessageOnPresenter($message, Alert::Warning);
-				$this->redrawMessageOnPresenter();
+				$this->addFlashMessage($message, Alert::Warning);
+				$this->addRedraw($this->snippetMessage);
 			}
 		}
 	}

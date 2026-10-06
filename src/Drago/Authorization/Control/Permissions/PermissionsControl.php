@@ -87,14 +87,14 @@ class PermissionsControl extends Component implements Base
 				->execute();
 
 			$this->cache->remove(Conf::Cache);
-			$this->flashMessageOnPresenter('Permissions deleted.');
+			$this->addFlashMessage('Permissions deleted.');
 			$this->closeComponent();
 			$this->redrawDeleteFactoryAll();
 
 		} catch (Throwable $e) {
 			$message = 'Unknown status code.';
-			$this->flashMessageOnPresenter($message, Alert::Warning);
-			$this->redrawMessageOnPresenter();
+			$this->addFlashMessage($message, Alert::Warning);
+			$this->addRedraw($this->snippetMessage);
 		}
 	}
 
@@ -155,7 +155,7 @@ class PermissionsControl extends Component implements Base
 			$this->cache->remove(Conf::Cache);
 
 			$message = isset($data->id) ? 'Permission was updated.' : 'Permission added.';
-			$this->flashMessageOnPresenter($message, Alert::Success);
+			$this->addFlashMessage($message, Alert::Success);
 
 			if (isset($data->id)) {
 				$this->closeComponent();
@@ -233,8 +233,8 @@ class PermissionsControl extends Component implements Base
 			$entity->allowed = $value;
 
 			$this->permissionsRepository->save($entity);
-			$this->flashMessageOnPresenter('Authorization has been changed.');
-			$this->redrawMessageOnPresenter();
+			$this->addFlashMessage('Authorization has been changed.');
+			$this->addRedraw($this->snippetMessage);
 			$this->redrawGrid();
 		}
 	}

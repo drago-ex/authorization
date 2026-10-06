@@ -74,7 +74,7 @@ class ResourcesControl extends Component implements Base
 				->execute();
 
 			$this->cache->remove(Conf::Cache);
-			$this->flashMessageOnPresenter('Resource deleted.');
+			$this->addFlashMessage('Resource deleted.');
 			$this->closeComponent();
 			$this->redrawDeleteFactoryAll();
 
@@ -83,8 +83,8 @@ class ResourcesControl extends Component implements Base
 				1451 => 'The resource can not be deleted, you must first delete the records that are associated with it.',
 				default => 'Unknown status code.',
 			};
-			$this->flashMessageOnPresenter($message, Alert::Warning);
-			$this->redrawMessageOnPresenter();
+			$this->addFlashMessage($message, Alert::Warning);
+			$this->addRedraw($this->snippetMessage);
 		}
 	}
 
@@ -116,7 +116,7 @@ class ResourcesControl extends Component implements Base
 			$this->cache->remove(Conf::Cache);
 
 			$message = isset($data->id) ? 'Resource updated.' : 'Resource inserted.';
-			$this->flashMessageOnPresenter($message, Alert::Success);
+			$this->addFlashMessage($message, Alert::Success);
 
 			if (isset($data->id)) {
 				$this->closeComponent();
