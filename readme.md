@@ -9,17 +9,20 @@ It provides an easy-to-use solution for managing roles, resources, and permissio
 [![Coding Style](https://github.com/drago-ex/authorization/actions/workflows/coding-style.yml/badge.svg)](https://github.com/drago-ex/authorization/actions/workflows/coding-style.yml)
 
 ## Requirements
+
 - PHP >= 8.3
 - Nette Framework
 - Composer
 - Bootstrap
 
 ## Installation
+
 ```
 composer require drago-ex/authorization
 ```
 
 ## Extension Registration
+
 To use Drago Authorization in your Nette application, register the extension in your `config.neon` file:
 ```neon
 extensions:
@@ -29,6 +32,7 @@ extensions:
 ## Examples
 
 ## Use Trait in Base Presenter for Access Control
+
 You can use the `Authorization` trait in your base presenter to manage access control and redirect users to the login page if needed.
 
 ```php
@@ -39,12 +43,14 @@ private string $loginLink = ':Module:Presenter:';
 ```
 
 ## Use Trait in Presenter for Access Control Settings
+
 In each presenter, use the `AuthorizationControl` trait to manage authorization control.
 ```php
 use Drago\Authorization\Control\AuthorizationControl;
 ```
 
 ## Component Creation and Configuration
+
 Here's how to create and configure the main components for managing roles, permissions, and resources:
 ```php
 // Minimum configuration to create components.
@@ -86,6 +92,7 @@ $control->translator = $this->getTranslator();
 ```
 
 ## Use Components in Latte
+
 Once the components are configured, you can render them in your Latte templates:
 ```latte
 {control permissionsControl}
