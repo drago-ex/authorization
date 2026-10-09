@@ -1,7 +1,7 @@
 {
 	"name": "drago-ex/authorization",
-	"type": "library",
 	"description": "A simple dynamic access control list (ACL) management system for Nette Framework, with support for roles, permissions, and resources",
+	"type": "library",
 	"license": ["MIT"],
 	"authors": [
 		{
