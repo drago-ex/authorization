@@ -56,111 +56,6 @@ class RolesControl extends Component implements Base
 	}
 
 
-	protected function createComponentDelete(): Form
-	{
-		$form = $this->createDelete($this->id);
-		$form->addSubmit('confirm', 'Confirm')
-			->onClick[] = function (SubmitButton $button): void {
-				$form = $button->getForm();
-				if ($form instanceof Form) {
-					$id = (int) $form->getValues()['id'];
-					$this->delete($form, $id);
-				}
-			};
-		return $form;
-	}
-
-
-	private function delete(Form $form, int $id): void
-	{
-		try {
-			$this->rolesRepository->delete(RolesEntity::PrimaryKey, $id)->execute();
-			$this->cache->remove(Conf::Cache);
-			$this->addFlashMessage('Role deleted.');
-			$this->closeComponent();
-			$this->redrawDeleteFactoryAll();
-
-		} catch (Throwable $e) {
-			$this->addFlashMessage('Unknown status code.', Alert::Warning);
-			$this->addRedraw($this->snippetMessage);
-		}
-	}
-
-
-	/** Creates and returns the form for role creation/editing.
-	 * @throws AttributeDetectionException
-	 */
-	protected function createComponentFactory(): Form
-	{
-		$form = $this->create();
-		$form->addText(RolesEntity::ColumnName, 'Role')
-			->setHtmlAttribute('placeholder', 'Role name')
-			->setHtmlAttribute('autocomplete', 'off')
-			->setRequired();
-
-		$roles = [];
-		if ($this->getSignal()) {
-			foreach ($this->rolesRepository->getRoles() as $key => $item) {
-				if ($this->id !== $key) {
-					$roles[$key] = $item;
-				}
-			}
-		}
-
-		$form->addSelect(RolesEntity::ColumnParent, 'Parent', $roles !== [] ? $roles : $this->rolesRepository->getRoles())
-			->setPrompt('Select parent')
-			->setRequired();
-
-		$form->addHidden(RolesEntity::PrimaryKey)
-			->setNullable()
-			->addRule($form::Integer);
-
-		$form->addSubmit('send', 'Send');
-		$form->onSuccess[] = function (Form $form, RolesValues $data): void {
-			$this->success($form, $data);
-		};
-		return $form;
-	}
-
-
-	private function success(Form $form, RolesValues $data): void
-	{
-		try {
-			if (isset($data->id, $data->parent) && (int) $data->id < (int) $data->parent) {
-				throw new \Exception('It is not allowed to select a higher parent.');
-			}
-
-			$this->rolesRepository->save((array) $data);
-			$this->cache->remove(Conf::Cache);
-
-			$parent = $this['factory']['parent'];
-			if ($parent instanceof SelectBox) {
-				$parent->setItems($this->rolesRepository->getRoles());
-			}
-
-			$message = isset($data->id) ? 'Role updated.' : 'The role was inserted.';
-			$this->addFlashMessage($message, Alert::Success);
-
-			if (isset($data->id)) {
-				$this->closeComponent();
-			}
-
-			$this->redrawSuccessFactory();
-			$form->reset();
-
-		} catch (Throwable $e) {
-			$message = match ($e->getCode()) {
-				1 => $e->getMessage(),
-				1062 => 'This role already exists.',
-				default => 'Unknown status code.',
-			};
-
-			$form->addError($message);
-			$this->redrawControl($this->snippetFactory);
-		}
-	}
-
-
 	/**
 	 * Edits user roles by ID.
 	 * @throws AttributeDetectionException
@@ -222,6 +117,57 @@ class RolesControl extends Component implements Base
 	}
 
 
+	protected function createComponentDelete(): Form
+	{
+		$form = $this->createDelete($this->id);
+		$form->addSubmit('confirm', 'Confirm')
+			->onClick[] = function (SubmitButton $button): void {
+				$form = $button->getForm();
+				if ($form instanceof Form) {
+					$id = (int) $form->getValues()['id'];
+					$this->delete($form, $id);
+				}
+			};
+		return $form;
+	}
+
+
+	/** Creates and returns the form for role creation/editing.
+	 * @throws AttributeDetectionException
+	 */
+	protected function createComponentFactory(): Form
+	{
+		$form = $this->create();
+		$form->addText(RolesEntity::ColumnName, 'Role')
+			->setHtmlAttribute('placeholder', 'Role name')
+			->setHtmlAttribute('autocomplete', 'off')
+			->setRequired();
+
+		$roles = [];
+		if ($this->getSignal()) {
+			foreach ($this->rolesRepository->getRoles() as $key => $item) {
+				if ($this->id !== $key) {
+					$roles[$key] = $item;
+				}
+			}
+		}
+
+		$form->addSelect(RolesEntity::ColumnParent, 'Parent', $roles !== [] ? $roles : $this->rolesRepository->getRoles())
+			->setPrompt('Select parent')
+			->setRequired();
+
+		$form->addHidden(RolesEntity::PrimaryKey)
+			->setNullable()
+			->addRule($form::Integer);
+
+		$form->addSubmit('send', 'Send');
+		$form->onSuccess[] = function (Form $form, RolesValues $data): void {
+			$this->success($form, $data);
+		};
+		return $form;
+	}
+
+
 	/** Creates and configures a data grid for roles.
 	 * @throws AttributeDetectionException
 	 * @throws DatagridException
@@ -255,5 +201,59 @@ class RolesControl extends Component implements Base
 		$grid->addActionEdit('edit', 'Edit');
 		$grid->addActionDeleteBase('delete', 'Delete');
 		return $grid;
+	}
+
+
+	private function delete(Form $form, int $id): void
+	{
+		try {
+			$this->rolesRepository->delete(RolesEntity::PrimaryKey, $id)->execute();
+			$this->cache->remove(Conf::Cache);
+			$this->addFlashMessage('Role deleted.');
+			$this->closeComponent();
+			$this->redrawDeleteFactoryAll();
+
+		} catch (Throwable $e) {
+			$this->addFlashMessage('Unknown status code.', Alert::Warning);
+			$this->addRedraw($this->snippetMessage);
+		}
+	}
+
+
+	private function success(Form $form, RolesValues $data): void
+	{
+		try {
+			if (isset($data->id, $data->parent) && (int) $data->id < (int) $data->parent) {
+				throw new \Exception('It is not allowed to select a higher parent.');
+			}
+
+			$this->rolesRepository->save((array) $data);
+			$this->cache->remove(Conf::Cache);
+
+			$parent = $this['factory']['parent'];
+			if ($parent instanceof SelectBox) {
+				$parent->setItems($this->rolesRepository->getRoles());
+			}
+
+			$message = isset($data->id) ? 'Role updated.' : 'The role was inserted.';
+			$this->addFlashMessage($message, Alert::Success);
+
+			if (isset($data->id)) {
+				$this->closeComponent();
+			}
+
+			$this->redrawSuccessFactory();
+			$form->reset();
+
+		} catch (Throwable $e) {
+			$message = match ($e->getCode()) {
+				1 => $e->getMessage(),
+				1062 => 'This role already exists.',
+				default => 'Unknown status code.',
+			};
+
+			$form->addError($message);
+			$this->redrawControl($this->snippetFactory);
+		}
 	}
 }

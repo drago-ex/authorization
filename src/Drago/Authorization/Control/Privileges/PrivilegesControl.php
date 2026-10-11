@@ -52,21 +52,6 @@ class PrivilegesControl extends Component implements Base
 	}
 
 
-	protected function createComponentDelete(): Form
-	{
-		$form = $this->createDelete($this->id);
-		$form->addSubmit('confirm', 'Confirm')
-			->onClick[] = function (SubmitButton $button): void {
-				$form = $button->getForm();
-				if ($form instanceof Form) {
-					$id = (int) $form->getValues()['id'];
-					$this->delete($form, $id);
-				}
-			};
-		return $form;
-	}
-
-
 	public function delete(Form $form, int $id): void
 	{
 		try {
@@ -86,53 +71,6 @@ class PrivilegesControl extends Component implements Base
 			};
 			$this->addFlashMessage($message, Alert::Warning);
 			$this->addRedraw($this->snippetMessage);
-		}
-	}
-
-
-	protected function createComponentFactory(): Form
-	{
-		$form = $this->create();
-		$form->addText(PrivilegesEntity::ColumnName, 'Action or signal')
-			->setHtmlAttribute('placeholder', 'Name action or signal')
-			->setHtmlAttribute('autocomplete', 'off')
-			->setRequired();
-
-		$form->addHidden(PrivilegesEntity::PrimaryKey)
-			->setNullable()
-			->addRule($form::Integer);
-
-		$form->addSubmit('send', 'Send');
-		$form->onSuccess[] = function (Form $form, PrivilegesValues $data): void {
-			$this->success($form, $data);
-		};
-		return $form;
-	}
-
-
-	private function success(Form $form, PrivilegesValues $data): void
-	{
-		try {
-			$this->privilegesRepository->save((array) $data);
-			$this->cache->remove(Conf::Cache);
-
-			$message = isset($data->id) ? 'Privilege updated.' : 'Privilege inserted.';
-			$this->addFlashMessage($message, Alert::Success);
-
-			if (isset($data->id)) {
-				$this->closeComponent();
-			}
-			$this->redrawSuccessFactory();
-			$form->reset();
-
-		} catch (Throwable $e) {
-			$message = match ($e->getCode()) {
-				1062 => 'This privilege already exists.',
-				default => 'Unknown status code.',
-			};
-
-			$form->addError($message);
-			$this->redrawControl($this->snippetFactory);
 		}
 	}
 
@@ -197,6 +135,41 @@ class PrivilegesControl extends Component implements Base
 	}
 
 
+	protected function createComponentDelete(): Form
+	{
+		$form = $this->createDelete($this->id);
+		$form->addSubmit('confirm', 'Confirm')
+			->onClick[] = function (SubmitButton $button): void {
+				$form = $button->getForm();
+				if ($form instanceof Form) {
+					$id = (int) $form->getValues()['id'];
+					$this->delete($form, $id);
+				}
+			};
+		return $form;
+	}
+
+
+	protected function createComponentFactory(): Form
+	{
+		$form = $this->create();
+		$form->addText(PrivilegesEntity::ColumnName, 'Action or signal')
+			->setHtmlAttribute('placeholder', 'Name action or signal')
+			->setHtmlAttribute('autocomplete', 'off')
+			->setRequired();
+
+		$form->addHidden(PrivilegesEntity::PrimaryKey)
+			->setNullable()
+			->addRule($form::Integer);
+
+		$form->addSubmit('send', 'Send');
+		$form->onSuccess[] = function (Form $form, PrivilegesValues $data): void {
+			$this->success($form, $data);
+		};
+		return $form;
+	}
+
+
 	/** Creates the data grid for listing privileges.
 	 * @throws DatagridException
 	 * @throws AttributeDetectionException
@@ -218,5 +191,32 @@ class PrivilegesControl extends Component implements Base
 		$grid->addActionEdit('edit', 'Edit');
 		$grid->addActionDeleteBase('delete', 'Delete');
 		return $grid;
+	}
+
+
+	private function success(Form $form, PrivilegesValues $data): void
+	{
+		try {
+			$this->privilegesRepository->save((array) $data);
+			$this->cache->remove(Conf::Cache);
+
+			$message = isset($data->id) ? 'Privilege updated.' : 'Privilege inserted.';
+			$this->addFlashMessage($message, Alert::Success);
+
+			if (isset($data->id)) {
+				$this->closeComponent();
+			}
+			$this->redrawSuccessFactory();
+			$form->reset();
+
+		} catch (Throwable $e) {
+			$message = match ($e->getCode()) {
+				1062 => 'This privilege already exists.',
+				default => 'Unknown status code.',
+			};
+
+			$form->addError($message);
+			$this->redrawControl($this->snippetFactory);
+		}
 	}
 }

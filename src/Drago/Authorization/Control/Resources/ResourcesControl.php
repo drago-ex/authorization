@@ -51,21 +51,6 @@ class ResourcesControl extends Component implements Base
 	}
 
 
-	protected function createComponentDelete(): Form
-	{
-		$form = $this->createDelete($this->id);
-		$form->addSubmit('confirm', 'Confirm')
-			->onClick[] = function (SubmitButton $button): void {
-				$form = $button->getForm();
-				if ($form instanceof Form) {
-					$id = (int) $form->getValues()['id'];
-					$this->delete($form, $id);
-				}
-			};
-		return $form;
-	}
-
-
 	public function delete(Form $form, int $id): void
 	{
 		try {
@@ -85,53 +70,6 @@ class ResourcesControl extends Component implements Base
 			};
 			$this->addFlashMessage($message, Alert::Warning);
 			$this->addRedraw($this->snippetMessage);
-		}
-	}
-
-
-	protected function createComponentFactory(): Form
-	{
-		$form = $this->create();
-		$form->addText(ResourcesEntity::ColumnName, 'Source')
-			->setHtmlAttribute('placeholder', 'Source name')
-			->setHtmlAttribute('autocomplete', 'off')
-			->setRequired();
-
-		$form->addHidden(ResourcesEntity::PrimaryKey)
-			->setNullable()
-			->addRule($form::Integer);
-
-		$form->addSubmit('send', 'Send');
-		$form->onSuccess[] = function (Form $form, ResourcesValues $data): void {
-			$this->success($form, $data);
-		};
-		return $form;
-	}
-
-
-	private function success(Form $form, ResourcesValues $data): void
-	{
-		try {
-			$this->resourcesRepository->save((array) $data);
-			$this->cache->remove(Conf::Cache);
-
-			$message = isset($data->id) ? 'Resource updated.' : 'Resource inserted.';
-			$this->addFlashMessage($message, Alert::Success);
-
-			if (isset($data->id)) {
-				$this->closeComponent();
-			}
-			$this->redrawSuccessFactory();
-			$form->reset();
-
-		} catch (Throwable $e) {
-			$message = match ($e->getCode()) {
-				1062 => 'This resource already exists.',
-				default => 'Unknown status code.',
-			};
-
-			$form->addError($message);
-			$this->redrawControl($this->snippetFactory);
 		}
 	}
 
@@ -170,6 +108,41 @@ class ResourcesControl extends Component implements Base
 	}
 
 
+	protected function createComponentDelete(): Form
+	{
+		$form = $this->createDelete($this->id);
+		$form->addSubmit('confirm', 'Confirm')
+			->onClick[] = function (SubmitButton $button): void {
+				$form = $button->getForm();
+				if ($form instanceof Form) {
+					$id = (int) $form->getValues()['id'];
+					$this->delete($form, $id);
+				}
+			};
+		return $form;
+	}
+
+
+	protected function createComponentFactory(): Form
+	{
+		$form = $this->create();
+		$form->addText(ResourcesEntity::ColumnName, 'Source')
+			->setHtmlAttribute('placeholder', 'Source name')
+			->setHtmlAttribute('autocomplete', 'off')
+			->setRequired();
+
+		$form->addHidden(ResourcesEntity::PrimaryKey)
+			->setNullable()
+			->addRule($form::Integer);
+
+		$form->addSubmit('send', 'Send');
+		$form->onSuccess[] = function (Form $form, ResourcesValues $data): void {
+			$this->success($form, $data);
+		};
+		return $form;
+	}
+
+
 	/** Creates the grid component for displaying resources.
 	 * @throws DatagridException
 	 * @throws AttributeDetectionException
@@ -191,5 +164,32 @@ class ResourcesControl extends Component implements Base
 		$grid->addActionEdit('edit', 'Edit');
 		$grid->addActionDeleteBase('delete', 'Delete');
 		return $grid;
+	}
+
+
+	private function success(Form $form, ResourcesValues $data): void
+	{
+		try {
+			$this->resourcesRepository->save((array) $data);
+			$this->cache->remove(Conf::Cache);
+
+			$message = isset($data->id) ? 'Resource updated.' : 'Resource inserted.';
+			$this->addFlashMessage($message, Alert::Success);
+
+			if (isset($data->id)) {
+				$this->closeComponent();
+			}
+			$this->redrawSuccessFactory();
+			$form->reset();
+
+		} catch (Throwable $e) {
+			$message = match ($e->getCode()) {
+				1062 => 'This resource already exists.',
+				default => 'Unknown status code.',
+			};
+
+			$form->addError($message);
+			$this->redrawControl($this->snippetFactory);
+		}
 	}
 }

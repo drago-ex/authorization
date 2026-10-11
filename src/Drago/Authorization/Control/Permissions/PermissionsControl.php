@@ -64,21 +64,6 @@ class PermissionsControl extends Component implements Base
 	}
 
 
-	protected function createComponentDelete(): Form
-	{
-		$form = $this->createDelete($this->id);
-		$form->addSubmit('confirm', 'Confirm')
-			->onClick[] = function (SubmitButton $button): void {
-				$form = $button->getForm();
-				if ($form instanceof Form) {
-					$id = (int) $form->getValues()['id'];
-					$this->delete($form, $id);
-				}
-			};
-		return $form;
-	}
-
-
 	public function delete(Form $form, int $id): void
 	{
 		try {
@@ -95,83 +80,6 @@ class PermissionsControl extends Component implements Base
 			$message = 'Unknown status code.';
 			$this->addFlashMessage($message, Alert::Warning);
 			$this->addRedraw($this->snippetMessage);
-		}
-	}
-
-
-	/** Creates the form for adding/editing permissions.
-	 * @throws AttributeDetectionException
-	 */
-	protected function createComponentFactory(): Form
-	{
-		$form = $this->create();
-		$roles = $this->rolesRepository->read('*')
-			->where(RolesEntity::ColumnName, '!= ?', Conf::RoleAdmin)
-			->fetchPairs(RolesEntity::PrimaryKey, RolesEntity::ColumnName);
-
-		$form->addSelect(PermissionsEntity::ColumnRoleId, 'Role', $roles)
-			->setPrompt('Select role')
-			->setRequired();
-
-		$resources = $this->resourcesRepository->read('*')
-			->fetchPairs(ResourcesEntity::PrimaryKey, ResourcesEntity::ColumnName);
-
-		$form->addSelect(PermissionsEntity::ColumnResourceId, 'Resource', $resources)
-			->setPrompt('Select resource')
-			->setRequired();
-
-		$privileges = $this->privilegesRepository->read('*')
-			->fetchPairs(PrivilegesEntity::PrimaryKey, PrivilegesEntity::ColumnName);
-
-		$form->addSelect(PermissionsEntity::ColumnPrivilegeId, 'Actions and signals', $privileges)
-			->setPrompt('Select privilege')
-			->setRequired();
-
-		$permission = [
-			'Deny',
-			'Allow',
-		];
-
-		$form->addSelect(PermissionsEntity::ColumnAllowed, 'Permission', $permission)
-			->setPrompt('Select permission')
-			->setRequired();
-
-		$form->addHidden(PermissionsEntity::PrimaryKey)
-			->setNullable()
-			->addRule($form::Integer);
-
-		$form->addSubmit('send', 'Send');
-		$form->onSuccess[] = function (Form $form, PermissionsValues $data): void {
-			$this->success($form, $data);
-		};
-		return $form;
-	}
-
-
-	private function success(Form $form, PermissionsValues $data): void
-	{
-		try {
-			$this->permissionsRepository->save($data);
-			$this->cache->remove(Conf::Cache);
-
-			$message = isset($data->id) ? 'Permission was updated.' : 'Permission added.';
-			$this->addFlashMessage($message, Alert::Success);
-
-			if (isset($data->id)) {
-				$this->closeComponent();
-			}
-
-			$this->redrawSuccessFactory();
-			$form->reset();
-
-		} catch (Throwable $e) {
-			$message = match ($e->getCode()) {
-				1062 => 'This permission is already granted.',
-				default => 'Unknown status code.',
-			};
-
-			$form->addError($message);
-			$this->redrawControl($this->snippetFactory);
 		}
 	}
 
@@ -240,6 +148,70 @@ class PermissionsControl extends Component implements Base
 	}
 
 
+	protected function createComponentDelete(): Form
+	{
+		$form = $this->createDelete($this->id);
+		$form->addSubmit('confirm', 'Confirm')
+			->onClick[] = function (SubmitButton $button): void {
+				$form = $button->getForm();
+				if ($form instanceof Form) {
+					$id = (int) $form->getValues()['id'];
+					$this->delete($form, $id);
+				}
+			};
+		return $form;
+	}
+
+
+	/** Creates the form for adding/editing permissions.
+	 * @throws AttributeDetectionException
+	 */
+	protected function createComponentFactory(): Form
+	{
+		$form = $this->create();
+		$roles = $this->rolesRepository->read('*')
+			->where(RolesEntity::ColumnName, '!= ?', Conf::RoleAdmin)
+			->fetchPairs(RolesEntity::PrimaryKey, RolesEntity::ColumnName);
+
+		$form->addSelect(PermissionsEntity::ColumnRoleId, 'Role', $roles)
+			->setPrompt('Select role')
+			->setRequired();
+
+		$resources = $this->resourcesRepository->read('*')
+			->fetchPairs(ResourcesEntity::PrimaryKey, ResourcesEntity::ColumnName);
+
+		$form->addSelect(PermissionsEntity::ColumnResourceId, 'Resource', $resources)
+			->setPrompt('Select resource')
+			->setRequired();
+
+		$privileges = $this->privilegesRepository->read('*')
+			->fetchPairs(PrivilegesEntity::PrimaryKey, PrivilegesEntity::ColumnName);
+
+		$form->addSelect(PermissionsEntity::ColumnPrivilegeId, 'Actions and signals', $privileges)
+			->setPrompt('Select privilege')
+			->setRequired();
+
+		$permission = [
+			'Deny',
+			'Allow',
+		];
+
+		$form->addSelect(PermissionsEntity::ColumnAllowed, 'Permission', $permission)
+			->setPrompt('Select permission')
+			->setRequired();
+
+		$form->addHidden(PermissionsEntity::PrimaryKey)
+			->setNullable()
+			->addRule($form::Integer);
+
+		$form->addSubmit('send', 'Send');
+		$form->onSuccess[] = function (Form $form, PermissionsValues $data): void {
+			$this->success($form, $data);
+		};
+		return $form;
+	}
+
+
 	/** Creates a grid component for displaying the permissions.
 	 * @throws AttributeDetectionException
 	 * @throws DatagridColumnStatusException
@@ -286,5 +258,33 @@ class PermissionsControl extends Component implements Base
 		$grid->addActionEdit('edit', 'Edit');
 		$grid->addActionDeleteBase('delete', 'Delete');
 		return $grid;
+	}
+
+
+	private function success(Form $form, PermissionsValues $data): void
+	{
+		try {
+			$this->permissionsRepository->save($data);
+			$this->cache->remove(Conf::Cache);
+
+			$message = isset($data->id) ? 'Permission was updated.' : 'Permission added.';
+			$this->addFlashMessage($message, Alert::Success);
+
+			if (isset($data->id)) {
+				$this->closeComponent();
+			}
+
+			$this->redrawSuccessFactory();
+			$form->reset();
+
+		} catch (Throwable $e) {
+			$message = match ($e->getCode()) {
+				1062 => 'This permission is already granted.',
+				default => 'Unknown status code.',
+			};
+
+			$form->addError($message);
+			$this->redrawControl($this->snippetFactory);
+		}
 	}
 }

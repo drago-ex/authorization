@@ -47,12 +47,6 @@ abstract class Component extends UI\ExtraControl
 	}
 
 
-	private function getUniqueIdComponent(string $type): string
-	{
-		return sprintf('%s-%s', $this->getUniqueId(), $type);
-	}
-
-
 	public function offCanvasComponent(): void
 	{
 		$component = $this->getUniqueIdComponent(self::Offcanvas);
@@ -111,5 +105,11 @@ abstract class Component extends UI\ExtraControl
 		$this->addRedraw($this->snippetMessage);
 		$this->redrawControl($this->snippetFactory);
 		$this->redrawGrid();
+	}
+
+
+	private function getUniqueIdComponent(string $type): string
+	{
+		return sprintf('%s-%s', $this->getUniqueId(), $type);
 	}
 }

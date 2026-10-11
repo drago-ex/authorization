@@ -57,21 +57,6 @@ class AccessControl extends Component implements Base
 	}
 
 
-	protected function createComponentDelete(): Form
-	{
-		$form = $this->createDelete($this->id);
-		$form->addSubmit('confirm', 'Confirm')
-			->onClick[] = function (SubmitButton $button): void {
-				$form = $button->getForm();
-				if ($form instanceof Form) {
-					$id = (int) $form->getValues()['id'];
-					$this->delete($form, $id);
-				}
-			};
-		return $form;
-	}
-
-
 	public function delete(Form $form, int $id): void
 	{
 		try {
@@ -86,100 +71,6 @@ class AccessControl extends Component implements Base
 		} catch (Throwable $e) {
 			$this->addFlashMessage('Unknown status code.', Alert::Warning);
 			$this->addRedraw($this->snippetMessage);
-		}
-	}
-
-
-	/** Creates the form for assigning roles to a user.
-	 * @throws AttributeDetectionException
-	 */
-	protected function createComponentFactory(): Form
-	{
-		$form = $this->create();
-		$users = $this->accessRepository->getAllUsers();
-
-		$user = null;
-		if ($this->getSignal()) {
-			$user = $this->accessRepository->getUserById($this->id);
-		}
-
-		/** @var array<int, string> $items */
-		$items = is_array($user) ? $user : $users;
-
-		$form->addSelect(AccessRolesEntity::ColumnUserId, 'User', $items)
-			->setPrompt('Select user')
-			->setRequired();
-
-		$roles = $this->rolesRepository->read('*')
-			->where(RolesEntity::ColumnName, '!= ?', Conf::RoleAdmin);
-
-		if (!$this->user->isInRole(Conf::RoleAdmin)) {
-			$roles->and(RolesEntity::ColumnName, '!= ?', Conf::RoleAdmin);
-		}
-
-		$roles = $roles->fetchPairs(RolesEntity::PrimaryKey, RolesEntity::ColumnName);
-		$form->addMultiSelect(AccessRolesEntity::ColumnRoleId, 'Select roles', $roles)
-			->setRequired();
-
-		$form->addHidden(AccessRolesValues::Id)
-			->setHtmlAttribute('data-locked')
-			->setNullable()
-			->addRule($form::Integer);
-
-		$form->addSubmit('send', 'Send');
-		$form->onSuccess[] = function (Form $form, AccessRolesValues $data): void {
-			$this->success($form, $data);
-		};
-		return $form;
-	}
-
-
-	/** @throws DriverException */
-	private function success(Form $form, AccessRolesValues $data): void
-	{
-		try {
-			$entity = new AccessRolesEntity;
-			if (isset($data->user_id)) {
-				$entity->user_id = (int) $data->user_id;
-			}
-
-			$this->accessRolesRepository
-				->getConnection()
-				->begin();
-
-			if (isset($data->id)) {
-				$this->accessRolesRepository
-					->delete(AccessRolesEntity::ColumnUserId, (int) $data->user_id)
-					->execute();
-			}
-
-			if (isset($data->role_id)) {
-				foreach ($data->role_id as $item) {
-					$entity->role_id = (int) $item;
-					$repository = $this->accessRolesRepository;
-					$repository->getConnection()
-						->insert($repository->getTableName(), $entity->toArray())
-						->execute();
-				}
-			}
-
-			$this->accessRolesRepository->getConnection()->commit();
-			$this->addFlashMessage(isset($data->id) ? 'Roles updated.' : 'Role assigned.', Alert::Success);
-
-			if (isset($data->user_id)) {
-				$this->closeComponent();
-			}
-
-			$this->redrawSuccessFactory();
-			$form->reset();
-
-		} catch (Throwable $e) {
-			$this->accessRolesRepository
-				->getConnection()
-				->rollback();
-
-			$form->addError($e->getCode() === 1062 ? 'Role already assigned.' : 'Unknown error.');
-			$this->redrawControl($this->snippetFactory);
 		}
 	}
 
@@ -232,6 +123,65 @@ class AccessControl extends Component implements Base
 	}
 
 
+	protected function createComponentDelete(): Form
+	{
+		$form = $this->createDelete($this->id);
+		$form->addSubmit('confirm', 'Confirm')
+			->onClick[] = function (SubmitButton $button): void {
+				$form = $button->getForm();
+				if ($form instanceof Form) {
+					$id = (int) $form->getValues()['id'];
+					$this->delete($form, $id);
+				}
+			};
+		return $form;
+	}
+
+
+	/** Creates the form for assigning roles to a user.
+	 * @throws AttributeDetectionException
+	 */
+	protected function createComponentFactory(): Form
+	{
+		$form = $this->create();
+		$users = $this->accessRepository->getAllUsers();
+
+		$user = null;
+		if ($this->getSignal()) {
+			$user = $this->accessRepository->getUserById($this->id);
+		}
+
+		/** @var array<int, string> $items */
+		$items = is_array($user) ? $user : $users;
+
+		$form->addSelect(AccessRolesEntity::ColumnUserId, 'User', $items)
+			->setPrompt('Select user')
+			->setRequired();
+
+		$roles = $this->rolesRepository->read('*')
+			->where(RolesEntity::ColumnName, '!= ?', Conf::RoleAdmin);
+
+		if (!$this->user->isInRole(Conf::RoleAdmin)) {
+			$roles->and(RolesEntity::ColumnName, '!= ?', Conf::RoleAdmin);
+		}
+
+		$roles = $roles->fetchPairs(RolesEntity::PrimaryKey, RolesEntity::ColumnName);
+		$form->addMultiSelect(AccessRolesEntity::ColumnRoleId, 'Select roles', $roles)
+			->setRequired();
+
+		$form->addHidden(AccessRolesValues::Id)
+			->setHtmlAttribute('data-locked')
+			->setNullable()
+			->addRule($form::Integer);
+
+		$form->addSubmit('send', 'Send');
+		$form->onSuccess[] = function (Form $form, AccessRolesValues $data): void {
+			$this->success($form, $data);
+		};
+		return $form;
+	}
+
+
 	/**
 	 * Creates the user roles data grid.
 	 * @throws AttributeDetectionException
@@ -256,5 +206,55 @@ class AccessControl extends Component implements Base
 		$grid->addActionEdit('edit', 'Edit', 'edit!', ['id' => 'user_id']);
 		$grid->addActionDeleteBase('delete', 'Delete', 'delete!', ['id' => 'user_id']);
 		return $grid;
+	}
+
+
+	/** @throws DriverException */
+	private function success(Form $form, AccessRolesValues $data): void
+	{
+		try {
+			$entity = new AccessRolesEntity;
+			if (isset($data->user_id)) {
+				$entity->user_id = (int) $data->user_id;
+			}
+
+			$this->accessRolesRepository
+				->getConnection()
+				->begin();
+
+			if (isset($data->id)) {
+				$this->accessRolesRepository
+					->delete(AccessRolesEntity::ColumnUserId, (int) $data->user_id)
+					->execute();
+			}
+
+			if (isset($data->role_id)) {
+				foreach ($data->role_id as $item) {
+					$entity->role_id = (int) $item;
+					$repository = $this->accessRolesRepository;
+					$repository->getConnection()
+						->insert($repository->getTableName(), $entity->toArray())
+						->execute();
+				}
+			}
+
+			$this->accessRolesRepository->getConnection()->commit();
+			$this->addFlashMessage(isset($data->id) ? 'Roles updated.' : 'Role assigned.', Alert::Success);
+
+			if (isset($data->user_id)) {
+				$this->closeComponent();
+			}
+
+			$this->redrawSuccessFactory();
+			$form->reset();
+
+		} catch (Throwable $e) {
+			$this->accessRolesRepository
+				->getConnection()
+				->rollback();
+
+			$form->addError($e->getCode() === 1062 ? 'Role already assigned.' : 'Unknown error.');
+			$this->redrawControl($this->snippetFactory);
+		}
 	}
 }
