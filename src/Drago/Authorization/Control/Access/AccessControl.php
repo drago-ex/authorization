@@ -176,7 +176,7 @@ class AccessControl extends Component implements Base
 
 		$form->addSubmit('send', 'Send');
 		$form->onSuccess[] = function (Form $form, AccessRolesValues $data): void {
-			$this->success($form, $data);
+			$this->processUserRolesForm($form, $data);
 		};
 		return $form;
 	}
@@ -210,7 +210,7 @@ class AccessControl extends Component implements Base
 
 
 	/** @throws DriverException */
-	private function success(Form $form, AccessRolesValues $data): void
+	private function processUserRolesForm(Form $form, AccessRolesValues $data): void
 	{
 		try {
 			$entity = new AccessRolesEntity;

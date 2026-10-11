@@ -206,7 +206,7 @@ class PermissionsControl extends Component implements Base
 
 		$form->addSubmit('send', 'Send');
 		$form->onSuccess[] = function (Form $form, PermissionsValues $data): void {
-			$this->success($form, $data);
+			$this->processPermissionForm($form, $data);
 		};
 		return $form;
 	}
@@ -261,7 +261,7 @@ class PermissionsControl extends Component implements Base
 	}
 
 
-	private function success(Form $form, PermissionsValues $data): void
+	private function processPermissionForm(Form $form, PermissionsValues $data): void
 	{
 		try {
 			$this->permissionsRepository->save($data);

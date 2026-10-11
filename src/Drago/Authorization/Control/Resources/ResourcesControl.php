@@ -137,7 +137,7 @@ class ResourcesControl extends Component implements Base
 
 		$form->addSubmit('send', 'Send');
 		$form->onSuccess[] = function (Form $form, ResourcesValues $data): void {
-			$this->success($form, $data);
+			$this->processResourceForm($form, $data);
 		};
 		return $form;
 	}
@@ -167,7 +167,7 @@ class ResourcesControl extends Component implements Base
 	}
 
 
-	private function success(Form $form, ResourcesValues $data): void
+	private function processResourceForm(Form $form, ResourcesValues $data): void
 	{
 		try {
 			$this->resourcesRepository->save((array) $data);

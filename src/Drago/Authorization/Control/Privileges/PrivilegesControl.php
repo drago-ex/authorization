@@ -164,7 +164,7 @@ class PrivilegesControl extends Component implements Base
 
 		$form->addSubmit('send', 'Send');
 		$form->onSuccess[] = function (Form $form, PrivilegesValues $data): void {
-			$this->success($form, $data);
+			$this->processPrivilegeForm($form, $data);
 		};
 		return $form;
 	}
@@ -194,7 +194,7 @@ class PrivilegesControl extends Component implements Base
 	}
 
 
-	private function success(Form $form, PrivilegesValues $data): void
+	private function processPrivilegeForm(Form $form, PrivilegesValues $data): void
 	{
 		try {
 			$this->privilegesRepository->save((array) $data);

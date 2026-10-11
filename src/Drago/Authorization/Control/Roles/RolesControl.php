@@ -162,7 +162,7 @@ class RolesControl extends Component implements Base
 
 		$form->addSubmit('send', 'Send');
 		$form->onSuccess[] = function (Form $form, RolesValues $data): void {
-			$this->success($form, $data);
+			$this->processRoleForm($form, $data);
 		};
 		return $form;
 	}
@@ -220,7 +220,7 @@ class RolesControl extends Component implements Base
 	}
 
 
-	private function success(Form $form, RolesValues $data): void
+	private function processRoleForm(Form $form, RolesValues $data): void
 	{
 		try {
 			if (isset($data->id, $data->parent) && (int) $data->id < (int) $data->parent) {
