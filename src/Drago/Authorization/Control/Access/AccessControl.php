@@ -122,9 +122,9 @@ class AccessControl extends Component implements Base
 			->setRequired();
 
 		$form->addHidden(AccessRolesValues::Id)
-			->addRule($form::Integer)
 			->setHtmlAttribute('data-locked')
-			->setNullable();
+			->setNullable()
+			->addRule($form::Integer);
 
 		$form->addSubmit('send', 'Send');
 		$form->onSuccess[] = function (Form $form, AccessRolesValues $data): void {

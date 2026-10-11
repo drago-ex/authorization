@@ -98,8 +98,8 @@ class ResourcesControl extends Component implements Base
 			->setRequired();
 
 		$form->addHidden(ResourcesEntity::PrimaryKey)
-			->addRule($form::Integer)
-			->setNullable();
+			->setNullable()
+			->addRule($form::Integer);
 
 		$form->addSubmit('send', 'Send');
 		$form->onSuccess[] = function (Form $form, ResourcesValues $data): void {

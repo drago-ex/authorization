@@ -137,8 +137,8 @@ class PermissionsControl extends Component implements Base
 			->setRequired();
 
 		$form->addHidden(PermissionsEntity::PrimaryKey)
-			->addRule($form::Integer)
-			->setNullable();
+			->setNullable()
+			->addRule($form::Integer);
 
 		$form->addSubmit('send', 'Send');
 		$form->onSuccess[] = function (Form $form, PermissionsValues $data): void {

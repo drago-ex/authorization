@@ -99,8 +99,8 @@ class PrivilegesControl extends Component implements Base
 			->setRequired();
 
 		$form->addHidden(PrivilegesEntity::PrimaryKey)
-			->addRule($form::Integer)
-			->setNullable();
+			->setNullable()
+			->addRule($form::Integer);
 
 		$form->addSubmit('send', 'Send');
 		$form->onSuccess[] = function (Form $form, PrivilegesValues $data): void {

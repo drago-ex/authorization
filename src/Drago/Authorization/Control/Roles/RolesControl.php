@@ -112,8 +112,8 @@ class RolesControl extends Component implements Base
 			->setRequired();
 
 		$form->addHidden(RolesEntity::PrimaryKey)
-			->addRule($form::Integer)
-			->setNullable();
+			->setNullable()
+			->addRule($form::Integer);
 
 		$form->addSubmit('send', 'Send');
 		$form->onSuccess[] = function (Form $form, RolesValues $data): void {
