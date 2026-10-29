@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Access;
 
@@ -33,8 +31,11 @@ class AccessRepository
 	{
 		return $this->getConnection()
 			->select('u.id, u.username')
-			->from($this->getTableName())->as('u')
-			->leftJoin(AccessRolesViewEntity::Table)->as('r')->on('u.id = r.user_id')
+			->from($this->getTableName())
+			->as('u')
+			->leftJoin(AccessRolesViewEntity::Table)
+			->as('r')
+			->on('u.id = r.user_id')
 			->groupBy('u.id, u.username')
 			->having('sum(case when r.role = ? then 1 else 0 end) = ?', Conf::RoleAdmin, 0)
 			->fetchPairs(AccessEntity::PrimaryKey, AccessEntity::ColumnUsername);

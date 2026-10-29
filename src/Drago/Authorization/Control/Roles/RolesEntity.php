@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Roles;
 
@@ -11,8 +9,7 @@ class RolesEntity extends Entity
 {
 	use RolesMapper;
 
-	public const string
-		Table = 'roles',
+	public const string Table = 'roles',
 		PrimaryKey = 'id',
 		ColumnName = 'name',
 		ColumnParent = 'parent';

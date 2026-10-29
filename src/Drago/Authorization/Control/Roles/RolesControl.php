@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Roles;
 
@@ -213,7 +211,7 @@ class RolesControl extends Component implements Base
 			$this->closeComponent();
 			$this->redrawDeleteFactoryAll();
 
-		} catch (Throwable $e) {
+		} catch (Throwable) {
 			$this->addFlashMessage('Unknown status code.', Alert::Warning);
 			$this->addRedraw($this->snippetMessage);
 		}

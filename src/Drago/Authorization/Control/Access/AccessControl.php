@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Access;
 
@@ -22,6 +20,7 @@ use Nette\Forms\Controls\SubmitButton;
 use Nette\Security\User;
 use Nette\SmartObject;
 use Throwable;
+use function is_array;
 
 
 class AccessControl extends Component implements Base
@@ -68,7 +67,7 @@ class AccessControl extends Component implements Base
 			$this->closeComponent();
 			$this->redrawDeleteFactoryAll();
 
-		} catch (Throwable $e) {
+		} catch (Throwable) {
 			$this->addFlashMessage('Unknown status code.', Alert::Warning);
 			$this->addRedraw($this->snippetMessage);
 		}

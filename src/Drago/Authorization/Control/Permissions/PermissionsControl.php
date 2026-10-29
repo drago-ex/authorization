@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Permissions;
 
@@ -76,7 +74,7 @@ class PermissionsControl extends Component implements Base
 			$this->closeComponent();
 			$this->redrawDeleteFactoryAll();
 
-		} catch (Throwable $e) {
+		} catch (Throwable) {
 			$message = 'Unknown status code.';
 			$this->addFlashMessage($message, Alert::Warning);
 			$this->addRedraw($this->snippetMessage);
@@ -233,9 +231,10 @@ class PermissionsControl extends Component implements Base
 		$roles = $this->rolesRepository->getRolesPairs();
 		$grid->addColumnText('role', 'Role')
 			->setSortable()
-			->setFilterSelect(array_merge([
-				null => $grid->translateFilter('All'),
-			], $roles));
+			->setFilterSelect([
+				'' => $grid->translateFilter('All'),
+				...$roles,
+			]);
 
 		$grid->addColumnBase('resource', 'Resources');
 		$grid->addColumnBase('privilege', 'Privileges');
@@ -250,7 +249,7 @@ class PermissionsControl extends Component implements Base
 			->setClass('btn-success')
 			->endOption()
 			->setFilterSelect([
-				null => $grid->translateFilter('All'),
+				'' => $grid->translateFilter('All'),
 				0  => $grid->translateFilter('Denied'),
 				1  => $grid->translateFilter('Allowed'),
 			]);

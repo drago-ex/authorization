@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Access;
 
@@ -9,8 +7,7 @@ use Drago;
 
 class AccessRolesEntity extends Drago\Database\Entity
 {
-	public const string
-		Table = 'users_roles',
+	public const string Table = 'users_roles',
 		ColumnRoleId = 'role_id',
 		ColumnUserId = 'user_id';
 

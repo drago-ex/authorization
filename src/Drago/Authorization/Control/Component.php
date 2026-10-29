@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Drago\Authorization\Control;
 
@@ -9,6 +7,7 @@ use Drago\Application\UI;
 use Nette\Application\Attributes\Parameter;
 use Nette\Application\UI\Template;
 use Nette\SmartObject;
+use function sprintf;
 
 
 /** @property-read ComponentTemplate $template */
@@ -18,7 +17,6 @@ abstract class Component extends UI\ExtraControl
 
 	private const string Offcanvas = 'offcanvas';
 	private const string Modal = 'modal';
-
 
 	public string $snippetFactory;
 

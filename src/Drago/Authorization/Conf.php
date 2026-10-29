@@ -1,14 +1,11 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Drago\Authorization;
 
 
 final class Conf
 {
-	public const string
-		RoleGuest = 'guest',
+	public const string RoleGuest = 'guest',
 		RoleMember = 'member',
 		RoleAdmin = 'admin';
 
@@ -16,7 +13,6 @@ final class Conf
 	public const string PrivilegeAll = '*';
 
 	public const string Cache = 'drago.aclCache';
-
 
 	/** @var array<string, string> */
 	public static array $roles = [

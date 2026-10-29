@@ -1,10 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * Test: Drago\Authorization\DI\AuthorizationExtension
  */
-
-declare(strict_types=1);
 
 use Drago\Authorization\Conf;
 use Drago\Authorization\DI\AuthorizationExtension;
@@ -20,12 +18,9 @@ $container = require __DIR__ . '/../../bootstrap.php';
 
 class TestAuthorizationExtension extends TestCase
 {
-	protected Container $container;
-
-
-	public function __construct(Container $container)
-	{
-		$this->container = $container;
+	public function __construct(
+		protected Container $container,
+	) {
 	}
 
 

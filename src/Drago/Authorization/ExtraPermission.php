@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Drago\Authorization;
 
@@ -66,7 +64,7 @@ class ExtraPermission
 						: $row->privilege;
 					$acl->{$row->allowed === 1
 						? 'allow'
-						: 'deny'} ($row->role, $row->resource, $row->privilege);
+						: 'deny'}($row->role, $row->resource, $row->privilege);
 				}
 
 				// Admin role gets full access by default
@@ -80,7 +78,7 @@ class ExtraPermission
 			if ($this->cache->load(Conf::Cache)) {
 				$acl = $this->cache->load(Conf::Cache);
 			}
-		} catch (DriverException $e) {
+		} catch (DriverException) {
 			$acl->addRole(Conf::RoleGuest);
 			$acl->addRole(Conf::RoleMember, Conf::RoleGuest);
 			$acl->addRole(Conf::RoleAdmin, Conf::RoleMember);

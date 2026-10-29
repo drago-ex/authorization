@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Privileges;
 
@@ -11,8 +9,7 @@ class PrivilegesEntity extends Drago\Database\Entity
 {
 	use PrivilegesMapper;
 
-	public const string
-		Table = 'privileges',
+	public const string Table = 'privileges',
 		PrimaryKey = 'id',
 		ColumnName = 'name';
 }

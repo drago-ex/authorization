@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Drago\Authorization\Control\Permissions;
 
@@ -9,8 +7,7 @@ use Drago;
 
 class PermissionsRolesViewEntity extends Drago\Database\Entity
 {
-	public const string
-		Table = 'permissions_roles_view',
+	public const string Table = 'permissions_roles_view',
 		PrimaryKey = 'id',
 		ColumnName = 'name',
 		ColumnParent = 'parent';
